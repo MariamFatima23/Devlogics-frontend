@@ -1,0 +1,229 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS — Persian Blue palette
+═══════════════════════════════════════════ */
+:root {
+  --navy:    #03045e;
+  --blue:    #023e8a;
+  --mid:     #0077b6;
+  --sky:     #0096c7;
+  --cyan:    #48cae4;
+  --light:   #90e0ef;
+  --pale:    #caf0f8;
+  --ice:     #f0f9ff;
+
+  --grad-primary: linear-gradient(135deg, var(--mid), var(--navy));
+  --grad-card:    linear-gradient(135deg, var(--navy) 0%, var(--mid) 100%);
+  --radius-sm:    0.75rem;   /* 12px — buttons, tags */
+  --radius-md:    1rem;      /* 16px — inputs, small cards */
+  --radius-lg:    1.25rem;   /* 20px — cards */
+  --radius-xl:    1.5rem;    /* 24px — panels, modals */
+}
+
+/* ═══════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1e293b;
+  background: #f8fafc;
+  -webkit-font-smoothing: antialiased;
+}
+
+html { scroll-behavior: smooth; }
+
+/* Scrollbar */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--ice); }
+::-webkit-scrollbar-thumb { background: var(--mid); border-radius: 4px; }
+
+/* ═══════════════════════════════════════════
+   TYPOGRAPHY SCALE
+   Use these classes everywhere for consistency
+═══════════════════════════════════════════ */
+
+/* Page / section heading */
+.dp-h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; }
+@media (min-width: 640px) { .dp-h1 { font-size: 3rem; } }
+
+/* Section sub-heading */
+.dp-h2 { font-size: 1.75rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.01em; }
+@media (min-width: 640px) { .dp-h2 { font-size: 2.25rem; } }
+
+/* Card heading */
+.dp-h3 { font-size: 1.125rem; font-weight: 700; line-height: 1.35; }
+
+/* Body text */
+.dp-body  { font-size: 0.9375rem; font-weight: 400; line-height: 1.7; color: #475569; }
+.dp-small { font-size: 0.8125rem; font-weight: 400; line-height: 1.6; color: #64748b; }
+.dp-tiny  { font-size: 0.6875rem; font-weight: 500; line-height: 1.5; color: #94a3b8; }
+
+/* Label / badge text */
+.dp-label {
+  font-size: 0.6875rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION BADGE  (e.g. "AVAILABLE COURSES")
+═══════════════════════════════════════════ */
+.dp-badge {
+  display: inline-block;
+  padding: 0.25rem 1rem;
+  border-radius: 99px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--navy);
+  color: #fff;
+}
+.dp-badge-light {
+  display: inline-block;
+  padding: 0.25rem 1rem;
+  border-radius: 99px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--pale);
+  color: var(--navy);
+}
+
+/* ═══════════════════════════════════════════
+   CARD  — white surface with consistent border
+═══════════════════════════════════════════ */
+.dp-card {
+  background: #ffffff;
+  border: 1.5px solid #e8f4fd;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 4px rgba(3,4,94,0.06);
+  transition: box-shadow 0.18s ease;
+}
+.dp-card:hover { box-shadow: 0 4px 16px rgba(3,4,94,0.1); }
+
+/* Coloured stat card variant */
+.dp-stat-card {
+  background: #ffffff;
+  border: 1.5px solid #e8f4fd;
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  box-shadow: 0 1px 4px rgba(3,4,94,0.06);
+}
+
+/* ═══════════════════════════════════════════
+   BUTTONS
+   All buttons: same radius, same font weight,
+   same transition — only colour differs
+═══════════════════════════════════════════ */
+.dp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
+  border: none;
+  outline: none;
+  white-space: nowrap;
+}
+.dp-btn:hover  { opacity: 0.88; transform: translateY(-1px); }
+.dp-btn:active { transform: scale(0.97); }
+.dp-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* Primary — solid Persian blue */
+.dp-btn-primary {
+  background: var(--grad-primary);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(0,119,182,0.25);
+}
+.dp-btn-primary:hover { box-shadow: 0 4px 16px rgba(0,119,182,0.35); }
+
+/* Secondary — outlined */
+.dp-btn-outline {
+  background: transparent;
+  color: var(--mid);
+  border: 1.5px solid var(--pale);
+}
+.dp-btn-outline:hover { background: var(--ice); border-color: var(--mid); }
+
+/* Ghost — text only */
+.dp-btn-ghost {
+  background: transparent;
+  color: var(--mid);
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.dp-btn-ghost:hover { color: var(--navy); }
+
+/* Danger */
+.dp-btn-danger {
+  background: #fff0f0;
+  color: #dc2626;
+  border: 1.5px solid #fecaca;
+}
+.dp-btn-danger:hover { background: #fee2e2; }
+
+/* Full-width variant */
+.dp-btn-full { width: 100%; }
+
+/* ═══════════════════════════════════════════
+   INPUTS
+═══════════════════════════════════════════ */
+.dp-input {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--pale);
+  background: var(--ice);
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  color: #1e293b;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.dp-input:focus {
+  border-color: var(--mid);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0,119,182,0.1);
+}
+.dp-input::placeholder { color: #94a3b8; }
+
+.dp-label-text {
+  display: block;
+  margin-bottom: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #475569;
+}
+
+/* ═══════════════════════════════════════════
+   STATUS PILLS
+═══════════════════════════════════════════ */
+.dp-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.65rem;
+  border-radius: 99px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION WRAPPER
+═══════════════════════════════════════════ */
+.dp-section { padding: 5rem 1.5rem; }
+.dp-section-heading { margin-bottom: 3rem; text-align: center; }
