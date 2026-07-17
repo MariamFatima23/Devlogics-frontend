@@ -9,7 +9,13 @@ router.get('/', async (req, res) => {
   try {
     let settings = await SiteSettings.findOne()
     if (!settings) settings = await SiteSettings.create({})
-    res.json(settings)
+    const obj = settings.toObject()
+    // Ensure array fields are never null/undefined for frontend safety
+    obj.partners    = Array.isArray(obj.partners)    ? obj.partners    : []
+    obj.howItWorks  = Array.isArray(obj.howItWorks)  ? obj.howItWorks  : []
+    obj.features    = Array.isArray(obj.features)    ? obj.features    : []
+    obj.aboutPoints = Array.isArray(obj.aboutPoints) ? obj.aboutPoints : []
+    res.json(obj)
   } catch (err) { res.status(500).json({ message: err.message }) }
 })
 

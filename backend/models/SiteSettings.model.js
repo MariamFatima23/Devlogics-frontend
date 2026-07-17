@@ -13,27 +13,60 @@ const siteSettingsSchema = new mongoose.Schema({
   statSatisfaction: { type: String, default: '98%' },
 
   // ── Marquee / partners strip
-  partners: [{ type: String }],   // e.g. ["Web Development","AI","React"]
+  partners: {
+    type: [{ type: String }],
+    default: ['Web Development','Artificial Intelligence','Digital Marketing','React Native','Python',
+              'Machine Learning','Data Science','Cybersecurity','UI/UX Design','Cloud Computing',
+              'Java','JavaScript','SEO','Graphic Design','DevOps'],
+  },
 
   // ── How It Works steps (array of {step, icon, title, desc})
-  howItWorks: [{
-    step:  { type: String },
-    icon:  { type: String },
-    title: { type: String },
-    desc:  { type: String },
-  }],
+  howItWorks: {
+    type: [{
+      step:  { type: String },
+      icon:  { type: String },
+      title: { type: String },
+      desc:  { type: String },
+    }],
+    default: [
+      { step:'01', icon:'user',     title:'Create Account',    desc:'Register and complete your profile.' },
+      { step:'02', icon:'submit',   title:'Submit Application', desc:'Choose course, fill form, attach CV.' },
+      { step:'03', icon:'review',   title:'Admin Review',       desc:'Admin reviews and updates your status.' },
+      { step:'04', icon:'decision', title:'Get Decision',       desc:'Receive Approved or Rejected with feedback.' },
+    ],
+  },
 
   // ── Features / Why Choose Us
-  features: [{
-    icon:  { type: String },
-    title: { type: String },
-    desc:  { type: String },
-  }],
+  features: {
+    type: [{
+      icon:  { type: String },
+      title: { type: String },
+      desc:  { type: String },
+    }],
+    default: [
+      { icon:'lock',   title:'Secure Login',       desc:'JWT auth with encrypted passwords.' },
+      { icon:'mobile', title:'Mobile Friendly',    desc:'Works on any device perfectly.' },
+      { icon:'bell',   title:'Real-time Alerts',   desc:'Instant notifications on status change.' },
+      { icon:'chart',  title:'Track Applications', desc:'Full timeline for every application.' },
+      { icon:'upload', title:'Document Upload',    desc:'Attach PDFs, images, Word docs.' },
+      { icon:'cogs',   title:'Admin Dashboard',    desc:'Powerful panel to manage everything.' },
+    ],
+  },
 
   // ── About section
   aboutTitle:    { type: String, default: 'A Smarter Way to Learn & Apply' },
   aboutSubtitle: { type: String, default: 'DevLogics E-Portal is a complete digital solution for course and service management.' },
-  aboutPoints:   [{ type: String }],
+  aboutPoints: {
+    type: [{ type: String }],
+    default: [
+      'Apply online — no office visits',
+      'Upload CV and documents securely',
+      'Track every application with timeline',
+      'Real-time notifications on changes',
+      'Admin review with detailed feedback',
+      'Available 24/7 from any device',
+    ],
+  },
   aboutImageUrl: { type: String, default: '' },
 
   // ── Contact

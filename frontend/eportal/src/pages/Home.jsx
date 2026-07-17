@@ -341,10 +341,22 @@ export default function Home() {
   const BASE = import.meta.env.VITE_API_URL?.replace('/api','') || 'http://localhost:5000'
 
   useEffect(() => {
-    api.get('/hero-slides').then(r => { if (r.data?.length) setSlides(r.data) }).catch(() => {})
-    api.get('/reviews').then(r => { if (r.data?.length) setReviews(r.data) }).catch(() => {})
-    api.get('/student-pride').then(r => { if (r.data?.length) setStudents(r.data) }).catch(() => {})
-    api.get('/site-settings').then(r => { if (r.data) setSettings(r.data) }).catch(() => {})
+    api.get('/hero-slides').then(r => { if (Array.isArray(r.data) && r.data.length) setSlides(r.data) }).catch(() => {})
+    api.get('/reviews').then(r => { if (Array.isArray(r.data) && r.data.length) setReviews(r.data) }).catch(() => {})
+    api.get('/student-pride').then(r => { if (Array.isArray(r.data) && r.data.length) setStudents(r.data) }).catch(() => {})
+    api.get('/site-settings').then(r => {
+      if (r.data) {
+        // Merge with FALLBACK so array fields are never undefined/null
+        setSettings({
+          ...FALLBACK_SETTINGS,
+          ...r.data,
+          partners:    Array.isArray(r.data.partners)    && r.data.partners.length    ? r.data.partners    : FALLBACK_SETTINGS.partners,
+          howItWorks:  Array.isArray(r.data.howItWorks)  && r.data.howItWorks.length  ? r.data.howItWorks  : FALLBACK_SETTINGS.howItWorks,
+          features:    Array.isArray(r.data.features)    && r.data.features.length    ? r.data.features    : FALLBACK_SETTINGS.features,
+          aboutPoints: Array.isArray(r.data.aboutPoints) && r.data.aboutPoints.length ? r.data.aboutPoints : FALLBACK_SETTINGS.aboutPoints,
+        })
+      }
+    }).catch(() => {})
   }, [])
 
   useEffect(() => {
