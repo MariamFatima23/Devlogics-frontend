@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import api from '../../utils/api'
 
+const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
 const STARS = n => '⭐'.repeat(n)
 
 export default function ManageReviews() {
@@ -79,7 +80,7 @@ export default function ManageReviews() {
               {/* Avatar */}
               <div className="shrink-0">
                 {r.studentImage ? (
-                  <img src={`http://localhost:5000/uploads/${r.studentImage}`} alt={r.studentName}
+                  <img src={`${BASE}/uploads/${r.studentImage}`} alt={r.studentName}
                     className="h-14 w-14 rounded-2xl object-cover" />
                 ) : (
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-extrabold text-white"

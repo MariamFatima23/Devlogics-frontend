@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import api from '../../utils/api'
 
+const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
+
 const STATUS_COLORS = {
   Pending:      'bg-amber-100 text-amber-700',
   'Under Review': 'bg-blue-100 text-blue-700',
@@ -128,13 +130,13 @@ export default function ManageCourseApplications() {
             {/* File links */}
             <div className="mb-4 flex flex-wrap gap-3">
               {selected.cvFile && (
-                <a href={`http://localhost:5000/uploads/${selected.cvFile}`} target="_blank" rel="noreferrer"
+                <a href={`${BASE}/uploads/${selected.cvFile}`} target="_blank" rel="noreferrer"
                   className="flex items-center gap-2 rounded-xl bg-primary-pale px-4 py-2 text-sm font-semibold text-primary-blue hover:bg-primary-pale">
                   📄 Download CV ({selected.cvOriginalName || 'cv'})
                 </a>
               )}
               {selected.paymentProof && (
-                <a href={`http://localhost:5000/uploads/${selected.paymentProof}`} target="_blank" rel="noreferrer"
+                <a href={`${BASE}/uploads/${selected.paymentProof}`} target="_blank" rel="noreferrer"
                   className="flex items-center gap-2 rounded-xl bg-amber-100 px-4 py-2 text-sm font-semibold text-amber-700 hover:bg-amber-200">
                   🧾 View Payment Proof
                 </a>

@@ -611,7 +611,7 @@ export default function Home() {
                 const pos   = CPOS[index % CPOS.length]
                 const isSel = activeStudent === index
                 const imgUrl = student.image
-                  ? `http://localhost:5000/uploads/${student.image}`
+                  ? `${BASE}/uploads/${student.image}`
                   : student.img || ''
 
                 return (
@@ -673,7 +673,7 @@ export default function Home() {
                         <div className="h-16 w-16 overflow-hidden rounded-2xl"
                           style={{ border: '2px solid var(--theme-accent)', boxShadow: '0 0 18px rgba(72,202,228,0.5)' }}>
                           {sel.image ? (
-                            <img src={`http://localhost:5000/uploads/${sel.image}`} alt={sel.name} className="h-full w-full object-cover" />
+                            <img src={`${BASE}/uploads/${sel.image}`} alt={sel.name} className="h-full w-full object-cover" />
                           ) : (
                             <div className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${sel.color||'from-blue-600 to-blue-900'} text-xl font-extrabold text-white`}>
                               {sel.name?.split(' ').map(n => n[0]).join('')}
@@ -737,7 +737,7 @@ export default function Home() {
             <span className="rounded-full bg-primary-pale px-4 py-1 text-xs font-bold text-primary">STUDENT REVIEWS</span>
             <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">What Students Say</h2>
           </div>
-          {reviews.length > 0 && (
+          {Array.isArray(reviews) && reviews.length > 0 && (
             <>
               <motion.div key={activeReview} initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }}
                 className="mb-6 overflow-hidden rounded-3xl shadow-2xl"
@@ -745,7 +745,7 @@ export default function Home() {
                 <div className="flex flex-col gap-6 p-8 sm:flex-row sm:items-center sm:p-10">
                   <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl ring-4 ring-primary-cyan/30">
                     {reviews[activeReview]?.studentImage ? (
-                      <img src={`http://localhost:5000/uploads/${reviews[activeReview].studentImage}`} alt="" className="h-full w-full object-cover" />
+                      <img src={`${BASE}/uploads/${reviews[activeReview].studentImage}`} alt="" className="h-full w-full object-cover" />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-white/20 text-2xl font-extrabold text-white">
                         {reviews[activeReview]?.studentName?.[0] || '?'}
@@ -772,7 +772,7 @@ export default function Home() {
                     <div className="mb-2 flex items-center gap-2">
                       <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-primary-pale text-xs font-bold text-primary">
                         {r.studentImage ? (
-                          <img src={`http://localhost:5000/uploads/${r.studentImage}`} alt="" className="h-full w-full object-cover" />
+                          <img src={`${BASE}/uploads/${r.studentImage}`} alt="" className="h-full w-full object-cover" />
                         ) : r.studentName?.[0]}
                       </div>
                       <Stars n={r.rating} />
