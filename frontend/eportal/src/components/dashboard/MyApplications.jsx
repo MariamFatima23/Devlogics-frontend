@@ -40,9 +40,10 @@ function MyApplications() {
     setFetching(true)
     try {
       const res = await api.get('/applications/my-applications')
-      setApplications(res.data)
+      setApplications(Array.isArray(res.data) ? res.data : [])
     } catch (err) {
       console.error(err)
+      setApplications([])
     } finally {
       setFetching(false)
     }
@@ -225,7 +226,7 @@ function MyApplications() {
             {/* File Upload */}
             <div>
               <label className="mb-1 block text-sm font-batchibold text-slate-700">
-                Attach Documents <span className="font-normal text-slate-400">(PDF, JPG, PNG, DOC — max 5MB each)</span>
+                Attach Documents <span className="font-normal text-slate-400">(PDF, JPG, PNG, DOC ï¿½ max 5MB each)</span>
               </label>
               <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-8 transition hover:border-indigo-400 hover:bg-primary-pale">
                 <span className="text-3xl">??</span>

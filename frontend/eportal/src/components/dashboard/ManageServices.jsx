@@ -14,7 +14,7 @@ export default function ManageServices() {
   const fetchServices = async () => {
     try {
       const res = await api.get('/services/all')
-      setServices(res.data)
+      setServices(Array.isArray(res.data) ? res.data : [])
     } catch { setMsg({ type:'error', text:'Failed to load services' }) }
   }
 

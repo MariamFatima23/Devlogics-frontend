@@ -11,7 +11,7 @@ export default function ManageReviews() {
   const fetchReviews = async () => {
     try {
       const res = await api.get('/reviews/all')
-      setReviews(res.data)
+      setReviews(Array.isArray(res.data) ? res.data : [])
     } catch { setMsg({ type:'error', text:'Failed to load reviews' }) }
   }
 

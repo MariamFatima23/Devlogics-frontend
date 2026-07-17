@@ -22,14 +22,14 @@ export default function ManageCourseApplications() {
     try {
       const query = filter !== 'all' ? `?status=${encodeURIComponent(filter)}` : ''
       const res = await api.get(`/course-applications/all${query}`)
-      setApps(res.data)
+      setApps(Array.isArray(res.data) ? res.data : [])
     } catch { setMsg({ type:'error', text:'Failed to load applications' }) }
   }
 
   const fetchStats = async () => {
     try {
       const res = await api.get('/course-applications/stats')
-      setStats(res.data)
+      setStats(res.data && typeof res.data === 'object' ? res.data : {})
     } catch {}
   }
 

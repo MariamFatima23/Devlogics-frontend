@@ -71,7 +71,7 @@ function ReviewApplications() {
     setLoading(true)
     try {
       const res = await api.get(`/applications?status=${filter}`)
-      setApps(res.data)
+      setApps(Array.isArray(res.data) ? res.data : [])
     } catch (err) {
       console.error(err)
     } finally {

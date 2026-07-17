@@ -27,7 +27,7 @@ export default function ManageStudentPride() {
   const fetchStudents = async () => {
     try {
       const res = await api.get('/student-pride/all')
-      setStudents(res.data)
+      setStudents(Array.isArray(res.data) ? res.data : [])
     } catch { setMsg({ type:'error', text:'Failed to load students' }) }
   }
 
