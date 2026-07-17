@@ -95,12 +95,15 @@ function StudentOverview({ setTab }) {
   const [loading, setLoading]       = useState(true)
 
   useEffect(() => {
-    Promise.all([
-      api.get('/course-applications/my'),
-      api.get('/applications/stats'),
-    ]).then(([appsRes]) => {
-      setCourseApps(appsRes.data || [])
-    }).catch(() => {}).finally(() => setLoading(false))
+    // Fetch course apps — handle both array response and {applications:[]} shape
+    api.get('/course-applications/my')
+      .then(r => {
+        const data = r.data
+        const apps = Array.isArray(data) ? data : (data?.applications || data?.data || [])
+        setCourseApps(apps)
+      })
+      .catch(() => setCourseApps([]))
+      .finally(() => setLoading(false))
   }, [])
 
   const approved = courseApps.filter(a => a.status === 'Approved').length
