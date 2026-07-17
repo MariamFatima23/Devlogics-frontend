@@ -158,8 +158,12 @@ export default function MyCourseApplications() {
 
   const fetchApps = () => {
     api.get('/course-applications/my')
-      .then(r => setApps(r.data))
-      .catch(console.error)
+      .then(r => {
+        const data = r.data
+        const apps = Array.isArray(data) ? data : (data?.applications || data?.data || [])
+        setApps(apps)
+      })
+      .catch(() => setApps([]))
       .finally(() => setLoading(false))
   }
 
@@ -171,7 +175,7 @@ export default function MyCourseApplications() {
     </div>
   )
 
-  if (!apps.length) return (
+  if (!Array.isArray(apps) || !apps.length) return (
     <div className="rounded-2xl py-16 text-center" style={{ background: CARD_BG }}>
       <p className="text-4xl">📋</p>
       <p className="mt-3 font-bold text-white">No course applications yet</p>
