@@ -18,8 +18,8 @@ export default function Announcements() {
 
   useEffect(() => {
     api.get('/announcements')
-      .then(r => setAnnouncements(r.data))
-      .catch(console.error)
+      .then(r => setAnnouncements(Array.isArray(r.data) ? r.data : []))
+      .catch(() => setAnnouncements([]))
       .finally(() => setLoading(false))
   }, [])
 

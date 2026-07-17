@@ -5,7 +5,9 @@ export default function Notifications({ setUnread }) {
   const [notifs, setNotifs] = useState([])
 
   useEffect(() => {
-    api.get('/notifications').then(r => setNotifs(r.data)).catch(console.error)
+    api.get('/notifications')
+      .then(r => setNotifs(Array.isArray(r.data) ? r.data : []))
+      .catch(() => setNotifs([]))
   }, [])
 
   const markAllRead = async () => {

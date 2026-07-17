@@ -17,7 +17,9 @@ export default function ManageAnnouncements() {
   const [msg, setMsg]                     = useState(null)
 
   const fetchAll = () =>
-    api.get('/announcements').then(r => setAnnouncements(r.data)).catch(console.error)
+    api.get('/announcements')
+      .then(r => setAnnouncements(Array.isArray(r.data) ? r.data : []))
+      .catch(() => setAnnouncements([]))
 
   useEffect(() => { fetchAll() }, [])
 
