@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import api from '../../utils/api'
 
+const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
+
 const APPLICATION_TYPES = [
   'Fee Concession',
   'Scholarship',
@@ -310,7 +312,7 @@ function MyApplications() {
               <p className="mb-2 text-xs font-batchibold uppercase text-slate-400">Attached Documents</p>
               <div className="space-y-2">
                 {selected.attachments.map((att, i) => (
-                  <a key={i} href={`http://localhost:5000/uploads/${att.fileName}`} target="_blank" rel="noreferrer"
+                    <a key={i} href={`${BASE}/uploads/${att.fileName}`} target="_blank" rel="noreferrer"
                     className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm transition hover:border-indigo-300 hover:bg-primary-pale">
                     <span className="text-lg">??</span>
                     <span className="flex-1 font-medium text-primary-mid">{att.originalName}</span>
