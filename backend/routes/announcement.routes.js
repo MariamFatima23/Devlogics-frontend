@@ -18,6 +18,15 @@ router.post('/', protect, adminOnly, async (req, res) => {
   try {
     const { title, content, category } = req.body;
     const announcement = await Announcement.create({ title, content, category, postedBy: req.user.name });
+
+    // Notify all active students
+    const { notifyAllStudents } = require('./notification.routes')
+    await notifyAllStudents(
+      'new_announcement',
+      `📢 New Announcement: ${title}`,
+      content?.slice(0, 120) + (content?.length > 120 ? '...' : ''),
+    )
+
     res.status(201).json(announcement);
   } catch (err) {
     res.status(500).json({ message: err.message });

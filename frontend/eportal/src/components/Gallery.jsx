@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const galleryImages = [
   {
-    src: '/gallery/entranceiub.png',
+    src: '/gallery/logo2.png',
     title: 'IUB Main Entrance Gate',
     category: 'Campus',
   },
@@ -74,7 +74,7 @@ export default function Gallery({ images = galleryImages }) {
 
         {/* Header */}
         <div className="mb-10 text-center">
-          <span className="rounded-full bg-green-100 px-4 py-1 text-xs font-bold text-green-700">
+          <span className="rounded-full bg-primary-pale px-4 py-1 text-xs font-bold text-primary">
             CAMPUS GALLERY
           </span>
           <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">
@@ -91,13 +91,13 @@ export default function Gallery({ images = galleryImages }) {
             <button
               key={cat}
               onClick={() => setActive(cat)}
-              className={`rounded-full px-5 py-1.5 text-sm font-batchibold transition ${
+              className={`rounded-full px-5 py-1.5 text-sm font-semibold transition ${
                 active === cat
                   ? 'text-white shadow-md'
-                  : 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
+                  : 'border border-primary-pale bg-white text-primary hover:bg-primary-ice'
               }`}
               style={active === cat
-                ? { background: 'linear-gradient(135deg,#1a5c38,#0f3d25)' }
+                ? { background: 'var(--theme-grad-primary)' }
                 : {}
               }
             >
@@ -119,7 +119,7 @@ export default function Gallery({ images = galleryImages }) {
                 alt={img.title}
                 className="h-44 w-full object-cover transition-transform duration-500 group-hover:scale-110 sm:h-52"
                 onError={(e) => {
-                  e.target.src = `https://placehold.co/600x440/0f3d25/c9a84c?text=${encodeURIComponent(img.title)}`
+                  e.target.src = `https://placehold.co/600x440/04065c/48cae4?text=${encodeURIComponent(img.title)}`
                 }}
               />
               {/* Overlay on hover */}
@@ -139,7 +139,7 @@ export default function Gallery({ images = galleryImages }) {
             href="https://www.iub.edu.pk/galleries"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl border-2 border-[#1a5c38] px-7 py-3 font-bold text-[#1a5c38] transition hover:bg-[#1a5c38] hover:text-white"
+            className="inline-flex items-center gap-2 rounded-xl border-2 border-primary px-7 py-3 font-bold text-primary transition hover:bg-primary hover:text-white"
           >
             View Full Gallery on IUB Website ↗
           </a>
@@ -161,7 +161,7 @@ export default function Gallery({ images = galleryImages }) {
               alt={lightbox.title}
               className="w-full rounded-2xl object-contain shadow-2xl max-h-[80vh]"
               onError={(e) => {
-                e.target.src = `https://placehold.co/800x560/0f3d25/c9a84c?text=${encodeURIComponent(lightbox.title)}`
+                e.target.src = `https://placehold.co/800x560/04065c/48cae4?text=${encodeURIComponent(lightbox.title)}`
               }}
             />
             <div className="mt-3 text-center">

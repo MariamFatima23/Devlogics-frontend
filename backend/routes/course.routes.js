@@ -23,6 +23,16 @@ router.get('/all', protect, adminOnly, async (req, res) => {
 router.post('/', protect, adminOnly, async (req, res) => {
   try {
     const course = await Course.create(req.body)
+
+    // Notify all students about new course
+    const { notifyAllStudents } = require('./notification.routes')
+    await notifyAllStudents(
+      'new_course',
+      `🎓 New ${course.type === 'internship' ? 'Internship' : 'Course'}: ${course.title}`,
+      `A new ${course.level || ''} ${course.type} has been added${course.duration ? ` (${course.duration})` : ''}. Check it out and apply now!`,
+      { courseId: course._id },
+    )
+
     res.status(201).json(course)
   } catch (err) { res.status(500).json({ message: err.message }) }
 })

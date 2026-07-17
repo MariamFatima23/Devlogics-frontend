@@ -4,6 +4,73 @@ import { useAuth } from '../context/AuthContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import StackedCourses from '../components/StackedCourses'
 import api from '../utils/api'
+import { FaMoneyBillWave, FaGraduationCap, FaFileAlt, FaHome, FaClipboardList, FaEdit,
+         FaUserPlus, FaPaperPlane, FaSearch, FaCheckCircle,
+         FaLock, FaMobileAlt, FaBell, FaChartBar, FaUpload, FaCogs,
+         FaPhone, FaEnvelope, FaGlobe, FaClock,
+         FaFacebook, FaInstagram, FaTwitter, FaLinkedin,
+         FaReact, FaPython, FaJava, FaJs, FaCloud, FaShieldAlt,
+         FaRobot, FaDatabase, FaPaintBrush, FaServer, FaCode,
+         FaSearchPlus, FaStar, FaBook, FaMedal } from 'react-icons/fa'
+import { FaLaptopCode } from 'react-icons/fa6'
+
+import { MdLocationOn, MdDesignServices } from 'react-icons/md'
+
+// Map partner/technology names to icons
+const PARTNER_ICON_MAP = {
+  'React Native':      { icon: FaReact,        color: '#61DAFB' },
+  'Python':            { icon: FaPython,        color: '#FFD43B' },
+  'Machine Learning':  { icon: FaRobot,         color: '#FF6B6B' },
+  'Data Science':      { icon: FaDatabase,      color: '#4ECDC4' },
+  'Cybersecurity':     { icon: FaShieldAlt,     color: '#FF9F43' },
+  'UI/UX Design':      { icon: MdDesignServices,color: '#A29BFE' },
+  'Cloud Computing':   { icon: FaCloud,         color: '#74B9FF' },
+  'Java':              { icon: FaJava,          color: '#F89820' },
+  'JavaScript':        { icon: FaJs,            color: '#F7DF1E' },
+  'SEO':               { icon: FaSearchPlus,    color: '#00B894' },
+  'Graphic Design':    { icon: FaPaintBrush,    color: '#FD79A8' },
+  'DevOps':            { icon: FaServer,        color: '#6C5CE7' },
+  'Web Development':   { icon: FaCode,          color: '#00CEC9' },
+  'Artificial Intelligence': { icon: FaRobot,  color: '#FDCB6E' },
+  'Digital Marketing': { icon: FaGlobe,         color: '#E17055' },
+}
+
+function ServiceIcon({ k }) {
+  const map = {
+    money:     FaMoneyBillWave,
+    grad:      FaGraduationCap,
+    file:      FaFileAlt,
+    house:     FaHome,
+    clipboard: FaClipboardList,
+    edit:      FaEdit,
+  }
+  const I = map[k] || FaFileAlt
+  return <I className="text-3xl text-white" />
+}
+
+function StepIcon({ k }) {
+  const map = {
+    user:     FaUserPlus,
+    submit:   FaBook,
+    review:   FaLaptopCode,
+    decision: FaMedal,
+  }
+  const I = map[k] || FaUserPlus
+  return <I className="text-2xl text-white" />
+}
+
+function FeatureIcon({ k }) {
+  const map = {
+    lock:   FaLock,
+    mobile: FaMobileAlt,
+    bell:   FaBell,
+    chart:  FaChartBar,
+    upload: FaUpload,
+    cogs:   FaCogs,
+  }
+  const I = map[k] || FaCogs
+  return <I className="text-2xl text-white" />
+}
 
 const FALLBACK_SLIDES = [
   { imageUrl: '/gallery/Ai.png',  text: 'Learn. Apply. Grow.' },
@@ -13,13 +80,14 @@ const FALLBACK_SLIDES = [
 ]
 
 const FALLBACK_SERVICES = [
-  { _id:'1', icon:'💰', tag:'Financial Aid',  title:'Fee Concession',       description:'Apply for fee relief or installment plans.', bgFrom:'#03045e', bgTo:'#0077b6' },
-  { _id:'2', icon:'🎓', tag:'Scholarship',    title:'Scholarship',          description:'Merit & need-based scholarships.',           bgFrom:'#023e8a', bgTo:'#0096c7' },
-  { _id:'3', icon:'📜', tag:'Documents',      title:'Character Certificate',description:'Official certificate in 24 hours.',          bgFrom:'#03045e', bgTo:'#0077b6' },
-  { _id:'4', icon:'🏠', tag:'Campus Life',    title:'Hostel Allocation',    description:'Apply for hostel room or transfer.',         bgFrom:'#023e8a', bgTo:'#0096c7' },
-  { _id:'5', icon:'📋', tag:'Academic',       title:'Transcript Request',   description:'Official transcripts for admissions.',       bgFrom:'#03045e', bgTo:'#0077b6' },
-  { _id:'6', icon:'⚠️', tag:'Support',        title:'Complaint',            description:'Submit formal complaints to admin.',         bgFrom:'#023e8a', bgTo:'#0096c7' },
+  { _id:'1', iconKey:'money',      tag:'Financial Aid',  title:'Fee Concession',        description:'Apply for fee relief or installment plans.', bgFrom:'#04065c', bgTo:'#0077b6' },
+  { _id:'2', iconKey:'grad',       tag:'Scholarship',    title:'Scholarship',           description:'Merit & need-based scholarships.',           bgFrom:'#023e8a', bgTo:'#0096c7' },
+  { _id:'3', iconKey:'file',       tag:'Documents',      title:'Character Certificate', description:'Official certificate in 24 hours.',          bgFrom:'#04065c', bgTo:'#0077b6' },
+  { _id:'4', iconKey:'house',      tag:'Campus Life',    title:'Hostel Allocation',     description:'Apply for hostel room or transfer.',         bgFrom:'#023e8a', bgTo:'#0096c7' },
+  { _id:'5', iconKey:'clipboard',  tag:'Academic',       title:'Transcript Request',    description:'Official transcripts for admissions.',       bgFrom:'#04065c', bgTo:'#0077b6' },
+  { _id:'6', iconKey:'edit',       tag:'Support',        title:'Complaint',             description:'Submit formal complaints to admin.',         bgFrom:'#023e8a', bgTo:'#0096c7' },
 ]
+
 
 const FALLBACK_REVIEWS = [
   { _id:'r1', studentName:'Ahmed Raza',  courseType:'Course',    rating:5, description:'Applying for the course was so easy! Approved within 2 days without visiting office.',     studentImage:'' },
@@ -28,9 +96,52 @@ const FALLBACK_REVIEWS = [
   { _id:'r4', studentName:'Sana Malik',  courseType:'Course',    rating:5, description:'Real-time tracking with full timeline. I could see every step clearly.',                 studentImage:'' },
 ]
 
-const FALLBACK_STUDENTS = []  // Admin adds students via dashboard → Student Pride tab
+const FALLBACK_SETTINGS = {
+  portalName: 'DevLogics E-Portal',
+  tagline: 'Learn. Apply. Grow.',
+  heroSubtext: 'Apply for courses, internships and services — all online, 24/7.',
+  logoUrl: '',
+  statStudents: '1000+',
+  statPrograms: '50+',
+  statSatisfaction: '98%',
+  footerTagline: 'Course & Service Management',
+  partners: [
+    'Web Development','Artificial Intelligence','Digital Marketing','React Native','Python',
+    'Machine Learning','Data Science','Cybersecurity','UI/UX Design','Cloud Computing',
+    'Java','JavaScript','SEO','Graphic Design','DevOps',
+  ],
+  howItWorks: [
+    { step:'01', icon:'user',     title:'Create Account',    desc:'Register and complete your profile.' },
+    { step:'02', icon:'submit',   title:'Submit Application', desc:'Choose course, fill form, attach CV.' },
+    { step:'03', icon:'review',   title:'Admin Review',       desc:'Admin reviews and updates your status.' },
+    { step:'04', icon:'decision', title:'Get Decision',       desc:'Receive Approved or Rejected with feedback.' },
+  ],
+  features: [
+    { icon:'lock',   title:'Secure Login',       desc:'JWT auth with encrypted passwords.' },
+    { icon:'mobile', title:'Mobile Friendly',    desc:'Works on any device perfectly.' },
+    { icon:'bell',   title:'Real-time Alerts',   desc:'Instant notifications on status change.' },
+    { icon:'chart',  title:'Track Applications', desc:'Full timeline for every application.' },
+    { icon:'upload', title:'Document Upload',    desc:'Attach PDFs, images, Word docs.' },
+    { icon:'cogs',   title:'Admin Dashboard',    desc:'Powerful panel to manage everything.' },
+  ],
+  aboutTitle:    'A Smarter Way to Learn & Apply',
+  aboutSubtitle: 'DevLogics E-Portal is a complete digital solution for course and service management. Students apply online, track status in real-time, and get decisions with full feedback.',
+  aboutPoints: [
+    'Apply online — no office visits',
+    'Upload CV and documents securely',
+    'Track every application with timeline',
+    'Real-time notifications on changes',
+    'Admin review with detailed feedback',
+    'Available 24/7 from any device',
+  ],
+  contactEmail:   'info@devlogics.com',
+  contactPhone:   '+92-XXX-XXXXXXX',
+  contactAddress: 'DevLogics Campus, Pakistan',
+  contactWebsite: 'www.devlogics.com',
+  contactHours:   'Mon-Fri 9AM-5PM',
+}
 
-// Positions arranged in a ring AROUND the center — center badge sits at ~50%/50%
+// Positions arranged in a ring AROUND the center ? center badge sits at ~50%/50%
 // These positions form an orbit so nothing overlaps the center badge
 const CPOS = [
   { top: '4%',  left: '6%',  w: 80, h: 80 },   // top-left
@@ -43,33 +154,167 @@ const CPOS = [
   { top: '35%', left: '0%',  w: 72, h: 72 },   // mid-left
 ]
 
-const stats = [
-  { value:'1000+', label:'Students' },
-  { value:'50+',   label:'Programs' },
-  { value:'98%',   label:'Satisfaction' },
-]
+// Static fallback arrays removed ? all data comes from settings (admin-managed)
+// Partners, steps, features, about points are all in FALLBACK_SETTINGS above
 
-const partners = [
-  'Web Development','Artificial Intelligence','Digital Marketing','React Native','Python',
-  'Machine Learning','Data Science','Cybersecurity','UI/UX Design','Cloud Computing',
-  'Java','JavaScript','SEO','Graphic Design','DevOps',
-]
+// ── Contact Form ─────────────────────────────────────────────────────────────
+function ContactForm() {
+  const [form, setForm]       = useState({ fullName:'', email:'', course:'', message:'' })
+  const [status, setStatus]   = useState('idle') // idle | loading | success | error
+  const [errMsg, setErrMsg]   = useState('')
 
-const steps = [
-  { step:'01', icon:'👤', title:'Create Account',    desc:'Register and complete your profile.' },
-  { step:'02', icon:'📝', title:'Submit Application', desc:'Choose course, fill form, attach CV.' },
-  { step:'03', icon:'🔍', title:'Admin Review',       desc:'Admin reviews and updates your status.' },
-  { step:'04', icon:'✅', title:'Get Decision',       desc:'Receive Approved or Rejected with feedback.' },
-]
+  const handleChange = (e) => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
 
-const features = [
-  { icon:'🔒', title:'Secure Login',       desc:'JWT auth with encrypted passwords.' },
-  { icon:'📱', title:'Mobile Friendly',    desc:'Works on any device perfectly.' },
-  { icon:'⚡', title:'Real-time Alerts',   desc:'Instant notifications on status change.' },
-  { icon:'📊', title:'Track Applications', desc:'Full timeline for every application.' },
-  { icon:'📎', title:'Document Upload',    desc:'Attach PDFs, images, Word docs.' },
-  { icon:'🛡️', title:'Admin Dashboard',   desc:'Powerful panel to manage everything.' },
-]
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setStatus('loading')
+    setErrMsg('')
+    try {
+      await api.post('/contact', form)
+      setStatus('success')
+      setForm({ fullName:'', email:'', course:'', message:'' })
+    } catch (err) {
+      setStatus('error')
+      setErrMsg(err.response?.data?.message || 'Something went wrong. Please try again.')
+    }
+  }
+
+  return (
+    <div className="rounded-2xl p-8 shadow-lg"
+      style={{ background: 'var(--theme-grad-primary)', border:'1px solid rgba(72,202,228,0.2)' }}
+    >
+      <h3 className="mb-6 text-xl font-bold text-white">Send a Message</h3>
+
+      {/* Success state */}
+      {status === 'success' ? (
+        <motion.div
+          initial={{ opacity:0, scale:0.9 }}
+          animate={{ opacity:1, scale:1 }}
+          className="flex flex-col items-center gap-4 rounded-2xl border border-primary-cyan/30 bg-white/10 py-10 text-center"
+        >
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-400/20">
+            <FaCheckCircle className="text-3xl text-green-400" />
+          </div>
+          <div>
+            <p className="text-lg font-bold text-white">Message Sent!</p>
+            <p className="mt-1 text-sm text-white/70">Admin will get back to you soon.</p>
+          </div>
+          <button
+            onClick={() => setStatus('idle')}
+            className="mt-2 rounded-xl border border-white/30 px-6 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+          >
+            Send Another
+          </button>
+        </motion.div>
+      ) : (
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold text-white">Full Name</label>
+              <input
+                name="fullName"
+                type="text"
+                required
+                value={form.fullName}
+                onChange={handleChange}
+                placeholder="Your name"
+                className="w-full rounded-xl border-2 border-white/40 bg-white px-4 py-3 text-sm text-primary font-medium placeholder:text-gray-400 outline-none transition focus:border-primary-cyan"
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold text-white">Email</label>
+              <input
+                name="email"
+                type="email"
+                required
+                value={form.email}
+                onChange={handleChange}
+                placeholder="you@email.com"
+                className="w-full rounded-xl border-2 border-white/40 bg-white px-4 py-3 text-sm text-primary font-medium placeholder:text-gray-400 outline-none transition focus:border-primary-cyan"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-semibold text-white">Select Course</label>
+            <select
+              name="course"
+              value={form.course}
+              onChange={handleChange}
+              className="w-full rounded-xl border-2 border-white/40 bg-white px-4 py-3 text-sm text-primary font-medium outline-none transition focus:border-primary-cyan"
+            >
+              <option value="">Choose a course (optional)</option>
+              <option value="Python">Python Programming</option>
+              <option value="MERN">MERN Stack Development</option>
+              <option value="AI">AI &amp; Machine Learning</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Cybersecurity">Cybersecurity</option>
+              <option value="Data Science">Data Science</option>
+              <option value="UI/UX Design">UI/UX Design</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-semibold text-white">Message</label>
+            <textarea
+              name="message"
+              required
+              rows="4"
+              value={form.message}
+              onChange={handleChange}
+              placeholder="Write your message..."
+              className="w-full rounded-xl border-2 border-white/40 bg-white px-4 py-3 text-sm text-primary font-medium placeholder:text-gray-400 outline-none transition focus:border-primary-cyan"
+            />
+          </div>
+
+          {status === 'error' && (
+            <p className="rounded-lg bg-red-500/20 px-4 py-2 text-sm text-red-300">{errMsg}</p>
+          )}
+
+        <button
+  type="submit"
+  disabled={status === 'loading'}
+  className="flex w-full items-center justify-center gap-2 rounded-xl
+             border-2 border-white bg-white px-4 py-3
+             text-sm font-bold text-primary
+             transition-all duration-300 ease-in-out
+             hover:-translate-y-1 hover:scale-[1.03]
+             hover:shadow-xl
+             active:scale-95
+             disabled:opacity-60 disabled:cursor-not-allowed"
+>
+  {status === 'loading' ? (
+    <>
+      <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        />
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v8z"
+        />
+      </svg>
+      Sending...
+    </>
+  ) : (
+    <>
+      Send Message
+      <FaPaperPlane className="transition-transform duration-300 group-hover:translate-x-1" />
+    </>
+  )}
+</button>
+        </form>
+      )}
+    </div>
+  )
+}
 
 function Stars({ n }) {
   return (
@@ -87,17 +332,19 @@ export default function Home() {
   const { user } = useAuth()
   const [slide, setSlide]                 = useState(0)
   const [slides, setSlides]               = useState(FALLBACK_SLIDES)
-  const [services, setServices]           = useState(FALLBACK_SERVICES)
   const [reviews, setReviews]             = useState(FALLBACK_REVIEWS)
-  const [students, setStudents]           = useState(FALLBACK_STUDENTS)
+  const [students, setStudents]           = useState([])
+  const [settings, setSettings]           = useState(FALLBACK_SETTINGS)
   const [activeStudent, setActiveStudent] = useState(null)
   const [activeReview, setActiveReview]   = useState(0)
 
+  const BASE = import.meta.env.VITE_API_URL?.replace('/api','') || 'http://localhost:5000'
+
   useEffect(() => {
     api.get('/hero-slides').then(r => { if (r.data?.length) setSlides(r.data) }).catch(() => {})
-    api.get('/services').then(r => { if (r.data?.length) setServices(r.data) }).catch(() => {})
     api.get('/reviews').then(r => { if (r.data?.length) setReviews(r.data) }).catch(() => {})
     api.get('/student-pride').then(r => { if (r.data?.length) setStudents(r.data) }).catch(() => {})
+    api.get('/site-settings').then(r => { if (r.data) setSettings(r.data) }).catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -117,7 +364,7 @@ export default function Home() {
   return (
     <div className="overflow-x-hidden">
 
-      {/* ── HERO ── */}
+      {/* -- HERO -- */}
       <section id="home" className="relative h-screen w-full overflow-hidden">
         {slides.map((s, i) => (
           <div key={i} className="absolute inset-0 transition-opacity duration-1000"
@@ -130,16 +377,39 @@ export default function Home() {
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center text-white">
           <AnimatePresence mode="wait">
             <motion.div key={slide} initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:-20 }} transition={{ duration:0.7 }}>
-              <span className="mb-4 inline-block rounded-full border border-white/30 bg-white/10 px-5 py-1.5 text-xs font-semibold backdrop-blur-sm">DevLogics E-Portal</span>
-              <h1 className="text-5xl font-extrabold leading-tight drop-shadow-2xl sm:text-6xl lg:text-7xl">{slides[slide]?.text || 'Learn. Apply. Grow.'}</h1>
-              <p className="mx-auto mt-4 max-w-xl text-lg text-white/80">Apply for courses, internships and services — all online, 24/7.</p>
+              {/* Portal name badge */}
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-1.5 backdrop-blur-sm">
+                {settings.logoUrl
+                  ? <img src={`${BASE}/uploads/${settings.logoUrl}`} alt="logo" className="h-5 w-auto object-contain" style={{ maxWidth: '60px', background: 'transparent' }} />
+                  : <img src="/gallery/logo5.png" alt="logo" className="h-5 w-auto object-contain" style={{ maxWidth: '60px', background: 'transparent' }} />
+                }
+                <span className="text-xs font-semibold">{settings.portalName}</span>
+              </div>
+              <h1 className="text-5xl font-extrabold leading-tight drop-shadow-2xl sm:text-6xl lg:text-7xl">
+                {slides[slide]?.text || settings.tagline}
+              </h1>
+              <p className="mx-auto mt-4 max-w-xl text-lg text-white/80">{settings.heroSubtext}</p>
               <div className="mt-8 flex flex-wrap justify-center gap-4">
                 {user ? (
-                  <Link to="/dashboard" className="rounded-xl bg-[#0056D2] px-8 py-3.5 font-bold text-white shadow-xl transition hover:scale-105">Go to Dashboard →</Link>
+                  <Link to="/dashboard"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3 text-sm font-bold transition hover:-translate-y-0.5"
+                    style={{ background:'var(--theme-white)', color:'var(--theme-primary)' }}>
+                    Go to Dashboard →
+                  </Link>
                 ) : (
                   <>
-                    <Link to="/register" className="rounded-xl bg-[white] px-8 py-3.5 font-bold text-[#0056D2] shadow-xl transition  hover:bg-gray/10 hover:scale-105">Join for Free</Link>
-                    <Link to="/login" className="rounded-xl border-2 border-white/40 px-8 py-3.5 font-semibold backdrop-blur-sm transition hover:border-white hover:bg-white/10">Sign In</Link>
+                    {/* blue bg → white text */}
+                    <Link to="/register"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3 text-sm font-bold transition hover:-translate-y-0.5 hover:opacity-90"
+                      style={{ background:'var(--theme-secondary)', color:'var(--theme-white)' }}>
+                      Join for Free
+                    </Link>
+                    {/* white bg → blue text */}
+                    <Link to="/login"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3 text-sm font-bold transition hover:-translate-y-0.5 hover:opacity-90"
+                      style={{ background:'var(--theme-white)', color:'var(--theme-primary)' }}>
+                      Sign In
+                    </Link>
                   </>
                 )}
               </div>
@@ -159,23 +429,45 @@ export default function Home() {
         <button onClick={() => setSlide(p => (p+1)%slides.length)}
           className="absolute right-4 top-1/2 z-10 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/30 text-2xl text-white backdrop-blur-sm transition hover:bg-black/60">›</button>
         {/* Stats bar */}
-<div className="absolute bottom-0 left-0 right-0 z-10 border-t border-[#4361ee]/30 bg-[#1d4ed8]/60 backdrop-blur-md">          <div className="mx-auto grid max-w-4xl grid-cols-2 gap-4 px-6 py-3 sm:grid-cols-4">
-            {stats.map((s,i) => (
-              <div key={i} className="py-3 text-center">
-                <p className="text-lg font-extrabold text-white">{s.value}</p>
-                <p className="text-[11px] text-white/80">{s.label}</p>
+        <div className="absolute bottom-0 left-0 right-0 z-10 border-t border-white/10"
+          style={{ background: 'var(--theme-grad-topbar)' }}>
+          <div className="mx-auto grid max-w-4xl grid-cols-3 gap-4 px-6 py-3">
+            {[
+              { value: settings.statStudents,     label: 'Students',     icon: FaGraduationCap, color: 'var(--theme-accent)' },
+              { value: settings.statPrograms,     label: 'Programs',     icon: FaClipboardList, color: 'var(--theme-accent)' },
+              { value: settings.statSatisfaction, label: 'Satisfaction', icon: FaChartBar,       color: '#4ade80' },
+            ].map((s,i) => (
+              <div key={i} className="flex items-center justify-center gap-3 py-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                  style={{ background:'rgba(255,255,255,0.12)' }}>
+                  <s.icon style={{ fontSize:'1.25rem', color: s.color }} />
+                </div>
+                <div className="text-left">
+                  <p className="text-base font-extrabold leading-none text-white">{s.value}</p>
+                  <p className="mt-0.5 text-[11px] text-primary-light">{s.label}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── MARQUEE ── */}
-      <section className="overflow-hidden border-y py-12 border-[#e8f4fd] bg-[#1C39BB ] py-6">
+      {/* -- MARQUEE -- */}
+      <section className="overflow-hidden border-y border-primary-pale bg-primary-ice py-4">
         <div className="flex">
           {[0,1].map(p => (
-            <div key={p} className="flex shrink-0 gap-10 pr-10" style={{ animation:'mqscroll 22s linear infinite' }}>
-              {partners.map((d,i) => <span key={i} className="dp-tiny whitespace-nowrap font-semibold text-[#Hex Code: #1C39BB ]">✦ {d}</span>)}
+            <div key={p} className="flex shrink-0 items-center gap-8 pr-8" style={{ animation:'mqscroll 28s linear infinite' }}>
+              {(settings.partners||[]).map((d,i) => {
+                const match = PARTNER_ICON_MAP[d]
+                const IconComp = match?.icon || FaStar
+                const iconColor = match?.color || 'var(--theme-secondary)'
+                return (
+                  <span key={i} className="flex items-center gap-2 whitespace-nowrap rounded-full border border-primary-pale bg-white px-4 py-2 shadow-sm transition-shadow hover:shadow-md">
+                    <IconComp style={{ color: iconColor, fontSize: '1.1rem', flexShrink: 0 }} />
+                    <span className="text-sm font-semibold text-primary-blue">{d}</span>
+                  </span>
+                )
+              })}
             </div>
           ))}
         </div>
@@ -184,90 +476,61 @@ export default function Home() {
 
       <StackedCourses />
 
-      {/* ── SERVICES (dynamic from admin) ── */}
-      <section id="services" className="bg-[#f0f9ff] py-20">
-        {/* Heading */}
-        <div className="mx-auto mb-12 max-w-7xl px-6 text-center">
-          <span className="rounded-full bg-[#03045e] px-4 py-1 text-xs font-bold text-white">OUR SERVICES</span>
-          <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">Available Student Services</h2>
-          <p className="mt-2 text-gray-500">Submit online applications for any of these services</p>
-        </div>
+      {/* -- SERVICES (removed) -- */}
 
-        {/* Auto-scroll carousel — clips only the carousel row, not the whole section */}
-        <div className="relative">
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[#f0f9ff] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[#f0f9ff] to-transparent" />
-          <div style={{ overflow:'hidden' }}>
-            <div className="flex">
-              {[0,1].map(p => (
-                <div key={p} className="flex shrink-0 gap-5" style={{ animation:'svcscroll 28s linear infinite' }}>
-                  <div className="shrink-0 w-4" />
-                  {services.map((s,i) => (
-                    <motion.div key={`${p}-${i}`} whileHover={{ y:-6 }}
-                      className="w-72 shrink-0 overflow-hidden rounded-2xl p-6 shadow-md"
-                      style={{ background:`linear-gradient(135deg,${s.bgFrom||'#03045e'},${s.bgTo||'#0077b6'})` }}>
-                      <span className="mb-3 inline-block rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-bold text-white">{s.tag}</span>
-                      <div className="mb-3 text-3xl">{s.icon}</div>
-                      <h3 className="mb-1 font-bold text-white">{s.title}</h3>
-                      <p className="text-sm text-white/80">{s.description||s.desc}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-          <style>{`@keyframes svcscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}`}</style>
-        </div>
-
-        <div className="mt-10 text-center">
-          <Link to="/register" className="inline-flex items-center gap-2 rounded-xl bg-[#03045e] px-8 py-3.5 font-bold text-white shadow-lg transition hover:bg-[#023e8a]">
-            Apply for a Service →
-          </Link>
-        </div>
-      </section>
-
-      {/* ── HOW IT WORKS ── */}
-      <section id="howitworks" className=" px-6 py-20">
+      {/* -- HOW IT WORKS -- */}
+      <section id="howitworks" className="bg-white px-6 py-20">
         <div className="mx-auto max-w-6xl">
           <div className="mb-14 text-center">
-            <span className="rounded-full bg-[#e0f7fa] px-4 py-1 text-xs font-bold text-[#03045e]">SIMPLE PROCESS</span>
-            <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">How It Works</h2>
-            <p className="mt-2 text-gray-500">4 simple steps from sign-up to decision</p>
+            <span className="rounded-full bg-primary px-4 py-1 text-xs font-bold text-white">CERTIFICATIONS</span>
+            <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">Certifications</h2>
+            <p className="mt-2 text-gray-500">Earn recognised certificates in 4 simple steps</p>
           </div>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {steps.map((s,i) => (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {(settings.howItWorks||[]).map((s,i) => {
+              const STEP_ICONS  = [FaUserPlus, FaBook, FaLaptopCode, FaMedal]
+              const STEP_COLORS = ['var(--theme-accent)', '#4ade80', '#f59e0b', '#f472b6']
+              const IconComp  = STEP_ICONS[i]  || FaUserPlus
+              const iconColor = STEP_COLORS[i] || 'var(--theme-accent)'
+              return (
               <motion.div key={i} initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:i*0.15 }}
-                className="flex flex-col items-center text-center">
-                <div className="relative mb-4 flex h-16 w-16 items-center justify-center rounded-2xl text-3xl shadow-lg"
-                  style={{ background:'linear-gradient(135deg,#023e8a,#03045e)' }}>
-                  {s.icon}
-                  <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#48cae4] text-[10px] font-extrabold text-[#03045e]">{s.step}</span>
+                whileHover={{ y:-4 }}
+                className="relative overflow-hidden rounded-2xl p-6 shadow-lg"
+                style={{ background: 'var(--theme-grad-primary)' }}>
+                <div className="relative mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl"
+                  style={{ background:'rgba(255,255,255,0.12)', boxShadow:`0 0 18px ${iconColor}55` }}>
+                  <IconComp style={{ fontSize:'1.6rem', color: iconColor }} />
+                  <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-extrabold text-primary"
+                    style={{ background: iconColor }}>{s.step}</span>
                 </div>
-                <h3 className="mb-2 font-bold text-gray-900">{s.title}</h3>
-                <p className="text-sm leading-relaxed text-gray-500">{s.desc}</p>
+                <h3 className="mb-2 font-bold text-white">{s.title}</h3>
+                <p className="text-sm leading-relaxed text-white/70">{s.desc}</p>
               </motion.div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
 
-      {/* ── FEATURES ── */}
-      <section className="bg-white px-6 py-20">
+      {/* -- FEATURES -- */}
+      <section id="features" className="bg-primary-ice px-6 py-20">
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center">
-            <span className="rounded-full bg-[#0077b6] px-4 py-1 text-xs font-bold text-white">WHY CHOOSE US</span>
+            <span className="rounded-full bg-primary px-4 py-1 text-xs font-bold text-white">WHY CHOOSE US</span>
             <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">Everything in One Portal</h2>
-            <p className="mt-2 text-[#0096c7]">Built for students, managed by administration</p>
+            <p className="mt-2 text-gray-500">Built for students, managed by administration</p>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((f,i) => (
+            {(settings.features||[]).map((f,i) => (
               <motion.div key={i} initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:i*0.1 }}
-                whileHover={{ scale:1.03 }}
-                className="flex items-start gap-4 rounded-2xl border border-blue-200 bg-gradient-to-br from-[#0077b6] to-[#023e8a] p-5 shadow-lg">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-2xl">{f.icon}</div>
+                whileHover={{ y:-4 }}
+                className="flex items-start gap-4 rounded-2xl p-5 shadow-lg"
+                style={{ background: 'var(--theme-grad-primary)' }}>
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+                  style={{ background:'rgba(255,255,255,0.15)' }}><FeatureIcon k={f.icon} /></div>
                 <div>
                   <h3 className="font-bold text-white">{f.title}</h3>
-                  <p className="mt-1 text-sm text-[#90e0ef]">{f.desc}</p>
+                  <p className="mt-1 text-sm text-white/75">{f.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -275,23 +538,23 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── OUR STUDENTS OUR PRIDE ── */}
-      <section id="pride" className="relative overflow-hidden  py-16 px-6">
-        <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-[#caf0f8]/60 blur-3xl" />
-        <div className="pointer-events-none absolute -right-24 bottom-10 h-72 w-72 rounded-full bg-[#90e0ef]/40 blur-3xl" />
+      {/* -- OUR STUDENTS OUR PRIDE -- */}
+      <section id="pride" className="relative bg-white py-16 px-6">
+        <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-primary-pale/60 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 bottom-10 h-72 w-72 rounded-full bg-primary-light/40 blur-3xl" />
 
         <div className="relative mx-auto max-w-6xl">
           {/* Heading */}
           <div className="mb-8 text-center">
-            <span className="rounded-full bg-[#03045e] px-4 py-1 text-xs font-bold text-white">OUR STUDENTS</span>
+            <span className="rounded-full bg-primary px-4 py-1 text-xs font-bold text-white">OUR STUDENTS</span>
             <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">Our Students, Our Pride</h2>
             <p className="mt-2 text-gray-500">Click on any student to read their story</p>
           </div>
 
-          {/* Row — centered when no selection, split when selected */}
+          {/* Row ? centered when no selection, split when selected */}
           <div className="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center">
 
-            {/* ── Circles panel — size shrinks when few students ── */}
+            {/* -- Circles panel ? size shrinks when few students -- */}
             {(() => {
               const count = visibleStudents.length
               // Scale panel height based on number of students
@@ -304,7 +567,7 @@ export default function Home() {
               className="relative shrink-0"
               style={{ height: panelH, width: panelW }}
             >
-              {/* Centre badge — always perfectly centered */}
+              {/* Centre badge ? always perfectly centered */}
               <motion.div
                 animate={{ scale:[1, 1.07, 1] }}
                 transition={{ repeat:Infinity, duration:3.2, ease:'easeInOut' }}
@@ -312,14 +575,14 @@ export default function Home() {
                 style={{
                   top:'50%', left:'50%',
                   transform:'translate(-50%,-50%)',
-                  background:'linear-gradient(135deg,#03045e,#0077b6)',
-                  border:'3px solid #48cae4',
-                  boxShadow:'0 0 40px rgba(0,119,182,0.5)',
+                  background: 'var(--theme-grad-primary)',
+                  border: '3px solid var(--theme-accent)',
+                  boxShadow: '0 0 40px rgba(0,119,182,0.5)',
                 }}>
                 <div className="px-3 text-center">
-                  <p className="text-[10px] font-extrabold uppercase leading-tight tracking-widest text-[#ade8f4]">Our<br/>Students<br/>Our Pride</p>
+                  <p className="text-[10px] font-extrabold uppercase leading-tight tracking-widest text-primary-pale">Our<br/>Students<br/>Our Pride</p>
                   <div className="mt-2 flex justify-center gap-0.5">
-                    {[1,2,3].map(s => <span key={s} className="text-[10px] text-[#48cae4]">✦</span>)}
+                    {[1,2,3].map(s => <span key={s} className="text-[10px] text-primary-cyan">★</span>)}
                   </div>
                 </div>
               </motion.div>
@@ -350,7 +613,7 @@ export default function Home() {
                     className="absolute overflow-hidden rounded-full"
                     style={{
                       top:pos.top, left:pos.left, width:pos.w, height:pos.h,
-                      border: isSel ? '3px solid #0077b6' : '2.5px solid #90e0ef',
+                      border: isSel ? `3px solid var(--theme-secondary)` : `2.5px solid var(--theme-accent)`,
                       boxShadow: isSel
                         ? '0 0 0 5px rgba(0,119,182,0.2), 0 8px 28px rgba(0,119,182,0.45)'
                         : '0 4px 16px rgba(3,4,94,0.18)',
@@ -365,7 +628,7 @@ export default function Home() {
                       {student.name?.split(' ').map(n=>n[0]).join('')}
                     </div>
                     {isSel && (
-                      <motion.div className="absolute inset-0 rounded-full border-2 border-[#0077b6]"
+                      <motion.div className="absolute inset-0 rounded-full border-2 border-primary-blue"
                         animate={{ scale:[1,1.5], opacity:[0.7,0] }}
                         transition={{ repeat:Infinity, duration:1 }} />
                     )}
@@ -376,7 +639,7 @@ export default function Home() {
               )
             })()}
 
-            {/* ── Detail card — slides in from right, only when a student selected ── */}
+            {/* -- Detail card ? slides in from right, only when a student selected -- */}
             <AnimatePresence mode="wait">
               {sel && (
                 <motion.div
@@ -386,17 +649,17 @@ export default function Home() {
                   exit={{   opacity:0, x:80 }}
                   transition={{ type:'spring', stiffness:280, damping:26 }}
                   className="w-full max-w-sm shrink-0 overflow-hidden rounded-3xl shadow-2xl"
-                  style={{ background:'linear-gradient(135deg,#03045e 0%,#023e8a 60%,#0077b6 100%)' }}
+                  style={{ background: 'var(--theme-grad-primary)' }}
                 >
                   {/* Top accent bar */}
-                  <div className="h-1 w-full" style={{ background:'linear-gradient(90deg,#48cae4,#0096c7,#03045e)' }} />
+                  <div className="h-1 w-full" style={{ background: 'var(--theme-grad-primary)' }} />
 
                   <div className="p-7">
                     {/* Close + photo + name */}
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-4">
                         <div className="h-16 w-16 overflow-hidden rounded-2xl"
-                          style={{ border:'2px solid #48cae4', boxShadow:'0 0 18px rgba(72,202,228,0.5)' }}>
+                          style={{ border: '2px solid var(--theme-accent)', boxShadow: '0 0 18px rgba(72,202,228,0.5)' }}>
                           {sel.image ? (
                             <img src={`http://localhost:5000/uploads/${sel.image}`} alt={sel.name} className="h-full w-full object-cover" />
                           ) : (
@@ -406,12 +669,12 @@ export default function Home() {
                           )}
                         </div>
                         <div>
-                          <span className="rounded-full bg-[#48cae4]/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#48cae4]">
+                          <span className="rounded-full bg-primary-cyan/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary-cyan">
                             {sel.courseType || 'Student'}
                           </span>
                           <h3 className="mt-1 text-xl font-extrabold text-white">{sel.name}</h3>
-                          <p className="text-sm text-[#90e0ef]">
-                            {sel.role}{sel.courseName ? ` · ${sel.courseName}` : ''}
+                          <p className="text-sm text-primary-light">
+                            {sel.role}{sel.courseName ? ` — ${sel.courseName}` : ''}
                           </p>
                         </div>
                       </div>
@@ -424,26 +687,26 @@ export default function Home() {
 
                     {/* Badge */}
                     {sel.badge && (
-                      <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#48cae4]/30 bg-[#0077b6]/25 px-4 py-1.5">
+                      <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-primary-cyan/30 bg-primary-blue/25 px-4 py-1.5">
                         <motion.span
                           animate={{ scale:[1,1.6,1] }}
                           transition={{ repeat:Infinity, duration:1.4 }}
-                          className="h-1.5 w-1.5 rounded-full bg-[#48cae4]" />
-                        <span className="text-xs font-bold text-[#48cae4]">{sel.badge}</span>
+                          className="h-1.5 w-1.5 rounded-full bg-primary-cyan" />
+                        <span className="text-xs font-bold text-primary-cyan">{sel.badge}</span>
                       </div>
                     )}
 
                     {/* Quote */}
-                    <div className="relative mt-5 rounded-2xl border border-[#0077b6]/30 bg-white/5 p-5">
-                      <span className="absolute left-4 top-0 text-5xl font-bold leading-none text-[#48cae4]/12">"</span>
-                      <p className="pl-4 text-sm italic leading-relaxed text-[#ade8f4]">{sel.quote}</p>
+                    <div className="relative mt-5 rounded-2xl border border-primary-blue/30 bg-white/5 p-5">
+                      <span className="absolute left-4 top-0 text-5xl font-bold leading-none text-primary-cyan/12">"</span>
+                      <p className="pl-4 text-sm italic leading-relaxed text-primary-pale">{sel.quote}</p>
                     </div>
 
                     {/* Dot nav */}
                     <div className="mt-6 flex justify-center gap-1.5">
                       {visibleStudents.map((_, i) => (
                         <button key={i} onClick={() => setActiveStudent(i)}
-                          className={`rounded-full transition-all duration-300 ${i===activeStudent ? 'h-2 w-7 bg-[#48cae4]' : 'h-2 w-2 bg-white/20 hover:bg-white/40'}`} />
+                          className={`rounded-full transition-all duration-300 ${i===activeStudent ? 'h-2 w-7 bg-primary-cyan' : 'h-2 w-2 bg-white/20 hover:bg-white/40'}`} />
                       ))}
                     </div>
                   </div>
@@ -455,19 +718,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── REVIEWS (dynamic, approved only) ── */}
+      {/* -- REVIEWS (dynamic, approved only) -- */}
       <section id="reviews" className="bg-white px-6 py-20">
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-center">
-            <span className="rounded-full bg-[#e0f7fa] px-4 py-1 text-xs font-bold text-[#03045e]">STUDENT REVIEWS</span>
+            <span className="rounded-full bg-primary-pale px-4 py-1 text-xs font-bold text-primary">STUDENT REVIEWS</span>
             <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">What Students Say</h2>
           </div>
           {reviews.length > 0 && (
             <>
               <motion.div key={activeReview} initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }}
-                className="mb-6 overflow-hidden rounded-3xl shadow-2xl" style={{ background:'linear-gradient(135deg,#03045e,#0077b6)' }}>
+                className="mb-6 overflow-hidden rounded-3xl shadow-2xl"
+                style={{ background: 'var(--theme-grad-primary)' }}>
                 <div className="flex flex-col gap-6 p-8 sm:flex-row sm:items-center sm:p-10">
-                  <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl ring-4 ring-[#48cae4]/30">
+                  <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl ring-4 ring-primary-cyan/30">
                     {reviews[activeReview]?.studentImage ? (
                       <img src={`http://localhost:5000/uploads/${reviews[activeReview].studentImage}`} alt="" className="h-full w-full object-cover" />
                     ) : (
@@ -478,23 +742,23 @@ export default function Home() {
                   </div>
                   <div className="flex-1">
                     <Stars n={reviews[activeReview]?.rating || 5} />
-                    <p className="mt-3 text-lg font-medium leading-relaxed text-[#caf0f8]">"{reviews[activeReview]?.description}"</p>
+                    <p className="mt-3 text-lg font-medium leading-relaxed text-primary-pale">"{reviews[activeReview]?.description}"</p>
                     <p className="mt-4 font-bold text-white">{reviews[activeReview]?.studentName}</p>
-                    <p className="text-sm text-[#90e0ef]">{reviews[activeReview]?.courseType} {reviews[activeReview]?.courseName ? `· ${reviews[activeReview].courseName}` : ''}</p>
+                    <p className="text-sm text-primary-light">{reviews[activeReview]?.courseType} {reviews[activeReview]?.courseName ? `— ${reviews[activeReview].courseName}` : ''}</p>
                   </div>
                 </div>
                 <div className="flex justify-center gap-2 pb-5">
                   {reviews.map((_,i) => (
-                    <button key={i} onClick={()=>setActiveReview(i)} className={`rounded-full transition-all ${i===activeReview?'h-2 w-8 bg-[#48cae4]':'h-2 w-2 bg-white/30'}`} />
+                    <button key={i} onClick={()=>setActiveReview(i)} className={`rounded-full transition-all ${i===activeReview?'h-2 w-8 bg-primary-cyan':'h-2 w-2 bg-white/30'}`} />
                   ))}
                 </div>
               </motion.div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {reviews.map((r,i) => (
                   <motion.button key={r._id} onClick={()=>setActiveReview(i)} whileHover={{ y:-4 }}
-                    className={`rounded-2xl border-2 p-4 text-left transition-all ${i===activeReview?'border-[#0077b6] bg-[#f0f9ff] shadow-md':'border-gray-200 bg-white hover:border-[#0096c7]/40'}`}>
+                    className={`rounded-2xl border-2 p-4 text-left transition-all ${i===activeReview?'border-primary-blue bg-primary-ice shadow-md':'border-gray-200 bg-white hover:border-primary-sky/40'}`}>
                     <div className="mb-2 flex items-center gap-2">
-                      <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#e0f7fa] text-xs font-bold text-[#03045e]">
+                      <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-primary-pale text-xs font-bold text-primary">
                         {r.studentImage ? (
                           <img src={`http://localhost:5000/uploads/${r.studentImage}`} alt="" className="h-full w-full object-cover" />
                         ) : r.studentName?.[0]}
@@ -512,47 +776,58 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── ABOUT ── */}
-      <section id="about" className=" px-6 py-20">
+      {/* -- ABOUT -- */}
+      <section id="about" className="bg-white px-6 py-20">
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-col items-center gap-12 lg:flex-row">
             <motion.div initial={{ opacity:0, x:-30 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} className="w-full lg:w-2/5">
               <div className="relative overflow-hidden rounded-3xl shadow-2xl">
                 <img src="/gallery/Ai.png" alt="Portal" className="h-72 w-full object-cover" onError={e=>{e.target.src='/gallery/2.png'}} />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#03045e]/80 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent" />
                 <div className="absolute bottom-5 left-5 flex items-center gap-3 rounded-2xl bg-white/90 px-4 py-3 shadow-lg">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl text-2xl" style={{ background:'linear-gradient(135deg,#03045e,#0077b6)' }}>🎓</div>
-                  <div><p className="text-xs font-extrabold text-[#03045e]">DevLogics Portal</p><p className="text-[10px] text-gray-500">4.8 ★ · 1,000+ Students</p></div>
+                  <img src="/gallery/logo5.png" alt="logo" style={{ height: '36px', width: 'auto', objectFit: 'contain', background: 'transparent' }} />
+                  <div><p className="text-xs font-extrabold text-primary">{settings.portalName}</p><p className="text-[10px] text-gray-500">4.8 ⭐ {settings.statStudents} Students</p></div>
                 </div>
               </div>
             </motion.div>
             <motion.div initial={{ opacity:0, x:30 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} className="w-full lg:w-3/5">
-              <span className="rounded-full bg-[#e0f7fa] px-4 py-1 text-xs font-bold text-[#03045e]">ABOUT THE PORTAL</span>
-              <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">A Smarter Way to<br /><span className="text-[#0077b6]">Learn &amp; Apply</span></h2>
-              <p className="mt-4 text-base leading-relaxed text-gray-600">DevLogics E-Portal is a complete digital solution for course and service management. Students apply online, track status in real-time, and get decisions with full feedback.</p>
+              <span className="rounded-full bg-primary-pale px-4 py-1 text-xs font-bold text-primary">ABOUT THE PORTAL</span>
+              <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl"
+                dangerouslySetInnerHTML={{ __html: (settings.aboutTitle||'A Smarter Way to Learn & Apply').replace('&','&amp;') }} />
+              <p className="mt-4 text-base leading-relaxed text-gray-600">{settings.aboutSubtitle}</p>
               <ul className="mt-6 space-y-2">
-                {['Apply online — no office visits','Upload CV and documents securely','Track every application with timeline','Real-time notifications on changes','Admin review with detailed feedback','Available 24/7 from any device'].map((item,i) => (
+                {(settings.aboutPoints||[]).map((item,i) => (
                   <li key={i} className="flex items-center gap-3 text-sm text-gray-700">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#e0f7fa] text-[10px] font-bold text-[#0077b6]">✓</span>{item}
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-pale text-[10px] font-bold text-primary-blue">✓</span>{item}
                   </li>
                 ))}
               </ul>
               <div className="mt-8 flex gap-3">
-                <Link to="/register" className="rounded-xl px-6 py-3 font-bold text-white transition hover:opacity-90" style={{ background:'linear-gradient(135deg,#0077b6,#03045e)' }}>Get Started Free →</Link>
-                <Link to="/login" className="rounded-xl border-2 border-[#0077b6] px-6 py-3 font-bold text-[#0077b6] transition hover:bg-[#e0f7fa]">Sign In</Link>
+                {/* Get Started — cyan bg, white text, no border */}
+                <Link to="/register"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold text-white transition hover:opacity-90 hover:-translate-y-0.5"
+                  style={{ background:'var(--theme-secondary)' }}>
+                  Get Started Free →
+                </Link>
+                {/* Sign In — white bg, dark blue text, no border */}
+                <Link to="/login"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold transition hover:opacity-90 hover:-translate-y-0.5"
+                  style={{ background:'var(--theme-bg-light)', color:'var(--theme-primary)' }}>
+                  Sign In
+                </Link>
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ── CONTACT ── */}
+      {/* -- CONTACT -- */}
    <section id="contact" className="bg-white px-6 py-20">
   <div className="mx-auto max-w-6xl">
 
     {/* Heading */}
     <div className="mb-12 text-center">
-      <span className="rounded-full bg-[#1C39BB] px-4 py-1 text-xs font-bold text-[#1C39BB]">
+      <span className="rounded-full bg-primary-pale px-4 py-1 text-xs font-bold text-primary">
         GET IN TOUCH
       </span>
 
@@ -561,37 +836,30 @@ export default function Home() {
       </h2>
 
       <p className="mt-2 text-gray-500">
-        Have questions? Our team is ready to help
+        Have questions? Our team is ready to help 
       </p>
     </div>
 
 
     <div className="grid gap-8 lg:grid-cols-2">
 
-
       {/* LEFT CONTACT CARDS */}
       <div className="space-y-5">
+      
 
         {[
-          {icon:'📍',t:'Address',v:'DevLogics Campus, Pakistan'},
-          {icon:'📞',t:'Phone',v:'+92-XXX-XXXXXXX'},
-          {icon:'✉️',t:'Email',v:'info@devlogics.com'},
-          {icon:'🌐',t:'Website',v:'www.devlogics.com'},
-          {icon:'⏰',t:'Hours',v:'Mon-Fri 9AM-5PM'}
+          {icon:<MdLocationOn size={22} className="text-white"/>, t:'Address', v: settings.contactAddress},
+          {icon:<FaPhone      size={18} className="text-white"/>, t:'Phone',   v: settings.contactPhone},
+          {icon:<FaEnvelope   size={18} className="text-white"/>, t:'Email',   v: settings.contactEmail},
+          {icon:<FaGlobe      size={18} className="text-white"/>, t:'Website', v: settings.contactWebsite},
+          {icon:<FaClock      size={18} className="text-white"/>, t:'Hours',   v: settings.contactHours||'Mon-Fri 9AM-5PM'}
         ].map((item,i)=>(
 
           <motion.div
             key={i}
             whileHover={{x:6}}
-            className="
-              flex items-start gap-4
-              rounded-2xl
-              bg-[#0056D2]
-              p-6
-              border-2 border-[#023e8a]
-              shadow-lg shadow-[#1C39BB]/20
-              transition
-            "
+            className="flex items-start gap-4 rounded-2xl p-6 shadow-lg transition"
+            style={{ background: 'var(--theme-grad-primary)', border:'1px solid rgba(72,202,228,0.2)' }}
           >
 
             {/* Icon */}
@@ -614,7 +882,7 @@ export default function Home() {
                 font-bold 
                 uppercase 
                 tracking-wide
-                text-[#90e0ef]
+                text-primary-light
               ">
                 {item.t}
               </p>
@@ -641,151 +909,7 @@ export default function Home() {
 
 
       {/* RIGHT FORM */}
-      <div className="
-        rounded-2xl
-        bg-[#0056D2]
-        p-8
-        border-2 border-[#023e8a]
-        shadow-lg shadow-[#0056D2]/20
-      ">
-
-
-        <h3 className="
-          mb-6
-          text-xl
-          font-bold
-          text-white
-        ">
-          Send a Message
-        </h3>
-
-
-
-        <form
-          className="space-y-5"
-          onSubmit={(e)=>{
-            e.preventDefault()
-            alert("Message sent!")
-          }}
-        >
-
-
-          <div className="grid gap-5 sm:grid-cols-2">
-
-
-            {['Full Name','Email'].map((label,i)=>(
-
-              <div key={i}>
-
-                <label className="
-                  mb-2
-                  block
-                  text-sm
-                  font-semibold
-                  text-white
-                ">
-                  {label}
-                </label>
-
-
-                <input
-                  type={i===1 ? "email" : "text"}
-                  required
-                  placeholder={
-                    i===1 
-                    ? "you@email.com" 
-                    : "Your name"
-                  }
-
-                  className="
-                    w-full
-                    rounded-xl
-                    border-2
-                    border-[#023e8a]
-                    bg-white
-                    px-4
-                    py-3
-                    text-sm
-                    text-[#0056D2]
-                    placeholder:text-gray-400
-                    outline-none
-                    focus:border-[#90e0ef]
-                  "
-                />
-
-              </div>
-
-            ))}
-
-          </div>
-
-
-
-
-          <div>
-
-            <label className="
-              mb-2
-              block
-              text-sm
-              font-semibold
-              text-white
-            ">
-              Message
-            </label>
-
-
-            <textarea
-              required
-              rows="4"
-              placeholder="Write your message..."
-
-              className="
-                w-full
-                rounded-xl
-                border-2
-                border-[#023e8a]
-                bg-white
-                px-4
-                py-3
-                text-sm
-                text-[#0056D2]
-                placeholder:text-gray-400
-                outline-none
-                focus:border-[#90e0ef]
-              "
-            />
-
-          </div>
-
-
-
-
-          <button
-            type="submit"
-
-            className="
-              w-full
-              rounded-xl
-              py-3
-              font-bold
-              text-white
-              transition
-              hover:bg-gray-300
-            "
-
-            style={{
-              background:
-              'linear-gradient(135deg,#0077b6,#03045e)'
-            }}
-          >
-            Send Message →
-          </button>
-
-
-        </form>
-
-      </div>
+      <ContactForm />
 
 
     </div>
@@ -793,29 +917,106 @@ export default function Home() {
   </div>
 </section>
 
-      {/* ── FOOTER ── */}
-      <footer style={{ background:'linear-gradient(135deg,#03045e,#023e8a)' }} className="px-6 py-12 text-white">
-        <div className="mx-auto max-w-6xl">
-          <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl text-xl" style={{ background:'rgba(255,255,255,0.15)' }}>🎓</div>
-              <div>
-                <p className="font-extrabold">DevLogics E-Portal</p>
-                <p className="text-xs text-[#90e0ef]">Course &amp; Service Management</p>
+      {/* -- FOOTER -- */}
+      <footer className="text-white" style={{ background: 'var(--theme-footer-bg)' }}>
+
+        {/* Wave divider */}
+        <div className="overflow-hidden" style={{ lineHeight:0 }}>
+          <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="block w-full" style={{ height:'60px' }}>
+            <path d="M0,0 C360,60 1080,0 1440,40 L1440,0 Z" fill="white"/>
+          </svg>
+        </div>
+
+        {/* Main footer content */}
+        <div className="mx-auto max-w-6xl px-6 pb-10 pt-6">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+
+            {/* Col 1 — Brand */}
+            <div>
+              <div className="mb-4 flex  h-14 items-center gap-2">
+                <img
+                  src="/gallery/logo1.png"
+                  alt="logo"
+                  style={{ height: '80px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
+                />
+              </div>
+              <p className="text-sm leading-relaxed text-white">
+                {settings.footerTagline || 'Course & Service Management'}
+              </p>
+              <p className="mt-3 text-xs text-white">Apply online · No office visit required</p>
+            </div>
+
+            {/* Col 2 — Quick Links */}
+            <div>
+              <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-white">Quick Links</h4>
+              <ul className="space-y-2">
+                {[
+                  { label:'Home',     href:'#home' },
+                  { label:'Courses',  href:'#courses' },
+                  { label:'Our Pride',href:'#pride' },
+                  { label:'About Us', href:'#about' },
+                ].map((l,i) => (
+                  <li key={i}>
+                    <a href={l.href} className="text-sm text-white transition hover:text-primary-cyan">{l.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Col 3 — More */}
+            <div>
+              <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-white">More</h4>
+              <ul className="space-y-2">
+                {[
+                  { label:'Certifications', href:'#howitworks' },
+                  { label:'Why Choose Us',  href:'#features' },
+                  { label:'Reviews',        href:'#reviews' },
+                  { label:'Contact Us',     href:'#contact' },
+                ].map((l,i) => (
+                  <li key={i}>
+                    <a href={l.href} className="text-sm text-white transition hover:text-primary-cyan">{l.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Col 4 — Account + Follow */}
+            <div>
+              <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-white">Account</h4>
+              <ul className="space-y-2 mb-6">
+                <li><Link to="/login"     className="text-sm text-white transition hover:text-primary-cyan">Sign In</Link></li>
+                <li><Link to="/register"  className="text-sm text-white transition hover:text-primary-cyan">Register Free</Link></li>
+                <li><Link to="/dashboard" className="text-sm text-white transition hover:text-primary-cyan">Dashboard</Link></li>
+              </ul>
+
+              {/* Follow Us */}
+              <h4 className="mb-3 text-xs font-bold uppercase tracking-widest text-white">Follow Us</h4>
+              <div className="flex gap-2">
+                {[
+                  { href:'#', icon:<FaFacebook  size={15}/> },
+                  { href:'#', icon:<FaInstagram size={15}/> },
+                  { href:'#', icon:<FaTwitter   size={15}/> },
+                  { href:'#', icon:<FaLinkedin  size={15}/> },
+                ].map((s,i) => (
+                  <a key={i} href={s.href}
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-white hover:text-primary">
+                    {s.icon}
+                  </a>
+                ))}
               </div>
             </div>
-            <div className="flex flex-wrap justify-center gap-6 text-sm">
-              {['#home','#courses','#services','#about','#contact'].map((href,i) => (
-                <a key={i} href={href} className="text-[#90e0ef] hover:text-white transition capitalize">{href.slice(1)||'Home'}</a>
-              ))}
-            </div>
-            <div className="flex gap-3">
-              <Link to="/login" className="rounded-lg border border-white/30 px-4 py-2 text-sm font-semibold hover:border-white transition">Login</Link>
-              <Link to="/register" className="rounded-lg bg-[#0077b6] px-4 py-2 text-sm font-semibold hover:bg-[#0096c7] transition">Register</Link>
-            </div>
           </div>
-          <div className="mt-8 border-t border-white/10 pt-6 text-center text-xs text-[#90e0ef]">
-            © {new Date().getFullYear()} DevLogics E-Portal. All rights reserved.
+
+          {/* Bottom bar */}
+          <div className="mt-10 flex flex-col items-center justify-between gap-3 pt-6 sm:flex-row">
+            <p className="text-xs text-white">&copy; {new Date().getFullYear()} {settings.portalName}. All rights reserved.</p>
+            <div className="flex gap-4 text-xs text-white">
+              <a href="#" className="hover:text-primary-cyan transition">Privacy Policy</a>
+              <span>|</span>
+              <a href="#" className="hover:text-primary-cyan transition">Terms of Service</a>
+              <span>|</span>
+              <a href="#" className="hover:text-primary-cyan transition">Support</a>
+            </div>
           </div>
         </div>
       </footer>

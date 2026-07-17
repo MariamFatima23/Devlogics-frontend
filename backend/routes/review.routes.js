@@ -25,8 +25,17 @@ router.post('/', protect, upload.single('studentImage'), async (req, res) => {
       courseName:   req.body.courseName || '',
       description:  req.body.description,
       rating:       Number(req.body.rating) || 5,
-      isApproved:   false, // admin must approve
+      isApproved:   false,
     })
+
+    // Notify all admins about new review
+    const { notifyAdmins } = require('./notification.routes')
+    await notifyAdmins(
+      'new_review',
+      '⭐ New Review Submitted',
+      `${req.user.name} submitted a ${Number(req.body.rating) || 5}-star review for "${req.body.courseName || 'a course'}". Awaiting approval.`,
+    )
+
     res.status(201).json({ message: 'Review submitted! Waiting for admin approval.', review })
   } catch (err) { res.status(500).json({ message: err.message }) }
 })

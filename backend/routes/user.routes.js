@@ -1,14 +1,19 @@
 const express = require('express');
 const router  = express.Router();
-const { protect } = require('../middleware/auth.middleware');
+const { protect, adminOnly } = require('../middleware/auth.middleware');
 const upload   = require('../middleware/upload.middleware');
-const { getAllUsers, getUserById, updateProfile } = require('../controllers/user.controller');
+const { getAllUsers, getUserById, updateProfile, blockUser, adminStats } = require('../controllers/user.controller');
 
-// Update own profile (with optional image)
-router.patch('/profile', protect, upload.single('profileImage'), updateProfile);
+// Update own profile (with optional image + CV)
+router.patch('/profile', protect, upload.fields([
+  { name: 'profileImage', maxCount: 1 },
+  { name: 'cv', maxCount: 1 },
+]), updateProfile);
 
-// Admin routes
-router.get('/', getAllUsers);
-router.get('/:id', getUserById);
+// Admin routes (protected)
+router.get('/',            protect, adminOnly, getAllUsers);
+router.get('/admin-stats', protect, adminOnly, adminStats);
+router.get('/:id',         protect, adminOnly, getUserById);
+router.patch('/:id/block', protect, adminOnly, blockUser);
 
 module.exports = router;

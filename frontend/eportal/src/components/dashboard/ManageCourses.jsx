@@ -3,11 +3,11 @@ import api from '../../utils/api'
 
 // Persian blue palette — admin doesn't need to pick colors
 const BG_PRESETS = [
-  { label:'Deep Blue',   bgFrom:'#03045e', bgTo:'#0077b6', accent:'#48cae4' },
-  { label:'Ocean Blue',  bgFrom:'#023e8a', bgTo:'#0096c7', accent:'#90e0ef' },
+  { label:'Deep Blue',   bgFrom:'#04065c', bgTo:'#0077b6', accent:'#48cae4' },
+  { label:'Ocean Blue',  bgFrom:'#023e8a', bgTo:'#0096c7', accent:'#90e0ef '},
   { label:'Sky Blue',    bgFrom:'#0077b6', bgTo:'#48cae4', accent:'#caf0f8' },
-  { label:'Navy Cyan',   bgFrom:'#03045e', bgTo:'#0096c7', accent:'#48cae4' },
-  { label:'Indigo Blue', bgFrom:'#023e8a', bgTo:'#0077b6', accent:'#ade8f4' },
+  { label:'Navy Cyan',   bgFrom:'#04065c', bgTo:'#0096c7', accent:'#48cae4' },
+  { label:'Indigo Blue', bgFrom:'#023e8a', bgTo:'#0077b6', accent:'#caf0f8' },
 ]
 
 const EMPTY = {
@@ -15,7 +15,7 @@ const EMPTY = {
   type:'course', mode:'online', duration:'3 Months', deadline:'',
   isPaid: false, price:0, paymentMethod:'', certified: false,
   stipend:'', level:'Beginner', seats:30, instructor:'DevLogics Team',
-  bgFrom:'#03045e', bgTo:'#0077b6', accent:'#48cae4', features:'',
+  bgFrom:'#04065c', bgTo:'#0077b6', accent:'#48cae4', features:'',
 }
 
 export default function ManageCourses() {
@@ -85,14 +85,14 @@ export default function ManageCourses() {
     try { await api.patch(`/courses/${course._id}`, { isActive: !course.isActive }); fetchCourses() } catch {}
   }
 
-  const inp = 'w-full rounded-xl border border-[#caf0f8] bg-[#f0f9ff] px-3 py-2.5 text-sm outline-none focus:border-[#0077b6] focus:bg-white'
+  const inp = 'w-full rounded-xl border border-primary-pale bg-primary-ice px-3 py-2.5 text-sm outline-none focus:border-primary-blue focus:bg-white'
   const lbl = 'mb-1 block text-xs font-bold uppercase tracking-wide text-gray-500'
   const f   = form
 
   return (
     <div className="space-y-5">
       {msg && (
-        <div className={`rounded-xl px-4 py-3 text-sm font-medium ${msg.type==='success'?'bg-emerald-50 text-emerald-700 border border-emerald-200':'bg-rose-50 text-rose-700 border border-rose-200'}`}>
+        <div className={`rounded-xl px-4 py-3 text-sm font-medium ${msg.type==='success'?'bg-primary-pale text-primary border border-primary-pale':'bg-rose-50 text-rose-700 border border-rose-200'}`}>
           {msg.text}
         </div>
       )}
@@ -101,13 +101,13 @@ export default function ManageCourses() {
         <p className="text-sm text-gray-500">{courses.length} course(s) · shown on home page</p>
         <button onClick={() => { setShowForm(!showForm); setForm(EMPTY); setEditId(null); setMsg(null) }}
           className="rounded-xl px-4 py-2 text-sm font-bold text-white transition hover:opacity-90"
-          style={{ background:'linear-gradient(135deg,#0077b6,#03045e)' }}>
+          style={{ background:'linear-gradient(135deg,#0077b6,#04065c)' }}>
           {showForm ? '✕ Cancel' : '+ Add Course'}
         </button>
       </div>
 
       {showForm && (
-        <div className="rounded-2xl border border-[#caf0f8] bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-primary-pale bg-white p-6 shadow-sm">
           <h3 className="mb-1 font-extrabold text-gray-900">{editId ? 'Edit Course' : 'Add New Course'}</h3>
           <p className="mb-5 text-xs text-gray-400">This course will appear on the home page for students to apply.</p>
 
@@ -155,13 +155,13 @@ export default function ManageCourses() {
             </div>
 
             {/* Paid / Certified toggles */}
-            <div className="flex flex-wrap gap-6 rounded-xl bg-[#f0f9ff] p-4">
+            <div className="flex flex-wrap gap-6 rounded-xl bg-primary-ice p-4">
               <button type="button" onClick={() => set('isPaid', !f.isPaid)}
-                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold border-2 transition ${f.isPaid?'border-[#0077b6] bg-[#0077b6] text-white':'border-[#caf0f8] text-gray-600'}`}>
+                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold border-2 transition ${f.isPaid?'border-primary-blue bg-primary-blue text-white':'border-primary-pale text-gray-600'}`}>
                 💳 {f.isPaid ? 'Paid Course ✓' : 'Free Course'}
               </button>
               <button type="button" onClick={() => set('certified', !f.certified)}
-                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold border-2 transition ${f.certified?'border-emerald-500 bg-emerald-500 text-white':'border-[#caf0f8] text-gray-600'}`}>
+                className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold border-2 transition ${f.certified?'border-primary-blue bg-primary-blue text-white':'border-primary-pale text-gray-600'}`}>
                 🎓 {f.certified ? 'Certificate Provided ✓' : 'No Certificate'}
               </button>
             </div>
@@ -213,7 +213,7 @@ export default function ManageCourses() {
 
             <button type="submit" disabled={loading}
               className="w-full rounded-xl py-3 text-sm font-bold text-white disabled:opacity-60 transition hover:opacity-90"
-              style={{ background:'linear-gradient(135deg,#0077b6,#03045e)' }}>
+              style={{ background:'linear-gradient(135deg,#0077b6,#04065c)' }}>
               {loading ? 'Saving...' : (editId ? '💾 Update Course' : '✅ Add Course to Portal')}
             </button>
           </form>
@@ -221,7 +221,7 @@ export default function ManageCourses() {
       )}
 
       {courses.length === 0 ? (
-        <div className="rounded-xl border-2 border-dashed border-[#caf0f8] py-16 text-center">
+        <div className="rounded-xl border-2 border-dashed border-primary-pale py-16 text-center">
           <p className="text-4xl">📚</p>
           <p className="mt-3 font-bold text-gray-700">No courses yet</p>
           <p className="mt-1 text-sm text-gray-400">Add your first course — it will instantly appear on the home page.</p>
@@ -229,20 +229,20 @@ export default function ManageCourses() {
       ) : (
         <div className="space-y-3">
           {courses.map(course => (
-            <div key={course._id} className="flex flex-col gap-3 rounded-2xl border border-[#caf0f8] bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+            <div key={course._id} className="flex flex-col gap-3 rounded-2xl border border-primary-pale bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-2xl shadow-sm"
-                  style={{ background:`linear-gradient(135deg,${course.bgFrom||'#03045e'},${course.bgTo||'#0077b6'})` }}>
+                  style={{ background:`linear-gradient(135deg,${course.bgFrom||'#04065c'},${course.bgTo||'#0077b6'})` }}>
                   {course.icon}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-bold text-gray-900">{course.title}</p>
-                    <span className="rounded-full bg-[#e0f7fa] px-2 py-0.5 text-[10px] font-bold text-[#03045e] capitalize">{course.type}</span>
+                    <span className="rounded-full bg-primary-pale px-2 py-0.5 text-[10px] font-bold text-primary capitalize">{course.type}</span>
                     <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-blue-700 capitalize">{course.mode}</span>
                     {course.isPaid && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700">💳 PKR {course.price?.toLocaleString()}</span>}
-                    {course.certified && <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">🎓 Certified</span>}
-                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${course.isActive?'bg-emerald-100 text-emerald-700':'bg-gray-100 text-gray-500'}`}>
+                    {course.certified && <span className="rounded-full bg-primary-pale px-2 py-0.5 text-[10px] font-bold text-primary">🎓 Certified</span>}
+                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${course.isActive?'bg-primary-pale text-primary-blue':'bg-gray-100 text-gray-500'}`}>
                       {course.isActive ? '● Live' : '○ Hidden'}
                     </span>
                   </div>
@@ -255,11 +255,11 @@ export default function ManageCourses() {
               </div>
               <div className="flex shrink-0 flex-wrap gap-2">
                 <button onClick={() => toggleActive(course)}
-                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${course.isActive?'bg-gray-100 text-gray-600 hover:bg-gray-200':'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'}`}>
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${course.isActive?'bg-gray-100 text-gray-600 hover:bg-gray-200':'bg-primary-pale text-primary-blue hover:bg-primary-pale'}`}>
                   {course.isActive ? 'Hide' : 'Show'}
                 </button>
                 <button onClick={() => handleEdit(course)}
-                  className="rounded-lg bg-[#e0f7fa] px-3 py-1.5 text-xs font-semibold text-[#0077b6] hover:bg-[#caf0f8]">
+                  className="rounded-lg bg-primary-pale px-3 py-1.5 text-xs font-semibold text-primary-blue hover:bg-primary-pale">
                   ✏️ Edit
                 </button>
                 <button onClick={() => handleDelete(course._id)}

@@ -7,8 +7,15 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    process.env.FRONTEND_URL,
+  ].filter(Boolean),
+  credentials: true,
+}))
+app.use(express.json())
 
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -25,6 +32,8 @@ app.use('/api/hero-slides',        require('./routes/heroslide.routes'))
 app.use('/api/course-applications', require('./routes/courseApplication.routes'))
 app.use('/api/reviews',             require('./routes/review.routes'))
 app.use('/api/student-pride',       require('./routes/studentPride.routes'))
+app.use('/api/site-settings',       require('./routes/siteSettings.routes'))
+app.use('/api/contact',             require('./routes/contact.routes'))
 
 // Health check
 app.get('/', (req, res) => res.json({ message: 'University E-Portal API running' }));

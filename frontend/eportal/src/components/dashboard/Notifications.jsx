@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import api from '../../utils/api'
 
 export default function Notifications({ setUnread }) {
@@ -19,8 +19,8 @@ export default function Notifications({ setUnread }) {
   }
 
   const TYPE_ICONS = {
-    application_submitted: '📋', status_updated: '🔄', under_review: '🔍',
-    approved: '✅', rejected: '❌'
+    application_submitted: '??', status_updated: '??', under_review: '??',
+    approved: '?', rejected: '?'
   }
 
   return (
@@ -28,7 +28,7 @@ export default function Notifications({ setUnread }) {
       <div className="mb-4 flex items-center justify-between">
         <p className="text-sm text-gray-500">{notifs.length} notification(s)</p>
         {notifs.some(n => !n.read) && (
-          <button onClick={markAllRead} className="text-xs font-batchibold text-[#0077b6] hover:underline">
+          <button onClick={markAllRead} className="text-xs font-batchibold text-primary-blue hover:underline">
             Mark all read
           </button>
         )}
@@ -36,16 +36,16 @@ export default function Notifications({ setUnread }) {
 
       {notifs.length === 0 ? (
         <div className="rounded-xl border-2 border-dashed border-gray-200 py-16 text-center">
-          <p className="text-4xl">🔔</p>
+          <p className="text-4xl">??</p>
           <p className="mt-3 text-lg font-batchibold text-gray-600">No Notifications</p>
           <p className="mt-1 text-sm text-gray-400">You're all caught up!</p>
         </div>
       ) : (
         <div className="space-y-2">
           {notifs.map(n => (
-            <div key={n._id} className={`rounded-xl border p-4 ${n.read ? 'bg-white border-gray-100' : 'bg-[#e0f7fa] border-[#caf0f8]'}`}>
+            <div key={n._id} className={`rounded-xl border p-4 ${n.read ? 'bg-white border-gray-100' : 'bg-primary-pale border-primary-pale'}`}>
               <div className="flex items-start gap-3">
-                <span className="text-2xl">{TYPE_ICONS[n.type] || '📬'}</span>
+                <span className="text-2xl">{TYPE_ICONS[n.type] || '??'}</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-gray-900">{n.title}</p>
                   <p className="mt-1 text-sm text-gray-600">{n.message}</p>
@@ -53,7 +53,7 @@ export default function Notifications({ setUnread }) {
                     {new Date(n.createdAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
-                {!n.read && <div className="h-2 w-2 rounded-full bg-[#0077b6]" />}
+                {!n.read && <div className="h-2 w-2 rounded-full bg-primary-blue" />}
               </div>
             </div>
           ))}

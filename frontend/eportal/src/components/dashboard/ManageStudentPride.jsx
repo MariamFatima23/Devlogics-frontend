@@ -83,13 +83,13 @@ export default function ManageStudentPride() {
     } catch {}
   }
 
-  const inputCls = 'w-full rounded-xl border border-[#caf0f8] bg-[#f0f9ff] px-3 py-2.5 text-sm outline-none focus:border-[#0077b6] focus:bg-white transition'
+  const inputCls = 'w-full rounded-xl border border-primary-pale bg-primary-ice px-3 py-2.5 text-sm outline-none focus:border-primary-blue focus:bg-white transition'
   const labelCls = 'mb-1 block text-sm font-semibold text-gray-700'
 
   return (
     <div className="space-y-5">
       {msg && (
-        <div className={`rounded-lg px-4 py-3 text-sm font-medium ${msg.type==='success'?'bg-emerald-50 text-emerald-700':'bg-rose-50 text-rose-700'}`}>
+        <div className={`rounded-lg px-4 py-3 text-sm font-medium ${msg.type==='success'?'bg-primary-pale text-primary':'bg-rose-50 text-rose-700'}`}>
           {msg.text}
         </div>
       )}
@@ -98,24 +98,24 @@ export default function ManageStudentPride() {
         <p className="text-sm text-gray-500">{students.length} student(s) in Our Pride</p>
         <button onClick={() => { setShowForm(!showForm); setForm(EMPTY); setImage(null); setEditId(null); setMsg(null) }}
           className="rounded-xl px-4 py-2 text-sm font-bold text-white transition hover:opacity-90"
-          style={{ background:'linear-gradient(135deg,#0077b6,#03045e)' }}>
+          style={{ background:'linear-gradient(135deg,#0077b6,#04065c)' }}>
           {showForm ? 'Cancel' : '+ Add Student'}
         </button>
       </div>
 
       {showForm && (
-        <div className="rounded-2xl border border-[#caf0f8] bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-primary-pale bg-white p-6 shadow-sm">
           <h3 className="mb-5 font-bold text-gray-900">{editId ? 'Edit Student' : 'Add to Our Pride'}</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
 
             {/* Photo */}
             <div>
               <label className={labelCls}>Student Photo</label>
-              <label className="flex cursor-pointer items-center gap-4 rounded-xl border-2 border-dashed border-[#caf0f8] p-4 hover:border-[#0077b6] hover:bg-[#f0f9ff] transition">
+              <label className="flex cursor-pointer items-center gap-4 rounded-xl border-2 border-dashed border-primary-pale p-4 hover:border-primary-blue hover:bg-primary-ice transition">
                 {image ? (
                   <img src={URL.createObjectURL(image)} alt="" className="h-14 w-14 rounded-full object-cover" />
                 ) : (
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#caf0f8] text-2xl">🧑</div>
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary-pale text-2xl">🧑</div>
                 )}
                 <div>
                   <p className="text-sm font-semibold text-gray-700">{image ? image.name : 'Click to upload photo'}</p>
@@ -164,7 +164,7 @@ export default function ManageStudentPride() {
 
             <button type="submit" disabled={loading}
               className="rounded-xl px-6 py-2.5 text-sm font-bold text-white disabled:opacity-60 transition hover:opacity-90"
-              style={{ background:'linear-gradient(135deg,#0077b6,#03045e)' }}>
+              style={{ background:'linear-gradient(135deg,#0077b6,#04065c)' }}>
               {loading ? 'Saving...' : (editId ? '💾 Update Student' : '✅ Add to Our Pride')}
             </button>
           </form>
@@ -172,14 +172,14 @@ export default function ManageStudentPride() {
       )}
 
       {students.length === 0 ? (
-        <div className="rounded-xl border-2 border-dashed border-[#caf0f8] py-12 text-center">
+        <div className="rounded-xl border-2 border-dashed border-primary-pale py-12 text-center">
           <p className="text-3xl">🌟</p>
           <p className="mt-2 text-gray-500">No students added yet. Feature your top students!</p>
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {students.map(s => (
-            <div key={s._id} className="flex items-start gap-3 rounded-2xl border border-[#caf0f8] bg-white p-4 shadow-sm">
+            <div key={s._id} className="flex items-start gap-3 rounded-2xl border border-primary-pale bg-white p-4 shadow-sm">
               {s.image ? (
                 <img src={`http://localhost:5000/uploads/${s.image}`} alt={s.name}
                   className="h-12 w-12 shrink-0 rounded-xl object-cover" />
@@ -191,9 +191,9 @@ export default function ManageStudentPride() {
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="font-bold text-gray-900">{s.name}</p>
-                  {s.badge && <span className="rounded-full bg-[#e0f7fa] px-2 py-0.5 text-[10px] font-bold text-[#03045e]">{s.badge}</span>}
+                  {s.badge && <span className="rounded-full bg-primary-pale px-2 py-0.5 text-[10px] font-bold text-primary">{s.badge}</span>}
                   <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-blue-700">{s.courseType}</span>
-                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${s.isActive?'bg-emerald-100 text-emerald-700':'bg-gray-100 text-gray-500'}`}>
+                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${s.isActive?'bg-primary-pale text-primary':'bg-gray-100 text-gray-500'}`}>
                     {s.isActive ? 'Visible' : 'Hidden'}
                   </span>
                 </div>
@@ -202,11 +202,11 @@ export default function ManageStudentPride() {
               </div>
               <div className="flex shrink-0 flex-col gap-1.5">
                 <button onClick={() => toggleActive(s)}
-                  className={`rounded-lg px-2.5 py-1 text-[10px] font-bold transition ${s.isActive?'bg-gray-100 text-gray-600 hover:bg-gray-200':'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'}`}>
+                  className={`rounded-lg px-2.5 py-1 text-[10px] font-bold transition ${s.isActive?'bg-gray-100 text-gray-600 hover:bg-gray-200':'bg-primary-pale text-primary hover:bg-primary-pale'}`}>
                   {s.isActive ? 'Hide' : 'Show'}
                 </button>
                 <button onClick={() => handleEdit(s)}
-                  className="rounded-lg bg-[#e0f7fa] px-2.5 py-1 text-[10px] font-bold text-[#0077b6] hover:bg-[#caf0f8]">
+                  className="rounded-lg bg-primary-pale px-2.5 py-1 text-[10px] font-bold text-primary-blue hover:bg-primary-pale">
                   Edit
                 </button>
                 <button onClick={() => handleDelete(s._id)}

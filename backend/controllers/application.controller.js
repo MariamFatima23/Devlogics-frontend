@@ -40,13 +40,22 @@ const submitApplication = async (req, res) => {
       timeline: [{ status: 'Pending', comment: 'Application submitted', updatedBy: req.user.name }],
     });
 
-    // Create notification
+    // Create notification for student
     await createNotification(
       req.user.id,
       application._id,
       'application_submitted',
       'Application Submitted',
       `Your ${type} application has been submitted successfully and is pending review.`
+    );
+
+    // Notify admins
+    const { notifyAdmins } = require('../routes/notification.routes');
+    await notifyAdmins(
+      'new_general_application',
+      '📄 New Application Received',
+      `${req.user.name} submitted a "${type}" application. Review it in the admin panel.`,
+      { applicationId: application._id },
     );
 
     res.status(201).json({ message: 'Application submitted successfully', application });

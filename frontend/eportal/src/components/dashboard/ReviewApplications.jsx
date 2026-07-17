@@ -1,10 +1,10 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import api from '../../utils/api'
 
 const STATUS_COLORS = {
   Pending: 'bg-amber-100 text-amber-700',
   'Under Review': 'bg-blue-100 text-blue-700',
-  Approved: 'bg-emerald-100 text-emerald-700',
+  Approved: 'bg-primary-pale text-primary',
   Rejected: 'bg-rose-100 text-rose-700',
 }
 
@@ -18,7 +18,7 @@ function ActionModal({ app, action, onClose, onConfirm }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4">
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
         <h3 className="mb-1 text-lg font-bold text-slate-900">
-          {action === 'Under Review' ? '🔍 Mark Under Review' : action === 'Approved' ? '✅ Approve Application' : '❌ Reject Application'}
+          {action === 'Under Review' ? '?? Mark Under Review' : action === 'Approved' ? '? Approve Application' : '? Reject Application'}
         </h3>
         <p className="mb-4 text-sm text-slate-500">
           Application: <span className="font-batchibold">{app.title}</span>
@@ -44,7 +44,7 @@ function ActionModal({ app, action, onClose, onConfirm }) {
               onConfirm(app._id, action, comment)
             }}
             className={`flex-1 rounded-lg py-2.5 text-sm font-batchibold text-white transition ${
-              isReject ? 'bg-rose-600 hover:bg-rose-700' : action === 'Approved' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-blue-600 hover:bg-blue-700'
+              isReject ? 'bg-rose-600 hover:bg-rose-700' : action === 'Approved' ? 'bg-primary-mid hover:bg-emerald-700' : 'bg-blue-600 hover:bg-blue-700'
             }`}
           >
             Confirm {action}
@@ -105,7 +105,7 @@ function ReviewApplications() {
         adminComment: status !== 'Rejected' ? comment : '',
         rejectionReason: status === 'Rejected' ? comment : '',
       })
-      setMsg({ type: 'success', text: `Application marked as ${status}. Student has been notified. ✅` })
+      setMsg({ type: 'success', text: `Application marked as ${status}. Student has been notified. ?` })
       setModal(null)
       setApps((prev) => prev.filter((a) => a._id !== id))
       fetchCounts()
@@ -130,7 +130,7 @@ function ReviewApplications() {
       {/* Message */}
       {msg && (
         <div className={`mb-4 rounded-lg px-4 py-3 text-sm font-medium ${
-          msg.type === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
+          msg.type === 'success' ? 'bg-primary-pale text-primary' : 'bg-rose-50 text-rose-700'
         }`}>
           {msg.text}
         </div>
@@ -141,7 +141,7 @@ function ReviewApplications() {
         {STATUS_TABS.map((s) => (
           <button key={s} onClick={() => setFilter(s)}
             className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-batchibold transition ${
-              filter === s ? 'bg-[#0077b6] text-white shadow-md' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+              filter === s ? 'bg-primary-blue text-white shadow-md' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
             }`}>
             {s}
             {counts[s] !== undefined && (
@@ -164,7 +164,7 @@ function ReviewApplications() {
         </div>
       ) : apps.length === 0 ? (
         <div className="rounded-xl border-2 border-dashed border-slate-200 py-16 text-center">
-          <p className="text-4xl">📭</p>
+          <p className="text-4xl">??</p>
           <p className="mt-3 text-lg font-batchibold text-slate-600">No {filter} Applications</p>
           <p className="mt-1 text-sm text-slate-400">All caught up!</p>
         </div>
@@ -176,7 +176,7 @@ function ReviewApplications() {
               <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex-1">
                   <div className="mb-1 flex flex-wrap items-center gap-2">
-                    <span className="rounded-md bg-[#e0f7fa] px-2.5 py-0.5 text-xs font-bold text-[#023e8a]">
+                    <span className="rounded-md bg-primary-pale px-2.5 py-0.5 text-xs font-bold text-primary-mid">
                       {a.type}
                     </span>
                     <span className={`rounded-full px-2.5 py-0.5 text-xs font-batchibold ${STATUS_COLORS[a.status]}`}>
@@ -191,12 +191,12 @@ function ReviewApplications() {
               {/* Student Info */}
               <div className="mb-3 rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-600">
                 <div className="flex flex-wrap gap-x-4 gap-y-1">
-                  <span>👤 <strong>{a.studentName}</strong></span>
-                  <span>✉️ {a.studentEmail}</span>
-                  {a.rollNumber && <span>🎓 {a.rollNumber}</span>}
-                  {a.department && <span>🏛️ {a.department}</span>}
-                  {a.batchester && <span>📅 {a.batchester} batch</span>}
-                  <span>🕒 {new Date(a.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                  <span>?? <strong>{a.studentName}</strong></span>
+                  <span>?? {a.studentEmail}</span>
+                  {a.rollNumber && <span>?? {a.rollNumber}</span>}
+                  {a.department && <span>??? {a.department}</span>}
+                  {a.batchester && <span>?? {a.batchester} batch</span>}
+                  <span>?? {new Date(a.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                 </div>
               </div>
 
@@ -205,8 +205,8 @@ function ReviewApplications() {
                 <div className="mb-3 flex flex-wrap gap-2">
                   {a.attachments.map((f, i) => (
                     <a key={i} href={`http://localhost:5000/uploads/${f.fileName}`} target="_blank" rel="noreferrer"
-                      className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-[#0077b6] transition hover:border-indigo-300 hover:bg-[#e0f7fa]">
-                      📄 {f.originalName}
+                      className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-primary-blue transition hover:border-indigo-300 hover:bg-primary-pale">
+                      ?? {f.originalName}
                       <span className="text-slate-400">({(f.fileSize / 1024).toFixed(0)}KB)</span>
                     </a>
                   ))}
@@ -218,15 +218,15 @@ function ReviewApplications() {
                 <div className="flex flex-wrap gap-2">
                   <button onClick={() => setModal({ app: a, action: 'Under Review' })}
                     className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-batchibold text-white transition hover:bg-blue-700">
-                    🔍 Mark Under Review
+                    ?? Mark Under Review
                   </button>
                   <button onClick={() => setModal({ app: a, action: 'Approved' })}
-                    className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-batchibold text-white transition hover:bg-emerald-700">
-                    ✅ Approve
+                    className="rounded-lg bg-primary-mid px-4 py-2 text-sm font-batchibold text-white transition hover:bg-emerald-700">
+                    ? Approve
                   </button>
                   <button onClick={() => setModal({ app: a, action: 'Rejected' })}
                     className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-batchibold text-white transition hover:bg-rose-700">
-                    ❌ Reject
+                    ? Reject
                   </button>
                 </div>
               )}
@@ -234,19 +234,19 @@ function ReviewApplications() {
               {a.status === 'Under Review' && (
                 <div className="flex flex-wrap gap-2">
                   <button onClick={() => setModal({ app: a, action: 'Approved' })}
-                    className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-batchibold text-white transition hover:bg-emerald-700">
-                    ✅ Approve
+                    className="rounded-lg bg-primary-mid px-4 py-2 text-sm font-batchibold text-white transition hover:bg-emerald-700">
+                    ? Approve
                   </button>
                   <button onClick={() => setModal({ app: a, action: 'Rejected' })}
                     className="rounded-lg bg-rose-600 px-4 py-2 text-sm font-batchibold text-white transition hover:bg-rose-700">
-                    ❌ Reject
+                    ? Reject
                   </button>
                 </div>
               )}
 
               {/* Admin Comment on decided applications */}
               {(a.adminComment || a.rejectionReason) && (
-                <div className={`mt-3 rounded-lg p-3 text-sm ${a.status === 'Rejected' ? 'bg-rose-50 text-rose-800' : 'bg-emerald-50 text-emerald-800'}`}>
+                <div className={`mt-3 rounded-lg p-3 text-sm ${a.status === 'Rejected' ? 'bg-rose-50 text-rose-800' : 'bg-primary-pale text-emerald-800'}`}>
                   <strong>Admin Note:</strong> {a.adminComment || a.rejectionReason}
                 </div>
               )}

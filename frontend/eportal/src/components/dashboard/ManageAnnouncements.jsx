@@ -1,11 +1,11 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import api from '../../utils/api'
 
 const CATEGORIES = ['General', 'Exam', 'Fee', 'Holiday', 'Event', 'Urgent']
 
 const CATEGORY_STYLES = {
   Urgent:'bg-rose-100 text-rose-700', Exam:'bg-purple-100 text-purple-700',
-  Fee:'bg-amber-100 text-amber-700',  Holiday:'bg-emerald-100 text-emerald-700',
+  Fee:'bg-amber-100 text-amber-700',  Holiday:'bg-primary-pale text-primary',
   Event:'bg-blue-100 text-blue-700',  General:'bg-gray-100 text-gray-600',
 }
 
@@ -48,7 +48,7 @@ export default function ManageAnnouncements() {
   return (
     <div className="max-w-3xl space-y-5">
       {msg && (
-        <div className={`rounded-lg px-4 py-3 text-sm font-medium ${msg.type==='success'?'bg-emerald-50 text-emerald-700':'bg-rose-50 text-rose-700'}`}>
+        <div className={`rounded-lg px-4 py-3 text-sm font-medium ${msg.type==='success'?'bg-primary-pale text-primary':'bg-rose-50 text-rose-700'}`}>
           {msg.text}
         </div>
       )}
@@ -56,7 +56,7 @@ export default function ManageAnnouncements() {
       <div className="flex items-center justify-between">
         <p className="text-sm text-gray-500">{announcements.length} announcement(s)</p>
         <button onClick={() => setShowForm(!showForm)}
-          className="rounded-lg bg-[#0077b6] px-4 py-2 text-sm font-batchibold text-white hover:bg-indigo-700 transition">
+          className="rounded-lg bg-primary-blue px-4 py-2 text-sm font-batchibold text-white hover:opacity-80 transition">
           {showForm ? 'Cancel' : '+ Post Announcement'}
         </button>
       </div>
@@ -90,8 +90,8 @@ export default function ManageAnnouncements() {
               />
             </div>
             <button type="submit" disabled={loading}
-              className="rounded-lg bg-[#0077b6] px-6 py-2.5 text-sm font-batchibold text-white hover:bg-indigo-700 disabled:opacity-60 transition">
-              {loading ? 'Posting...' : '📢 Post Announcement'}
+              className="rounded-lg bg-primary-blue px-6 py-2.5 text-sm font-batchibold text-white hover:opacity-80 disabled:opacity-60 transition">
+              {loading ? 'Posting...' : '?? Post Announcement'}
             </button>
           </form>
         </div>
@@ -100,7 +100,7 @@ export default function ManageAnnouncements() {
       {/* Announcements List */}
       {announcements.length === 0 ? (
         <div className="rounded-xl border-2 border-dashed border-gray-200 py-12 text-center">
-          <p className="text-3xl">📢</p>
+          <p className="text-3xl">??</p>
           <p className="mt-2 text-gray-500">No announcements posted yet.</p>
         </div>
       ) : (
@@ -122,7 +122,7 @@ export default function ManageAnnouncements() {
                 </div>
                 <button onClick={() => handleDelete(a._id)}
                   className="shrink-0 rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-batchibold text-rose-600 hover:bg-rose-50 transition">
-                  🗑️ Delete
+                  ??? Delete
                 </button>
               </div>
             </div>

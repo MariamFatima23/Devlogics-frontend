@@ -4,7 +4,7 @@ import api from '../../utils/api'
 const STATUS_COLORS = {
   Pending:      'bg-amber-100 text-amber-700',
   'Under Review': 'bg-blue-100 text-blue-700',
-  Approved:     'bg-emerald-100 text-emerald-700',
+  Approved:     'bg-primary-pale text-primary',
   Rejected:     'bg-rose-100 text-rose-700',
 }
 
@@ -53,7 +53,7 @@ export default function ManageCourseApplications() {
   return (
     <div className="space-y-5">
       {msg && (
-        <div className={`rounded-lg px-4 py-3 text-sm font-medium ${msg.type==='success'?'bg-emerald-50 text-emerald-700':'bg-rose-50 text-rose-700'}`}>
+        <div className={`rounded-lg px-4 py-3 text-sm font-medium ${msg.type==='success'?'bg-primary-pale text-primary':'bg-rose-50 text-rose-700'}`}>
           {msg.text}
         </div>
       )}
@@ -61,13 +61,13 @@ export default function ManageCourseApplications() {
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {[
-          { label:'Total',        value: stats.total || 0,       color:'#03045e' },
+          { label:'Total',        value: stats.total || 0,       color:'#04065c' },
           { label:'Pending',      value: stats.pending || 0,     color:'#d97706' },
           { label:'Under Review', value: stats.underReview || 0, color:'#1d4ed8' },
           { label:'Approved',     value: stats.approved || 0,    color:'#059669' },
           { label:'Rejected',     value: stats.rejected || 0,    color:'#dc2626' },
         ].map(s => (
-          <div key={s.label} className="rounded-2xl border border-[#caf0f8] bg-white p-4 text-center shadow-sm">
+          <div key={s.label} className="rounded-2xl border border-primary-pale bg-white p-4 text-center shadow-sm">
             <p className="text-2xl font-extrabold" style={{ color: s.color }}>{s.value}</p>
             <p className="text-xs text-gray-400">{s.label}</p>
           </div>
@@ -79,7 +79,7 @@ export default function ManageCourseApplications() {
         {FILTERS.map(f => (
           <button key={f} onClick={() => setFilter(f)}
             className={`rounded-full px-4 py-1.5 text-xs font-bold capitalize transition ${filter===f?'text-white':'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-            style={filter===f?{background:'linear-gradient(135deg,#0077b6,#03045e)'}:{}}>
+            style={filter===f?{background:'linear-gradient(135deg,#0077b6,#04065c)'}:{}}>
             {f === 'all' ? 'All' : f}
           </button>
         ))}
@@ -95,7 +95,7 @@ export default function ManageCourseApplications() {
 
             <h3 className="mb-4 text-lg font-extrabold text-gray-900">Application Detail</h3>
 
-            <div className="mb-4 grid gap-3 rounded-2xl bg-[#f0f9ff] p-4 text-sm sm:grid-cols-2">
+            <div className="mb-4 grid gap-3 rounded-2xl bg-primary-ice p-4 text-sm sm:grid-cols-2">
               {[
                 ['Student', selected.studentName],
                 ['Email', selected.studentEmail],
@@ -120,7 +120,7 @@ export default function ManageCourseApplications() {
             </div>
 
             {/* Why Apply */}
-            <div className="mb-4 rounded-xl border border-[#caf0f8] p-4">
+            <div className="mb-4 rounded-xl border border-primary-pale p-4">
               <p className="mb-1 text-xs font-bold uppercase tracking-wide text-gray-400">Why Apply</p>
               <p className="text-sm text-gray-700">{selected.whyApply}</p>
             </div>
@@ -129,7 +129,7 @@ export default function ManageCourseApplications() {
             <div className="mb-4 flex flex-wrap gap-3">
               {selected.cvFile && (
                 <a href={`http://localhost:5000/uploads/${selected.cvFile}`} target="_blank" rel="noreferrer"
-                  className="flex items-center gap-2 rounded-xl bg-[#e0f7fa] px-4 py-2 text-sm font-semibold text-[#0077b6] hover:bg-[#caf0f8]">
+                  className="flex items-center gap-2 rounded-xl bg-primary-pale px-4 py-2 text-sm font-semibold text-primary-blue hover:bg-primary-pale">
                   📄 Download CV ({selected.cvOriginalName || 'cv'})
                 </a>
               )}
@@ -141,11 +141,27 @@ export default function ManageCourseApplications() {
               )}
             </div>
 
-            {/* Admin comment */}
+            {/* Internship signature */}
+            {selected.agreementSigned && selected.signatureFile && (
+              <div className="mb-4 rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                <p className="mb-2 text-xs font-bold uppercase tracking-wide text-blue-600">✅ Agreement Signed — Student Signature</p>
+                <img
+                  src={`http://localhost:5000/uploads/${selected.signatureFile}`}
+                  alt="Student Signature"
+                  className="max-h-28 rounded-xl border border-blue-200 bg-white p-2"
+                  style={{ maxWidth: '100%' }}
+                />
+              </div>
+            )}
+            {selected.courseType === 'internship' && !selected.agreementSigned && (
+              <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs text-amber-700 font-medium">
+                ⚠️ Agreement not yet signed by student.
+              </div>
+            )}            {/* Admin comment */}
             <div className="mb-3">
               <label className="mb-1 block text-sm font-bold text-gray-700">Admin Comment (optional)</label>
               <textarea value={comment} onChange={e=>setComment(e.target.value)} rows="2"
-                className="w-full rounded-xl border border-[#caf0f8] bg-[#f0f9ff] px-3 py-2.5 text-sm outline-none focus:border-[#0077b6]"
+                className="w-full rounded-xl border border-primary-pale bg-primary-ice px-3 py-2.5 text-sm outline-none focus:border-primary-blue"
                 placeholder="Reason for approval or rejection..." />
             </div>
 
@@ -154,13 +170,13 @@ export default function ManageCourseApplications() {
               {['Under Review','Approved','Rejected'].map(s => (
                 <button key={s} onClick={() => setNewStatus(s)}
                   className={`rounded-xl px-4 py-2 text-xs font-bold transition border-2 ${newStatus===s?'text-white border-transparent':'border-gray-200 text-gray-600 hover:border-gray-400'}`}
-                  style={newStatus===s?{background:'linear-gradient(135deg,#0077b6,#03045e)'}:{}}>
+                  style={newStatus===s?{background:'linear-gradient(135deg,#0077b6,#04065c)'}:{}}>
                   {s}
                 </button>
               ))}
               <button onClick={() => updateStatus(selected._id)} disabled={!newStatus || loading}
                 className="ml-auto rounded-xl px-5 py-2 text-xs font-bold text-white disabled:opacity-50"
-                style={{ background:'linear-gradient(135deg,#059669,#03045e)' }}>
+                style={{ background:'linear-gradient(135deg,#059669,#04065c)' }}>
                 {loading ? 'Saving...' : '✅ Update Status'}
               </button>
             </div>
@@ -172,7 +188,7 @@ export default function ManageCourseApplications() {
                 <div className="space-y-2">
                   {selected.timeline.map((t, i) => (
                     <div key={i} className="flex items-start gap-3 text-xs">
-                      <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-[#0077b6]" />
+                      <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-primary-blue" />
                       <div>
                         <span className="font-bold text-gray-800">{t.status}</span>
                         {t.comment && <span className="text-gray-500"> — {t.comment}</span>}
@@ -189,17 +205,17 @@ export default function ManageCourseApplications() {
 
       {/* Applications list */}
       {apps.length === 0 ? (
-        <div className="rounded-xl border-2 border-dashed border-[#caf0f8] py-12 text-center">
+        <div className="rounded-xl border-2 border-dashed border-primary-pale py-12 text-center">
           <p className="text-3xl">📋</p>
           <p className="mt-2 text-gray-500">No applications {filter !== 'all' ? `with status "${filter}"` : 'yet'}.</p>
         </div>
       ) : (
         <div className="space-y-3">
           {apps.map(app => (
-            <div key={app._id} className="flex flex-col gap-3 rounded-2xl border border-[#caf0f8] bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+            <div key={app._id} className="flex flex-col gap-3 rounded-2xl border border-primary-pale bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-extrabold text-white text-sm"
-                  style={{ background:'linear-gradient(135deg,#03045e,#0077b6)' }}>
+                  style={{ background:'linear-gradient(135deg,#04065c,#0077b6)' }}>
                   {app.studentName?.[0] || '?'}
                 </div>
                 <div>
@@ -208,14 +224,14 @@ export default function ManageCourseApplications() {
                     <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${STATUS_COLORS[app.status] || 'bg-gray-100 text-gray-600'}`}>
                       {app.status}
                     </span>
-                    <span className="rounded-full bg-[#e0f7fa] px-2 py-0.5 text-[10px] font-bold text-[#03045e] capitalize">{app.courseType}</span>
+                    <span className="rounded-full bg-primary-pale px-2 py-0.5 text-[10px] font-bold text-primary capitalize">{app.courseType}</span>
                   </div>
                   <p className="text-xs text-gray-500">{app.courseName}</p>
                   <p className="text-[10px] text-gray-400">{new Date(app.createdAt).toLocaleDateString()} · {app.qualification}</p>
                 </div>
               </div>
               <button onClick={() => { setSelected(app); setComment(app.adminComment||''); setNewStatus('') }}
-                className="shrink-0 rounded-xl bg-[#e0f7fa] px-4 py-2 text-xs font-bold text-[#0077b6] transition hover:bg-[#caf0f8]">
+                className="shrink-0 rounded-xl bg-primary-pale px-4 py-2 text-xs font-bold text-primary-blue transition hover:bg-primary-pale">
                 View Details →
               </button>
             </div>
