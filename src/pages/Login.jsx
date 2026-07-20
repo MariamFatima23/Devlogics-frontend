@@ -1,6 +1,6 @@
 ﻿import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import { useAuth } from '../context/AuthContext'
 import AuthParticles from '../components/AuthParticles'
 import { motion } from 'framer-motion'
@@ -20,7 +20,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true)
     try {
-      const res = await axios.post('/api/auth/login', formData)
+      const res = await api.post('/auth/login', formData)
       const name = res.data.user?.name?.split(' ')[0] || 'Student'
       toast.success(`Welcome back, ${name}! 🎉`)
       login(res.data.user, res.data.token)
