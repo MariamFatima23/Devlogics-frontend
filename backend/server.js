@@ -8,13 +8,17 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:3001',
-    'http://localhost:5173',
-    process.env.FRONTEND_URL,
-    /\.vercel\.app$/,   // allow all vercel.app subdomains
-  ].filter(Boolean),
+  origin: function(origin, callback) {
+    // Allow all vercel.app domains + localhost
+    if (!origin) return callback(null, true)
+    if (
+      origin.includes('vercel.app') ||
+      origin.includes('localhost')
+    ) {
+      return callback(null, true)
+    }
+    callback(new Error('Not allowed by CORS'))
+  },
   credentials: true,
 }))
 app.use(express.json())
@@ -79,10 +83,15 @@ app.post('/api/make-admin', async (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 10000,
+    socketTimeoutMS: 45000,
+    connectTimeoutMS: 10000,
+    maxPoolSize: 10,
+    bufferCommands: false,
+  })
   .then(() => {
     console.log('✅ MongoDB connected');
-    // Only listen on port when running locally (not on Vercel)
     if (process.env.NODE_ENV !== 'production') {
       app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
     }
