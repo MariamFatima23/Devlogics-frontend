@@ -1,5 +1,7 @@
 node_modules/
 .env
+.env.local
+.env.production
 .vscode/
 *.zip
 *.rar
@@ -12,4 +14,8 @@ Thumbs.db
 *.log
 coverage/
 .vercel
-.env*
+
+# Ignore any accidentally nested project folders
+backend/
+frontend/
+dev/
