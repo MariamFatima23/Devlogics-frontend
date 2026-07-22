@@ -1,3 +1,13 @@
-node_modules
-dist
+node_modules/
 .env
+.vscode/
+*.zip
+*.rar
+*.tar
+*.tar.gz
+dist/
+build/
+.DS_Store
+Thumbs.db
+*.log
+coverage/
