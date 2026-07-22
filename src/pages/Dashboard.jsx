@@ -83,7 +83,8 @@ const PAGE_TITLES = {
 
 export default function Dashboard() {
   const { user, logout } = useAuth()
-  const navigate         = useNavigate()               = useState('overview')
+  const navigate         = useNavigate()
+  const [tab, setTab]               = useState('overview')
   const [menuOpen, setMenuOpen]     = useState(false)
   const [unread, setUnread]         = useState(0)
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
