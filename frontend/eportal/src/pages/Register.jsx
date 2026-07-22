@@ -4,13 +4,14 @@ import api from '../utils/api'
 import { useAuth } from '../context/AuthContext'
 import AuthParticles from '../components/AuthParticles'
 import { motion } from 'framer-motion'
-import { FaUserPlus } from 'react-icons/fa'
+import { FaUserPlus, FaEye, FaEyeSlash } from 'react-icons/fa'
 import toast from 'react-hot-toast'
 
 export default function Register() {
   const [formData, setFormData] = useState({ name:'', email:'', password:'', rollNumber:'', department:'', semester:'', phone:'' })
   const [error, setError]       = useState('')
   const [loading, setLoading]   = useState(false)
+  const [showPass, setShowPass] = useState(false)
   const { login }  = useAuth()
   const navigate   = useNavigate()
 
@@ -84,8 +85,26 @@ export default function Register() {
             <input name="email" type="email" placeholder="Email Address"
               value={formData.email} onChange={handleChange} required className={inputCls} />
 
-            <input name="password" type="password" placeholder="Password (min 6 chars)"
-              value={formData.password} onChange={handleChange} required className={inputCls} />
+            {/* Password with show/hide */}
+            <div className="relative">
+              <input
+                name="password"
+                type={showPass ? 'text' : 'password'}
+                placeholder="Password (min 6 chars)"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className={`${inputCls} pr-11`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPass(v => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                tabIndex={-1}
+              >
+                {showPass ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+              </button>
+            </div>
 
             <input name="phone" type="tel" placeholder="Phone Number"
               value={formData.phone} onChange={handleChange} required className={inputCls} />

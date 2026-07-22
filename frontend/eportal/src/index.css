@@ -308,8 +308,16 @@ html { scroll-behavior: smooth; }
 /* ═══════════════════════════════════════════
    SECTION WRAPPER
 ═══════════════════════════════════════════ */
-.dp-section { padding: 5rem 1.5rem; }
-.dp-section-heading { margin-bottom: 3rem; text-align: center; }
+.dp-section { padding: 3.5rem 1rem; }
+@media (min-width: 640px) { .dp-section { padding: 5rem 1.5rem; } }
+.dp-section-heading { margin-bottom: 2.5rem; text-align: center; }
+@media (min-width: 640px) { .dp-section-heading { margin-bottom: 3rem; } }
+
+/* Prevent horizontal scroll on mobile */
+body, html { overflow-x: hidden; }
+
+/* Responsive images */
+img { max-width: 100%; height: auto; }
 
 /* ═══════════════════════════════════════════
    ROUTE LOADER — slim top progress bar

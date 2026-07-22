@@ -66,18 +66,18 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-white/10 transition-all duration-300"
+    <nav className="sticky top-0 z-50 border-b border-white/10 transition-all duration-300 shadow-lg"
       style={{ background: 'var(--theme-primary)' }}>
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6" style={{ minHeight: '64px' }}>
 
         {/* Brand — logo full, no circle, no crop */}
         <button onClick={() => scrollTo('#home')} className="flex items-center gap-2.5">
           <img
             src={settings.logoUrl ? `${BASE}/uploads/${settings.logoUrl}` : '/gallery/logo1.png'}
             alt="logo"
-            style={{ height: '42px', width: 'auto', objectFit: 'contain' }}
+            className="h-8 sm:h-10 md:h-11"
+            style={{ width: 'auto', objectFit: 'contain' }}
           />
-          
         </button>
 
         {/* Desktop nav links */}
@@ -158,16 +158,16 @@ export default function Navbar() {
               <div className="h-6 w-px bg-white/20" />
 
               {/* User pill */}
-              <div className="flex items-center gap-2 rounded-xl bg-white/10 px-3 py-1.5 ring-1 ring-white/10">
+              <div className="flex items-center gap-2 rounded-xl bg-white/10 px-2 py-1.5 ring-1 ring-white/10 sm:px-3">
                 {user?.profileImage ? (
                   <img src={`${BASE}/uploads/${user.profileImage}`} alt=""
-                    className="h-6 w-6 rounded-full object-cover" />
+                    className="h-6 w-6 rounded-full object-cover shrink-0" />
                 ) : (
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-blue text-[10px] font-bold text-white">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-blue text-[10px] font-bold text-white">
                     {user.name?.[0]?.toUpperCase()}
                   </div>
                 )}
-                <span className="hidden max-w-[100px] truncate text-sm font-semibold text-white sm:inline">{user.name}</span>
+                <span className="hidden max-w-[80px] truncate text-sm font-semibold text-white sm:inline">{user.name}</span>
               </div>
 
               <button onClick={handleLogout}

@@ -90,7 +90,7 @@ export default function ManageServices() {
               <div><label className={labelCls}>Tag</label><input value={form.tag} onChange={e=>setForm({...form,tag:e.target.value})} className={inputCls} placeholder="Financial Aid" /></div>
             </div>
             <div><label className={labelCls}>Description *</label><textarea value={form.description} onChange={e=>setForm({...form,description:e.target.value})} required rows="3" className={inputCls} placeholder="Service description..." /></div>
-            <div className="grid gap-4 sm:grid-cols-4">
+            <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
               <div><label className={labelCls}>Icon</label><input value={form.icon} onChange={e=>setForm({...form,icon:e.target.value})} className={inputCls} placeholder="💰" /></div>
               <div><label className={labelCls}>BG From</label><input value={form.bgFrom} onChange={e=>setForm({...form,bgFrom:e.target.value})} className={inputCls} placeholder='#04065c' /></div>
               <div><label className={labelCls}>BG To</label><input value={form.bgTo} onChange={e=>setForm({...form,bgTo:e.target.value})} className={inputCls} placeholder='#0077b6' /></div>

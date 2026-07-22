@@ -14,7 +14,7 @@ const highlights = [
 
 export default function UniversityLanding({ user }) {
   return (
-    <section className="relative overflow-hidden px-6 py-20 text-white"
+    <section className="relative overflow-hidden px-4 py-12 sm:px-6 sm:py-16 md:py-20 text-white"
       style={{ background: 'var(--theme-grad-hero)' }}>
       <div className="absolute inset-0">
         <img

@@ -2,6 +2,7 @@ const express = require('express')
 const router  = express.Router()
 const { protect, adminOnly } = require('../middleware/auth.middleware')
 const upload  = require('../middleware/upload.middleware')
+const { processUploads } = require('../middleware/upload.middleware')
 const CourseApplication = require('../models/CourseApplication.model')
 const Notification = require('../models/Notification.model')
 const Course = require('../models/Course.model')
@@ -12,7 +13,7 @@ router.post('/', protect, upload.fields([
   { name: 'paymentProof',  maxCount: 1 },
   { name: 'signatureFile', maxCount: 1 },
   { name: 'securityProof', maxCount: 1 },
-]), async (req, res) => {
+]), processUploads, async (req, res) => {
   try {
     const course = await Course.findById(req.body.courseId)
     if (!course) return res.status(404).json({ message: 'Course not found' })
@@ -28,9 +29,12 @@ router.post('/', protect, upload.fields([
     const payProof    = req.files?.paymentProof?.[0]
     const sigFile     = req.files?.signatureFile?.[0]
 
+    // Helper: get URL from file (Cloudinary URL or local filename)
+    const fileUrl = (f) => f ? (f.cloudinaryUrl || f.filename) : null
+
     // If no new CV uploaded but student has one saved in profile, use it
-    let cvFileName     = cvFile?.filename        || null
-    let cvOriginalName = cvFile?.originalname    || null
+    let cvFileName     = fileUrl(cvFile)
+    let cvOriginalName = cvFile?.originalname || null
     if (!cvFileName && req.body.useProfileCv === 'true') {
       const studentUser = await require('../models/User.model').findById(req.user.id).select('cv')
       if (studentUser?.cv) {
@@ -63,7 +67,7 @@ router.post('/', protect, upload.fields([
             dueDate,
             status:        i === 1 ? (firstProof ? 'paid' : 'pending') : 'pending',
             paidDate:      i === 1 && firstProof ? now : undefined,
-            proofFile:     i === 1 ? firstProof?.filename : undefined,
+            proofFile:     i === 1 ? fileUrl(firstProof) : undefined,
             paymentMethod: i === 1 ? req.body.paymentMethod : undefined,
             transactionId: i === 1 ? req.body.transactionId : undefined,
           })
@@ -77,7 +81,7 @@ router.post('/', protect, upload.fields([
           dueDate:       new Date(),
           status:        payProof ? 'paid' : 'pending',
           paidDate:      payProof ? new Date() : undefined,
-          proofFile:     payProof?.filename,
+          proofFile:     fileUrl(payProof),
           paymentMethod: req.body.paymentMethod,
           transactionId: req.body.transactionId,
         }]
@@ -107,14 +111,14 @@ router.post('/', protect, upload.fields([
       amountPaid,
       amountRemaining: totalFee - amountPaid,
       installments,
-      paymentProof:   payProof?.filename,
+      paymentProof:   fileUrl(payProof),
       paymentMethod:  req.body.paymentMethod,
       transactionId:  req.body.transactionId,
       // Agreement
       agreementSigned: req.body.agreementSigned === 'true',
-      signatureFile:  sigFile?.filename,
+      signatureFile:  fileUrl(sigFile),
       securityType:   req.body.securityType  || '',
-      securityProof:  req.files?.securityProof?.[0]?.filename || null,
+      securityProof:  fileUrl(req.files?.securityProof?.[0]) || null,
       timeline: [{ status:'Pending', comment:'Application submitted', updatedBy: req.user.name }],
     })
 
@@ -193,7 +197,7 @@ router.patch('/:id/status', protect, adminOnly, async (req, res) => {
 })
 
 // Student: Submit next installment payment proof
-router.post('/:id/installment', protect, upload.single('proofFile'), async (req, res) => {
+router.post('/:id/installment', protect, upload.single('proofFile'), processUploads, async (req, res) => {
   try {
     const app = await CourseApplication.findOne({ _id: req.params.id, studentId: req.user.id })
     if (!app) return res.status(404).json({ message: 'Application not found' })
@@ -203,7 +207,7 @@ router.post('/:id/installment', protect, upload.single('proofFile'), async (req,
     if (!inst) return res.status(404).json({ message: 'Installment not found' })
     if (inst.status === 'paid') return res.status(400).json({ message: 'Already paid' })
 
-    inst.proofFile     = req.file?.filename
+    inst.proofFile     = req.file?.cloudinaryUrl || req.file?.filename
     inst.paymentMethod = req.body.paymentMethod
     inst.transactionId = req.body.transactionId
     inst.status        = 'paid'

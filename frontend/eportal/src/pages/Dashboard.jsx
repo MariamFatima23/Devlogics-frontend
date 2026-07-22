@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
@@ -83,19 +83,16 @@ const PAGE_TITLES = {
 
 export default function Dashboard() {
   const { user, logout } = useAuth()
-  const navigate         = useNavigate()
-  const profileMenuRef   = useRef(null)
-
-  const [tab, setTab]               = useState('overview')
+  const navigate         = useNavigate()               = useState('overview')
   const [menuOpen, setMenuOpen]     = useState(false)
   const [unread, setUnread]         = useState(0)
-  const [profileOpen, setProfileOpen] = useState(false)
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
   const [isDesktop, setIsDesktop]   = useState(() => window.innerWidth >= 1024)
 
   const isAdmin  = user?.role === 'admin'
   const menu     = isAdmin ? adminMenu : studentMenu
   const BASE     = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
+  const fileUrl  = (path) => (path && path.startsWith('http')) ? path : (path ? `${BASE}/uploads/${path}` : null)
   const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
 
   // Track screen size to conditionally render content once
@@ -110,15 +107,11 @@ export default function Dashboard() {
     api.get('/notifications/unread-count').then(r => setUnread(r.data.count)).catch(() => {})
   }, [])
 
-  // Close profile dropdown on outside click
+  // Listen for goto-profile event from CourseApplyModal
   useEffect(() => {
-    const handler = (e) => {
-      if (profileMenuRef.current && !profileMenuRef.current.contains(e.target)) {
-        setProfileOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
+    const handler = () => switchTab('profile')
+    window.addEventListener('goto-profile', handler)
+    return () => window.removeEventListener('goto-profile', handler)
   }, [])
 
   const switchTab = (id) => { setTab(id); setMenuOpen(false) }
@@ -145,8 +138,8 @@ export default function Dashboard() {
       <motion.aside
         animate={{ width: sidebarExpanded ? 240 : 56 }}
         transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-        className="hidden lg:flex fixed top-16 bottom-0 left-0 z-40 flex-col overflow-hidden"
-        style={{ background: 'var(--theme-grad-sidebar)' }}
+        className="hidden lg:flex fixed top-[64px] bottom-0 left-0 z-40 flex-col"
+        style={{ background: 'var(--theme-grad-sidebar)', overflowX: 'hidden', overflowY: 'hidden' }}
       >
         {/* ── Top toggle button ── */}
         <div className="shrink-0 flex items-center border-b border-white/10 px-2 py-2"
@@ -168,7 +161,7 @@ export default function Dashboard() {
           </motion.button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-2 py-4 space-y-2">
+        <nav className="flex-1 px-2 py-4 space-y-2" style={{ overflowY: 'auto', overflowX: 'hidden' }}>
           <motion.p
             animate={{ opacity: sidebarExpanded ? 1 : 0 }}
             transition={{ duration: 0.15 }}
@@ -451,7 +444,7 @@ export default function Dashboard() {
               title="My Profile"
             >
               {user?.profileImage ? (
-                <img src={`${BASE}/uploads/${user.profileImage}`} alt=""
+                <img src={fileUrl(user.profileImage)} alt=""
                   className="h-7 w-7 rounded-lg object-cover" />
               ) : (
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg text-[11px] font-extrabold"
@@ -515,21 +508,20 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center gap-2">
             <NotificationDropdown unread={unread} setUnread={setUnread} />
-            <div className="relative" ref={profileMenuRef}>
-              <motion.button
-                whileTap={{ scale: 0.93 }}
-                onClick={() => setProfileOpen(v => !v)}
-                className="flex items-center gap-2 rounded-xl bg-white/10 pl-1.5 pr-2 py-1 ring-1 ring-white/20"
-              >
-                {user?.profileImage ? (
-                  <img src={`${BASE}/uploads/${user.profileImage}`} alt="" className="h-7 w-7 rounded-lg object-cover" />
-                ) : (
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg text-[11px] font-extrabold" style={{ background: 'var(--theme-accent)', color: 'var(--theme-primary)' }}>
-                    {initials}
-                  </div>
-                )}
-              </motion.button>
-            </div>
+            <motion.button
+              whileTap={{ scale: 0.93 }}
+              onClick={() => switchTab('profile')}
+              className="flex items-center gap-2 rounded-xl bg-white/10 pl-1.5 pr-2 py-1 ring-1 ring-white/20"
+              title="My Profile"
+            >
+              {user?.profileImage ? (
+                <img src={fileUrl(user.profileImage)} alt="" className="h-7 w-7 rounded-lg object-cover" />
+              ) : (
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg text-[11px] font-extrabold" style={{ background: 'var(--theme-accent)', color: 'var(--theme-primary)' }}>
+                  {initials}
+                </div>
+              )}
+            </motion.button>
           </div>
         </header>
         {/* Mobile content — only rendered on mobile screens */}
