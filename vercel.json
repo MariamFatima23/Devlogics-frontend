@@ -1,11 +1,16 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite",
-  "env": {
-    "VITE_API_URL": "https://devlogics-backend.vercel.app/api"
-  },
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/eportal/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    { "src": "/assets/(.*)", "dest": "/frontend/eportal/dist/assets/$1" },
+    { "src": "/(.*)", "dest": "/frontend/eportal/dist/index.html" }
   ]
 }
