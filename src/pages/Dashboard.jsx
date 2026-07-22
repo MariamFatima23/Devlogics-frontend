@@ -88,7 +88,233 @@ export default function Dashboard() {
   const [menuOpen, setMenuOpen]     = useState(false)
   const [unread, setUnread]         = useState(0)
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
-  const [isDesktop, setIsDesktop]   = useState(() => window.innerWidth >= 1024)
+
+  const isAdmin  = user?.role === 'admin'
+  const menu     = isAdmin ? adminMenu : studentMenu
+  const BASE     = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
+  const fileUrl  = (path) => (path && path.startsWith('http')) ? path : (path ? `${BASE}/uploads/${path}` : null)
+  const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
+
+  useEffect(() => {
+    api.get('/notifications/unread-count').then(r => setUnread(r.data.count)).catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    const handler = () => switchTab('profile')
+    window.addEventListener('goto-profile', handler)
+    return () => window.removeEventListener('goto-profile', handler)
+  }, [])
+
+  const switchTab = (id) => { setTab(id); setMenuOpen(false) }
+  const handleLogout = () => { logout(); navigate('/') }
+  const toggleSidebar = () => setSidebarExpanded(v => !v)
+
+  /* ── shared tab content ── */
+  const TabContent = () => (
+    <>
+      {tab === 'overview'         && <Overview user={user} setTab={switchTab} />}
+      {tab === 'browse-courses'   && !isAdmin && <BrowseCourses user={user} />}
+      {tab === 'my-course-apps'   && !isAdmin && <MyCourseApplications />}
+      {tab === 'add-review'       && !isAdmin && <AddReview />}
+      {tab === 'announcements'    && <Announcements />}
+      {tab === 'profile'          && <Profile />}
+      {tab === 'review'           && isAdmin && <ReviewApplications />}
+      {tab === 'course-apps'      && isAdmin && <ManageCourseApplications />}
+      {tab === 'manage-ann'       && isAdmin && <ManageAnnouncements />}
+      {tab === 'manage-courses'   && isAdmin && <ManageCourses />}
+      {tab === 'manage-services'  && isAdmin && <ManageServices />}
+      {tab === 'student-pride'    && isAdmin && <ManageStudentPride />}
+      {tab === 'manage-reviews'   && isAdmin && <ManageReviews />}
+      {tab === 'manage-students'  && isAdmin && <ManageStudents />}
+      {tab === 'site-settings'    && isAdmin && <ManageSiteSettings />}
+      {tab === 'contact-messages' && isAdmin && <ContactMessages />}
+    </>
+  )
+
+  return (
+    <div className="flex h-screen overflow-hidden" style={{ background: 'var(--theme-bg-light)' }}>
+
+      {/* Mobile overlay */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+            onClick={() => setMenuOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* ══ DESKTOP SIDEBAR ══ */}
+      <motion.aside
+        animate={{ width: sidebarExpanded ? 240 : 56 }}
+        transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+        className="hidden lg:flex fixed top-[56px] bottom-0 left-0 z-40 flex-col"
+        style={{ background: 'var(--theme-grad-sidebar)', overflowX: 'hidden', overflowY: 'hidden' }}
+      >
+        <div className="shrink-0 flex items-center border-b border-white/10 px-2 py-2"
+          style={{ justifyContent: sidebarExpanded ? 'flex-end' : 'center' }}>
+          <motion.button onClick={toggleSidebar} whileTap={{ scale: 0.88 }} whileHover={{ scale: 1.1 }}
+            title={sidebarExpanded ? 'Collapse' : 'Expand'}
+            className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white/25 bg-white/10 text-white hover:bg-white/25 transition">
+            <motion.span animate={{ rotate: sidebarExpanded ? 180 : 0 }} transition={{ type: 'spring', stiffness: 300, damping: 28 }} className="flex items-center justify-center">
+              <Icon d="M9 18l6-6-6-6" size={13} />
+            </motion.span>
+          </motion.button>
+        </div>
+
+        <nav className="flex-1 px-2 py-4 space-y-2" style={{ overflowY: 'auto', overflowX: 'hidden' }}>
+          <motion.p animate={{ opacity: sidebarExpanded ? 1 : 0 }} transition={{ duration: 0.15 }}
+            className="mb-3 px-3 text-[10px] font-bold uppercase tracking-widest text-white/30 whitespace-nowrap">
+            {isAdmin ? 'Admin Panel' : 'Student Portal'}
+          </motion.p>
+          {menu.map((item) => {
+            const active = tab === item.id
+            return (
+              <motion.button key={item.id} onClick={() => switchTab(item.id)}
+                animate={active
+                  ? { backgroundColor: 'rgba(72,202,228,0.18)', boxShadow: '0 0 14px 3px rgba(72,202,228,0.22)', color: '#48cae4' }
+                  : { backgroundColor: 'rgba(255,255,255,0)', boxShadow: '0 0 0px 0px rgba(72,202,228,0)', color: 'rgba(255,255,255,1)' }}
+                whileHover={!active ? { backgroundColor: 'rgba(255,255,255,0.09)', color: 'rgba(255,255,255,1)' } : {}}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+                className="relative flex w-full items-center gap-3 rounded-xl px-3 py-3.5 text-sm font-semibold origin-center"
+                title={!sidebarExpanded ? item.label : undefined}>
+                <motion.span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-r-full"
+                  animate={active ? { height: '60%', opacity: 1, x: 0 } : { height: '0%', opacity: 0, x: -4 }}
+                  transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+                  style={{ background: 'linear-gradient(180deg,#caf0f8,#48cae4)' }} />
+                <motion.span
+                  animate={active ? { scale: 1.18, filter: 'drop-shadow(0 0 7px rgba(72,202,228,0.9))' } : { scale: 1, filter: 'drop-shadow(0 0 0px rgba(72,202,228,0))' }}
+                  transition={{ type: 'spring', stiffness: 320, damping: 22 }}
+                  className="relative z-10 shrink-0">{item.icon}</motion.span>
+                <motion.span animate={{ opacity: sidebarExpanded ? 1 : 0, width: sidebarExpanded ? 'auto' : 0 }} transition={{ duration: 0.15 }}
+                  className={`relative z-10 flex-1 text-left whitespace-nowrap overflow-hidden ${active ? 'font-bold' : 'font-semibold'}`}>
+                  {item.label}
+                </motion.span>
+              </motion.button>
+            )
+          })}
+        </nav>
+
+        <div className="shrink-0 border-t border-white/10 p-2">
+          <motion.button whileHover={{ x: 4 }} whileTap={{ scale: 0.97 }} onClick={handleLogout}
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold text-rose-300 transition hover:bg-rose-500/15 hover:text-rose-200"
+            title={!sidebarExpanded ? 'Logout' : undefined}>
+            <span className="shrink-0"><Icon d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></span>
+            <motion.span animate={{ opacity: sidebarExpanded ? 1 : 0, width: sidebarExpanded ? 'auto' : 0 }} transition={{ duration: 0.15 }} className="overflow-hidden whitespace-nowrap">
+              Logout
+            </motion.span>
+          </motion.button>
+        </div>
+      </motion.aside>
+
+      {/* ══ MOBILE SIDEBAR ══ */}
+      <motion.aside initial={false} animate={{ x: menuOpen ? 0 : -288 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col lg:hidden"
+        style={{ background: 'var(--theme-grad-sidebar)' }}>
+        <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-5 py-4">
+          <img src="/gallery/logo1.png" alt="logo"
+            style={{ height: '32px', width: 'auto', maxWidth: '120px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+          <button onClick={() => setMenuOpen(false)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-white/50 hover:bg-white/10 hover:text-white">
+            <Icon d="M6 18L18 6M6 6l12 12" size={16} />
+          </button>
+        </div>
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+          <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-widest text-white/30">{isAdmin ? 'Admin Panel' : 'Student Portal'}</p>
+          {menu.map((item) => {
+            const active = tab === item.id
+            return (
+              <motion.button key={item.id} onClick={() => switchTab(item.id)}
+                animate={active
+                  ? { backgroundColor: 'rgba(72,202,228,0.18)', boxShadow: '0 0 14px 3px rgba(72,202,228,0.22)', color: '#48cae4' }
+                  : { backgroundColor: 'rgba(255,255,255,0)', boxShadow: '0 0 0px 0px rgba(72,202,228,0)', color: 'rgba(255,255,255,0.85)' }}
+                whileTap={{ scale: 0.97 }}
+                className="relative flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold">
+                <motion.span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-r-full"
+                  animate={active ? { height: '60%', opacity: 1, x: 0 } : { height: '0%', opacity: 0, x: -4 }}
+                  style={{ background: 'linear-gradient(180deg,#caf0f8,#48cae4)' }} />
+                <span className="relative z-10 shrink-0">{item.icon}</span>
+                <span className={`relative z-10 flex-1 text-left ${active ? 'font-bold' : 'font-semibold'}`}>{item.label}</span>
+              </motion.button>
+            )
+          })}
+        </nav>
+        <div className="shrink-0 border-t border-white/10 p-3">
+          <button onClick={handleLogout}
+            className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-rose-300 transition hover:bg-rose-500/15 hover:text-rose-200">
+            <Icon d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            Logout
+          </button>
+        </div>
+      </motion.aside>
+
+      {/* ══ MAIN AREA ══ */}
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+
+        {/* TOP NAVBAR */}
+        <header className="fixed top-0 left-0 right-0 z-30 flex h-14 shrink-0 items-center justify-between gap-2 border-b border-white/10 px-3 sm:px-6"
+          style={{ background: 'var(--theme-grad-topbar)' }}>
+          <div className="flex items-center gap-2 min-w-0">
+            <button onClick={() => setMenuOpen(true)}
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/20 text-white lg:hidden">
+              <Icon d="M4 6h16M4 12h16M4 18h16" />
+            </button>
+            <img src="/gallery/logo1.png" alt="logo"
+              className="hidden lg:block shrink-0"
+              style={{ height: '28px', width: 'auto', maxWidth: '100px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <div className="hidden lg:block h-4 w-px bg-white/20" />
+            <h1 className="truncate text-sm font-bold text-white">{PAGE_TITLES[tab]}</h1>
+          </div>
+          <div className="flex items-center gap-1.5 sm:gap-3">
+            <span className="hidden text-xs text-white/40 sm:inline">
+              {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+            </span>
+            {isAdmin && (
+              <span className="hidden items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ring-1 sm:inline-flex"
+                style={{ background: 'rgba(72,202,228,0.2)', color: '#48cae4', borderColor: 'rgba(72,202,228,0.3)' }}>
+                🛡️ Admin
+              </span>
+            )}
+            <NotificationDropdown unread={unread} setUnread={setUnread} />
+            <motion.button whileTap={{ scale: 0.93 }} onClick={() => switchTab('profile')}
+              className="flex items-center gap-1.5 rounded-xl bg-white/10 pl-1.5 pr-2 py-1 ring-1 ring-white/20 hover:bg-white/20 transition sm:pr-3 sm:gap-2"
+              title="My Profile">
+              {user?.profileImage
+                ? <img src={fileUrl(user.profileImage)} alt="" className="h-7 w-7 rounded-lg object-cover" />
+                : <div className="flex h-7 w-7 items-center justify-center rounded-lg text-[11px] font-extrabold"
+                    style={{ background: 'var(--theme-accent)', color: 'var(--theme-primary)' }}>{initials}</div>}
+              <span className="hidden max-w-[80px] truncate text-xs font-semibold text-white sm:inline">
+                {user?.name?.split(' ')[0]}
+              </span>
+            </motion.button>
+          </div>
+        </header>
+
+        {/* SCROLLABLE CONTENT — desktop has sidebar offset, mobile doesn't */}
+        <motion.main
+          animate={{ paddingLeft: sidebarExpanded ? 240 : 56 }}
+          transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+          className="flex-1 overflow-y-auto mt-14 lg:block"
+          style={{ paddingLeft: 56 }}>
+          <div className="p-3 sm:p-4 lg:p-6">
+            <AnimatePresence mode="wait">
+              <motion.div key={tab}
+                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.22 }}
+                className="mx-auto w-full max-w-7xl">
+                <TabContent />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </motion.main>
+      </div>
+
+    </div>
+  )
+}
 
   const isAdmin  = user?.role === 'admin'
   const menu     = isAdmin ? adminMenu : studentMenu
