@@ -1,6 +1,6 @@
 ﻿import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import { useAuth } from '../context/AuthContext'
 import AuthParticles from '../components/AuthParticles'
 import { motion } from 'framer-motion'
@@ -30,7 +30,7 @@ export default function Register() {
     }
     setLoading(true)
     try {
-      const res = await axios.post('/api/auth/register', formData)
+      const res = await api.post('/auth/register', formData)
       toast.success('Account created successfully! 🎉')
       login(res.data.user, res.data.token)
       navigate('/dashboard')

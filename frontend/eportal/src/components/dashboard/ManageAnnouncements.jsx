@@ -14,12 +14,14 @@ export default function ManageAnnouncements() {
   const [showForm, setShowForm]           = useState(false)
   const [formData, setFormData]           = useState({ title: '', content: '', category: 'General' })
   const [loading, setLoading]             = useState(false)
+  const [fetchLoading, setFetchLoading]   = useState(true)
   const [msg, setMsg]                     = useState(null)
 
   const fetchAll = () =>
     api.get('/announcements')
       .then(r => setAnnouncements(Array.isArray(r.data) ? r.data : []))
       .catch(() => setAnnouncements([]))
+      .finally(() => setFetchLoading(false))
 
   useEffect(() => { fetchAll() }, [])
 
@@ -56,12 +58,18 @@ export default function ManageAnnouncements() {
       )}
 
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">{announcements.length} announcement(s)</p>
+        <p className="text-sm text-gray-500">{fetchLoading ? '...' : `${announcements.length} announcement(s)`}</p>
         <button onClick={() => setShowForm(!showForm)}
           className="rounded-lg bg-primary-blue px-4 py-2 text-sm font-batchibold text-white hover:opacity-80 transition">
           {showForm ? 'Cancel' : '+ Post Announcement'}
         </button>
       </div>
+
+      {fetchLoading && (
+        <div className="space-y-3 max-w-3xl">
+          {[1,2,3].map(i => <div key={i} className="h-20 animate-pulse rounded-xl bg-gray-100" />)}
+        </div>
+      )}
 
       {/* Form */}
       {showForm && (
@@ -100,7 +108,7 @@ export default function ManageAnnouncements() {
       )}
 
       {/* Announcements List */}
-      {announcements.length === 0 ? (
+      {!fetchLoading && announcements.length === 0 ? (
         <div className="rounded-xl border-2 border-dashed border-gray-200 py-12 text-center">
           <p className="text-3xl">??</p>
           <p className="mt-2 text-gray-500">No announcements posted yet.</p>

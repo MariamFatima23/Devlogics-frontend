@@ -91,11 +91,20 @@ export default function Dashboard() {
   const [unread, setUnread]         = useState(0)
   const [profileOpen, setProfileOpen] = useState(false)
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
+  const [isDesktop, setIsDesktop]   = useState(() => window.innerWidth >= 1024)
 
   const isAdmin  = user?.role === 'admin'
   const menu     = isAdmin ? adminMenu : studentMenu
   const BASE     = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
   const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
+
+  // Track screen size to conditionally render content once
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const handler = (e) => setIsDesktop(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   useEffect(() => {
     api.get('/notifications/unread-count').then(r => setUnread(r.data.count)).catch(() => {})
@@ -458,7 +467,7 @@ export default function Dashboard() {
         </header>
         
 
-        {/* ── SCROLLABLE CONTENT ── */}
+        {/* ── SCROLLABLE CONTENT — only rendered on desktop ── */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 mt-16">
           <AnimatePresence mode="wait">
             <motion.div
@@ -469,22 +478,22 @@ export default function Dashboard() {
               transition={{ duration: 0.22 }}
               className="mx-auto w-full max-w-7xl"
             >
-              {tab === 'overview'         && <Overview user={user} setTab={switchTab} />}
-              {tab === 'browse-courses'   && !isAdmin && <BrowseCourses user={user} />}
-              {tab === 'my-course-apps'   && !isAdmin && <MyCourseApplications />}
-              {tab === 'add-review'       && !isAdmin && <AddReview />}
-              {tab === 'announcements'    && <Announcements />}
-              {tab === 'profile'          && <Profile />}
-              {tab === 'review'           && isAdmin && <ReviewApplications />}
-              {tab === 'course-apps'      && isAdmin && <ManageCourseApplications />}
-              {tab === 'manage-ann'       && isAdmin && <ManageAnnouncements />}
-              {tab === 'manage-courses'   && isAdmin && <ManageCourses />}
-              {tab === 'manage-services'  && isAdmin && <ManageServices />}
-              {tab === 'student-pride'    && isAdmin && <ManageStudentPride />}
-              {tab === 'manage-reviews'   && isAdmin && <ManageReviews />}
-              {tab === 'manage-students'  && isAdmin && <ManageStudents />}
-              {tab === 'site-settings'    && isAdmin && <ManageSiteSettings />}
-              {tab === 'contact-messages' && isAdmin && <ContactMessages />}
+              {isDesktop && tab === 'overview'         && <Overview user={user} setTab={switchTab} />}
+              {isDesktop && tab === 'browse-courses'   && !isAdmin && <BrowseCourses user={user} />}
+              {isDesktop && tab === 'my-course-apps'   && !isAdmin && <MyCourseApplications />}
+              {isDesktop && tab === 'add-review'       && !isAdmin && <AddReview />}
+              {isDesktop && tab === 'announcements'    && <Announcements />}
+              {isDesktop && tab === 'profile'          && <Profile />}
+              {isDesktop && tab === 'review'           && isAdmin && <ReviewApplications />}
+              {isDesktop && tab === 'course-apps'      && isAdmin && <ManageCourseApplications />}
+              {isDesktop && tab === 'manage-ann'       && isAdmin && <ManageAnnouncements />}
+              {isDesktop && tab === 'manage-courses'   && isAdmin && <ManageCourses />}
+              {isDesktop && tab === 'manage-services'  && isAdmin && <ManageServices />}
+              {isDesktop && tab === 'student-pride'    && isAdmin && <ManageStudentPride />}
+              {isDesktop && tab === 'manage-reviews'   && isAdmin && <ManageReviews />}
+              {isDesktop && tab === 'manage-students'  && isAdmin && <ManageStudents />}
+              {isDesktop && tab === 'site-settings'    && isAdmin && <ManageSiteSettings />}
+              {isDesktop && tab === 'contact-messages' && isAdmin && <ContactMessages />}
             </motion.div>
           </AnimatePresence>
         </main>
@@ -523,6 +532,7 @@ export default function Dashboard() {
             </div>
           </div>
         </header>
+        {/* Mobile content — only rendered on mobile screens */}
         <main className="flex-1 overflow-y-auto p-4 mt-16">
           <AnimatePresence mode="wait">
             <motion.div
@@ -533,22 +543,22 @@ export default function Dashboard() {
               transition={{ duration: 0.22 }}
               className="mx-auto w-full max-w-7xl"
             >
-              {tab === 'overview'         && <Overview user={user} setTab={switchTab} />}
-              {tab === 'browse-courses'   && !isAdmin && <BrowseCourses user={user} />}
-              {tab === 'my-course-apps'   && !isAdmin && <MyCourseApplications />}
-              {tab === 'add-review'       && !isAdmin && <AddReview />}
-              {tab === 'announcements'    && <Announcements />}
-              {tab === 'profile'          && <Profile />}
-              {tab === 'review'           && isAdmin && <ReviewApplications />}
-              {tab === 'course-apps'      && isAdmin && <ManageCourseApplications />}
-              {tab === 'manage-ann'       && isAdmin && <ManageAnnouncements />}
-              {tab === 'manage-courses'   && isAdmin && <ManageCourses />}
-              {tab === 'manage-services'  && isAdmin && <ManageServices />}
-              {tab === 'student-pride'    && isAdmin && <ManageStudentPride />}
-              {tab === 'manage-reviews'   && isAdmin && <ManageReviews />}
-              {tab === 'manage-students'  && isAdmin && <ManageStudents />}
-              {tab === 'site-settings'    && isAdmin && <ManageSiteSettings />}
-              {tab === 'contact-messages' && isAdmin && <ContactMessages />}
+              {!isDesktop && tab === 'overview'         && <Overview user={user} setTab={switchTab} />}
+              {!isDesktop && tab === 'browse-courses'   && !isAdmin && <BrowseCourses user={user} />}
+              {!isDesktop && tab === 'my-course-apps'   && !isAdmin && <MyCourseApplications />}
+              {!isDesktop && tab === 'add-review'       && !isAdmin && <AddReview />}
+              {!isDesktop && tab === 'announcements'    && <Announcements />}
+              {!isDesktop && tab === 'profile'          && <Profile />}
+              {!isDesktop && tab === 'review'           && isAdmin && <ReviewApplications />}
+              {!isDesktop && tab === 'course-apps'      && isAdmin && <ManageCourseApplications />}
+              {!isDesktop && tab === 'manage-ann'       && isAdmin && <ManageAnnouncements />}
+              {!isDesktop && tab === 'manage-courses'   && isAdmin && <ManageCourses />}
+              {!isDesktop && tab === 'manage-services'  && isAdmin && <ManageServices />}
+              {!isDesktop && tab === 'student-pride'    && isAdmin && <ManageStudentPride />}
+              {!isDesktop && tab === 'manage-reviews'   && isAdmin && <ManageReviews />}
+              {!isDesktop && tab === 'manage-students'  && isAdmin && <ManageStudents />}
+              {!isDesktop && tab === 'site-settings'    && isAdmin && <ManageSiteSettings />}
+              {!isDesktop && tab === 'contact-messages' && isAdmin && <ContactMessages />}
             </motion.div>
           </AnimatePresence>
         </main>
