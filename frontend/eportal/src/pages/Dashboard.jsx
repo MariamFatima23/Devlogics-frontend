@@ -130,7 +130,7 @@ export default function Dashboard() {
       <motion.aside
         animate={{ width: sidebarExpanded ? 240 : 56 }}
         transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-        className="hidden lg:flex fixed top-[64px] bottom-0 left-0 z-40 flex-col"
+        className="hidden lg:flex fixed top-[56px] bottom-0 left-0 z-40 flex-col"
         style={{ background: 'var(--theme-grad-sidebar)', overflowX: 'hidden', overflowY: 'hidden' }}
       >
         {/* ── Top toggle button ── */}
@@ -377,29 +377,29 @@ export default function Dashboard() {
       ══════════════════════════════ */}
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <header
-          className="fixed top-0 left-0 right-0 z-30 flex h-16 shrink-0 items-center justify-between gap-2 border-b border-white/10 px-3 sm:px-6"
+          className="fixed top-0 left-0 right-0 z-30 flex h-14 shrink-0 items-center justify-between gap-2 border-b border-white/10 px-3 sm:px-6"
           style={{ background: 'var(--theme-grad-topbar)' }}
         >
           {/* Left: hamburger (mobile) + logo (desktop) + title */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             {/* Hamburger — mobile/tablet only */}
             <button onClick={() => setMenuOpen(true)}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/20 text-white lg:hidden">
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/20 text-white lg:hidden">
               <Icon d="M4 6h16M4 12h16M4 18h16" />
             </button>
 
             {/* Logo — desktop only */}
             <img
               src="/gallery/logo1.png" alt="logo"
-              className="hidden lg:block shrink-0 object-contain"
-              style={{ height: '32px', maxWidth: '120px', filter: 'brightness(0) invert(1)' }}
+              className="hidden lg:block shrink-0"
+              style={{ height: '28px', width: 'auto', maxWidth: '100px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
             />
 
             {/* Divider — desktop only */}
-            <div className="hidden lg:block h-5 w-px bg-white/20" />
+            <div className="hidden lg:block h-4 w-px bg-white/20" />
 
             {/* Page title */}
-            <h1 className="truncate text-sm font-bold text-white sm:text-base">
+            <h1 className="truncate text-sm font-bold text-white">
               {PAGE_TITLES[tab]}
             </h1>
           </div>
@@ -446,8 +446,8 @@ export default function Dashboard() {
         <motion.main
           animate={{ paddingLeft: isDesktop ? (sidebarExpanded ? 240 : 56) : 0 }}
           transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-          className="flex-1 overflow-y-auto mt-16"
-          style={{ minHeight: 'calc(100vh - 64px)' }}
+          className="flex-1 overflow-y-auto mt-14"
+          style={{ minHeight: 'calc(100vh - 56px)' }}
         >
           <div className="p-3 sm:p-4 lg:p-6">
             <AnimatePresence mode="wait">

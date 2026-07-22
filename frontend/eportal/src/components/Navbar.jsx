@@ -66,25 +66,40 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-white/10 transition-all duration-300 shadow-lg"
+    <nav className="sticky top-0 z-50 border-b border-white/10 transition-all duration-300"
       style={{ background: 'var(--theme-primary)' }}>
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6" style={{ minHeight: '64px' }}>
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
 
-        {/* Brand — logo full, no circle, no crop */}
-        <button onClick={() => scrollTo('#home')} className="flex items-center gap-2.5">
+        {/* Brand — logo fixed height */}
+        <button onClick={() => scrollTo('#home')} className="flex shrink-0 items-center gap-2">
           <img
             src={settings.logoUrl ? `${BASE}/uploads/${settings.logoUrl}` : '/gallery/logo1.png'}
             alt="logo"
-            className="h-8 sm:h-10 md:h-11"
-            style={{ width: 'auto', objectFit: 'contain' }}
+            style={{ height: '28px', width: 'auto', maxWidth: '110px', objectFit: 'contain' }}
           />
         </button>
 
-        {/* Desktop nav links */}
-        <div className="hidden items-center gap-0.5 md:flex">
+        {/* Desktop nav links — xl only to avoid wrap */}
+        <div className="hidden items-center gap-0.5 xl:flex">
           {!isDashboard && !user && NAV_LINKS.map(link => (
             <button key={link.href} onClick={() => scrollTo(link.href)}
+              className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-white transition hover:text-primary-cyan lg:text-sm lg:px-3">
+              {link.label}
+            </button>
+          ))}
+          {user && (
+            <Link to="/dashboard"
               className="rounded-lg px-3 py-1.5 text-sm font-medium text-white transition hover:text-primary-cyan">
+              Dashboard
+            </Link>
+          )}
+        </div>
+
+        {/* Tablet nav links (md–xl) — fewer items, smaller text */}
+        <div className="hidden items-center gap-0.5 md:flex xl:hidden">
+          {!isDashboard && !user && NAV_LINKS.map(link => (
+            <button key={link.href} onClick={() => scrollTo(link.href)}
+              className="rounded-lg px-2 py-1 text-[11px] font-semibold text-white transition hover:text-primary-cyan whitespace-nowrap">
               {link.label}
             </button>
           ))}
@@ -181,12 +196,12 @@ export default function Navbar() {
           ) : (
             <>
               <Link to="/login"
-                className="hidden rounded-xl px-4 py-2 text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 sm:inline-flex"
+                className="hidden rounded-xl px-3 py-1.5 text-xs font-bold transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 sm:inline-flex lg:px-4 lg:py-2 lg:text-sm"
                 style={{ background: 'var(--theme-card-bg)', color: 'var(--theme-primary)' }}>
                 Login
               </Link>
               <Link to="/register"
-                className="rounded-xl px-4 py-2 text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90"
+                className="rounded-xl px-3 py-1.5 text-xs font-bold transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 lg:px-4 lg:py-2 lg:text-sm"
                 style={{ background: 'var(--theme-accent)', color: 'var(--theme-primary)' }}>
                 Join Free
               </Link>
