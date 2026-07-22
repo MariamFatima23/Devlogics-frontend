@@ -25,10 +25,12 @@ export default function ManageCourses() {
   const [showForm, setShowForm] = useState(false)
   const [msg, setMsg]           = useState(null)
   const [loading, setLoading]   = useState(false)
+  const [fetchLoading, setFetchLoading] = useState(true)
 
   const fetchCourses = async () => {
     try { setCourses((await api.get('/courses/all')).data) }
     catch { setMsg({ type:'error', text:'Failed to load courses' }) }
+    finally { setFetchLoading(false) }
   }
 
   useEffect(() => { fetchCourses() }, [])
@@ -98,13 +100,21 @@ export default function ManageCourses() {
       )}
 
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">{courses.length} course(s) · shown on home page</p>
+        <p className="text-sm text-gray-500">{fetchLoading ? '...' : `${courses.length} course(s) · shown on home page`}</p>
         <button onClick={() => { setShowForm(!showForm); setForm(EMPTY); setEditId(null); setMsg(null) }}
           className="rounded-xl px-4 py-2 text-sm font-bold text-white transition hover:opacity-90"
           style={{ background:'linear-gradient(135deg,#0077b6,#04065c)' }}>
           {showForm ? '✕ Cancel' : '+ Add Course'}
         </button>
       </div>
+
+      {fetchLoading && (
+        <div className="space-y-3">
+          {[1,2,3].map(i => (
+            <div key={i} className="h-20 animate-pulse rounded-2xl bg-gray-100" />
+          ))}
+        </div>
+      )}
 
       {showForm && (
         <div className="rounded-2xl border border-primary-pale bg-white p-6 shadow-sm">
@@ -220,7 +230,7 @@ export default function ManageCourses() {
         </div>
       )}
 
-      {courses.length === 0 ? (
+      {!fetchLoading && courses.length === 0 ? (
         <div className="rounded-xl border-2 border-dashed border-primary-pale py-16 text-center">
           <p className="text-4xl">📚</p>
           <p className="mt-3 font-bold text-gray-700">No courses yet</p>

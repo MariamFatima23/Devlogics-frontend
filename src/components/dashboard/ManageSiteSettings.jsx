@@ -164,7 +164,14 @@ export default function ManageSiteSettings() {
     { id:'theme',    label:'🎨 Theme Colors' },
   ]
 
-  if (!form) return <div className="py-12 text-center text-gray-400">Loading settings…</div>
+  if (!form) return (
+    <div className="space-y-5">
+      <div className="flex gap-2 flex-wrap">
+        {[1,2,3,4,5,6,7].map(i => <div key={i} className="h-8 w-24 animate-pulse rounded-xl bg-gray-100" />)}
+      </div>
+      <div className="h-64 animate-pulse rounded-2xl bg-gray-100" />
+    </div>
+  )
 
 
   return (

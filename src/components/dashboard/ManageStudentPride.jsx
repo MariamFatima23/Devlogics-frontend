@@ -23,12 +23,14 @@ export default function ManageStudentPride() {
   const [showForm, setShowForm] = useState(false)
   const [msg, setMsg]           = useState(null)
   const [loading, setLoading]   = useState(false)
+  const [fetchLoading, setFetchLoading] = useState(true)
 
   const fetchStudents = async () => {
     try {
       const res = await api.get('/student-pride/all')
       setStudents(Array.isArray(res.data) ? res.data : [])
     } catch { setMsg({ type:'error', text:'Failed to load students' }) }
+    finally { setFetchLoading(false) }
   }
 
   useEffect(() => { fetchStudents() }, [])
@@ -95,13 +97,19 @@ export default function ManageStudentPride() {
       )}
 
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">{students.length} student(s) in Our Pride</p>
+        <p className="text-sm text-gray-500">{fetchLoading ? '...' : `${students.length} student(s) in Our Pride`}</p>
         <button onClick={() => { setShowForm(!showForm); setForm(EMPTY); setImage(null); setEditId(null); setMsg(null) }}
           className="rounded-xl px-4 py-2 text-sm font-bold text-white transition hover:opacity-90"
           style={{ background:'linear-gradient(135deg,#0077b6,#04065c)' }}>
           {showForm ? 'Cancel' : '+ Add Student'}
         </button>
       </div>
+
+      {fetchLoading && (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {[1,2,3,4].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-gray-100" />)}
+        </div>
+      )}
 
       {showForm && (
         <div className="rounded-2xl border border-primary-pale bg-white p-6 shadow-sm">

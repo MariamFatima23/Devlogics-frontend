@@ -10,12 +10,14 @@ export default function ManageServices() {
   const [showForm, setShowForm] = useState(false)
   const [msg, setMsg]           = useState(null)
   const [loading, setLoading]   = useState(false)
+  const [fetchLoading, setFetchLoading] = useState(true)
 
   const fetchServices = async () => {
     try {
       const res = await api.get('/services/all')
       setServices(Array.isArray(res.data) ? res.data : [])
     } catch { setMsg({ type:'error', text:'Failed to load services' }) }
+    finally { setFetchLoading(false) }
   }
 
   useEffect(() => { fetchServices() }, [])
@@ -63,13 +65,21 @@ export default function ManageServices() {
       )}
 
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">{services.length} service(s)</p>
+        <p className="text-sm text-gray-500">{fetchLoading ? '...' : `${services.length} service(s)`}</p>
         <button onClick={() => { setShowForm(!showForm); setForm(EMPTY); setEditId(null); setMsg(null) }}
           className="rounded-xl px-4 py-2 text-sm font-bold text-white transition hover:opacity-90"
           style={{ background:'linear-gradient(135deg,#0077b6,#04065c)' }}>
           {showForm ? 'Cancel' : '+ Add Service'}
         </button>
       </div>
+
+      {fetchLoading && (
+        <div className="space-y-3">
+          {[1,2,3].map(i => (
+            <div key={i} className="h-16 animate-pulse rounded-2xl bg-gray-100" />
+          ))}
+        </div>
+      )}
 
       {showForm && (
         <div className="rounded-2xl border border-primary-pale bg-white p-6 shadow-sm">
@@ -96,7 +106,7 @@ export default function ManageServices() {
         </div>
       )}
 
-      {services.length === 0 ? (
+      {!fetchLoading && services.length === 0 ? (
         <div className="rounded-xl border-2 border-dashed border-primary-pale py-12 text-center">
           <p className="text-3xl">🛠️</p>
           <p className="mt-2 text-gray-500">No services yet. Add your first service.</p>
