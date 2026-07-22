@@ -275,12 +275,8 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* SCROLLABLE CONTENT */}
-        <motion.main
-          animate={{ paddingLeft: sidebarExpanded ? 240 : 56 }}
-          transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-          className="flex-1 overflow-y-auto mt-14"
-          style={{ paddingLeft: 56 }}>
+        {/* SCROLLABLE CONTENT — desktop sidebar offset, mobile no offset */}
+        <main className="flex-1 overflow-y-auto mt-14 lg:pl-14 pb-20 lg:pb-0">
           <div className="p-3 sm:p-4 lg:p-6">
             <AnimatePresence mode="wait">
               <motion.div key={tab}
@@ -291,8 +287,40 @@ export default function Dashboard() {
               </motion.div>
             </AnimatePresence>
           </div>
-        </motion.main>
+        </main>
 
+      </div>
+
+      {/* ══ MOBILE BOTTOM NAV ══ */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden border-t border-white/10"
+        style={{ background: 'var(--theme-grad-sidebar)' }}>
+        <div className="flex items-center justify-around px-1 py-1">
+          {menu.slice(0, 5).map((item) => {
+            const active = tab === item.id
+            return (
+              <button key={item.id} onClick={() => switchTab(item.id)}
+                className="flex flex-1 flex-col items-center gap-0.5 rounded-xl px-1 py-2 transition"
+                style={{ color: active ? '#48cae4' : 'rgba(255,255,255,0.6)' }}>
+                <span className="relative">
+                  {item.icon}
+                  {active && (
+                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-cyan-400" />
+                  )}
+                </span>
+                <span className="text-[9px] font-semibold leading-tight truncate max-w-[48px] text-center">
+                  {item.label}
+                </span>
+              </button>
+            )
+          })}
+          {/* More button — opens sidebar */}
+          <button onClick={() => setMenuOpen(true)}
+            className="flex flex-1 flex-col items-center gap-0.5 rounded-xl px-1 py-2 transition"
+            style={{ color: 'rgba(255,255,255,0.6)' }}>
+            <Icon d="M4 6h16M4 12h16M4 18h16" size={18} />
+            <span className="text-[9px] font-semibold">More</span>
+          </button>
+        </div>
       </div>
     </div>
   )

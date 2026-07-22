@@ -70,13 +70,13 @@ export default function Navbar() {
       style={{ background: 'var(--theme-primary)' }}>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6" style={{ minHeight: '64px' }}>
 
-        {/* Brand — logo full, no circle, no crop */}
+        {/* Brand — white logo */}
         <button onClick={() => scrollTo('#home')} className="flex items-center gap-2.5">
           <img
             src={settings.logoUrl ? `${BASE}/uploads/${settings.logoUrl}` : '/gallery/logo1.png'}
             alt="logo"
             className="h-8 sm:h-10 md:h-11"
-            style={{ width: 'auto', objectFit: 'contain' }}
+            style={{ width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
           />
         </button>
 
@@ -181,14 +181,9 @@ export default function Navbar() {
           ) : (
             <>
               <Link to="/login"
-                className="hidden rounded-xl px-4 py-2 text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 sm:inline-flex"
+                className="rounded-xl px-4 py-2 text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90"
                 style={{ background: 'var(--theme-card-bg)', color: 'var(--theme-primary)' }}>
                 Login
-              </Link>
-              <Link to="/register"
-                className="rounded-xl px-4 py-2 text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90"
-                style={{ background: 'var(--theme-accent)', color: 'var(--theme-primary)' }}>
-                Join Free
               </Link>
             </>
           )}
@@ -228,14 +223,14 @@ export default function Navbar() {
             ) : (
               <div className="mt-1 flex gap-2">
                 <Link to="/login" onClick={() => setMobileOpen(false)}
-                  className="flex-1 rounded-xl px-4 py-2.5 text-center text-sm font-bold transition-all duration-200 hover:-translate-y-0.5"
+                  className="flex-1 rounded-xl px-4 py-2.5 text-center text-sm font-bold transition-all duration-200"
                   style={{ background: 'var(--theme-card-bg)', color: 'var(--theme-primary)' }}>
                   Login
                 </Link>
                 <Link to="/register" onClick={() => setMobileOpen(false)}
-                  className="flex-1 rounded-xl px-4 py-2.5 text-center text-sm font-bold transition-all duration-200 hover:-translate-y-0.5"
+                  className="flex-1 rounded-xl px-4 py-2.5 text-center text-sm font-bold transition-all duration-200"
                   style={{ background: 'var(--theme-accent)', color: 'var(--theme-primary)' }}>
-                  Join Free
+                  Register
                 </Link>
               </div>
             )}
