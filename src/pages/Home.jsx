@@ -377,7 +377,7 @@ export default function Home() {
     <div className="overflow-x-hidden">
 
       {/* -- HERO -- */}
-      <section id="home" className="relative min-h-screen w-full overflow-hidden" style={{ minHeight: '100svh' }}>
+      <section id="home" className="relative w-full overflow-hidden" style={{ height: '100svh', minHeight: '500px' }}>
         {slides.map((s, i) => (
           <div key={i} className="absolute inset-0 transition-opacity duration-1000"
             style={{ opacity: slide===i?1:0, zIndex: slide===i?1:0 }}>

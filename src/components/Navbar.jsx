@@ -180,11 +180,7 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link to="/login"
-                className="rounded-xl px-4 py-2 text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90"
-                style={{ background: 'var(--theme-card-bg)', color: 'var(--theme-primary)' }}>
-                Login
-              </Link>
+              {/* No buttons for logged-out users — use hamburger menu */}
             </>
           )}
 
@@ -221,14 +217,14 @@ export default function Navbar() {
                 Dashboard
               </Link>
             ) : (
-              <div className="mt-1 flex gap-2">
+              <div className="mt-2 flex flex-col gap-2">
                 <Link to="/login" onClick={() => setMobileOpen(false)}
-                  className="flex-1 rounded-xl px-4 py-2.5 text-center text-sm font-bold transition-all duration-200"
+                  className="w-full rounded-xl px-4 py-3 text-center text-sm font-bold transition-all duration-200"
                   style={{ background: 'var(--theme-card-bg)', color: 'var(--theme-primary)' }}>
                   Login
                 </Link>
                 <Link to="/register" onClick={() => setMobileOpen(false)}
-                  className="flex-1 rounded-xl px-4 py-2.5 text-center text-sm font-bold transition-all duration-200"
+                  className="w-full rounded-xl px-4 py-3 text-center text-sm font-bold transition-all duration-200"
                   style={{ background: 'var(--theme-accent)', color: 'var(--theme-primary)' }}>
                   Register
                 </Link>
