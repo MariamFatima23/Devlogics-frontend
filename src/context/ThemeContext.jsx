@@ -96,11 +96,14 @@ function injectTheme(theme) {
 
 const ThemeContext = createContext(null)
 
+// Inject defaults immediately (before any component renders) so CSS vars are always set
+injectTheme(DEFAULT_THEME)
+
 export function ThemeProvider({ children }) {
   const [theme, setTheme]     = useState(DEFAULT_THEME)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)  // default false — vars already injected above
 
-  // Load theme from backend on mount
+  // Load theme from backend on mount and override defaults
   useEffect(() => {
     api.get('/site-settings')
       .then(r => {
@@ -108,8 +111,7 @@ export function ThemeProvider({ children }) {
         setTheme(t)
         injectTheme(t)
       })
-      .catch(() => { injectTheme(DEFAULT_THEME) })
-      .finally(() => setLoading(false))
+      .catch(() => { /* defaults already injected */ })
   }, [])
 
   // Update theme (called from admin panel — instant preview + save)
