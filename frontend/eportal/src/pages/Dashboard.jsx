@@ -83,25 +83,17 @@ const PAGE_TITLES = {
 
 export default function Dashboard() {
   const { user, logout } = useAuth()
-  const navigate         = useNavigate()               = useState('overview')
+  const navigate         = useNavigate()
+  const [tab, setTab]               = useState('overview')
   const [menuOpen, setMenuOpen]     = useState(false)
   const [unread, setUnread]         = useState(0)
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
-  const [isDesktop, setIsDesktop]   = useState(() => window.innerWidth >= 1024)
 
   const isAdmin  = user?.role === 'admin'
   const menu     = isAdmin ? adminMenu : studentMenu
   const BASE     = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
   const fileUrl  = (path) => (path && path.startsWith('http')) ? path : (path ? `${BASE}/uploads/${path}` : null)
   const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
-
-  // Track screen size to conditionally render content once
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1024px)')
-    const handler = (e) => setIsDesktop(e.matches)
-    mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
-  }, [])
 
   useEffect(() => {
     api.get('/notifications/unread-count').then(r => setUnread(r.data.count)).catch(() => {})
@@ -283,7 +275,7 @@ export default function Dashboard() {
         <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-5 py-4">
           <img
             src="/gallery/logo1.png" alt="logo"
-            style={{ height: '60px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
+            style={{ height: '36px', maxWidth: '130px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
           />
           <button onClick={() => setMenuOpen(false)}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-white/50 hover:bg-white/10 hover:text-white">
@@ -381,36 +373,29 @@ export default function Dashboard() {
       </motion.aside>
 
       {/* ══════════════════════════════
-          MAIN CONTENT — margin shifts with sidebar expand/collapse
+          SHARED TOP NAVBAR — visible on all screen sizes
       ══════════════════════════════ */}
-      <motion.div
-        animate={{ marginLeft: sidebarExpanded ? 240 : 56 }}
-        transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-        className="hidden lg:flex min-w-0 flex-1 flex-col overflow-hidden"
-      >
-        {/* ── FULL-WIDTH TOP NAVBAR ── */}
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <header
-          className="fixed top-0 left-0 right-0 z-30 flex h-16 shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 sm:px-6"
+          className="fixed top-0 left-0 right-0 z-30 flex h-16 shrink-0 items-center justify-between gap-2 border-b border-white/10 px-3 sm:px-6"
           style={{ background: 'var(--theme-grad-topbar)' }}
         >
-          {/* Left: toggle button + logo + page title */}
-          <div className="flex items-center gap-3 min-w-0">
-            {/* Mobile hamburger */}
+          {/* Left: hamburger (mobile) + logo (desktop) + title */}
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            {/* Hamburger — mobile/tablet only */}
             <button onClick={() => setMenuOpen(true)}
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/20 text-white lg:hidden">
               <Icon d="M4 6h16M4 12h16M4 18h16" />
             </button>
 
-            {/* Desktop sidebar toggle — REMOVED from navbar, now on sidebar */}
-
-            {/* Logo — desktop only, in navbar */}
+            {/* Logo — desktop only */}
             <img
               src="/gallery/logo1.png" alt="logo"
-              className="hidden lg:block shrink-0 h-10 w-auto object-contain"
-              style={{ filter: 'brightness(0) invert(1)' }}
+              className="hidden lg:block shrink-0 object-contain"
+              style={{ height: '32px', maxWidth: '120px', filter: 'brightness(0) invert(1)' }}
             />
 
-            {/* Divider */}
+            {/* Divider — desktop only */}
             <div className="hidden lg:block h-5 w-px bg-white/20" />
 
             {/* Page title */}
@@ -419,8 +404,8 @@ export default function Dashboard() {
             </h1>
           </div>
 
-          {/* Right side — date + profile */}
-          <div className="flex items-center gap-3">
+          {/* Right: date + admin badge + notifs + profile */}
+          <div className="flex items-center gap-1.5 sm:gap-3">
             <span className="hidden text-xs text-white/40 sm:inline">
               {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
             </span>
@@ -432,15 +417,12 @@ export default function Dashboard() {
               </span>
             )}
 
-            {/* 🔔 Notification Bell */}
             <NotificationDropdown unread={unread} setUnread={setUnread} />
 
-            {/* Profile avatar — click goes directly to profile tab */}
-            {/* Profile avatar — click directly opens profile tab */}
             <motion.button
               whileTap={{ scale: 0.93 }}
               onClick={() => switchTab('profile')}
-              className="flex items-center gap-2 rounded-xl bg-white/10 pl-1.5 pr-3 py-1 ring-1 ring-white/20 hover:bg-white/20 transition"
+              className="flex items-center gap-1.5 rounded-xl bg-white/10 pl-1.5 pr-2 py-1 ring-1 ring-white/20 hover:bg-white/20 transition sm:pr-3 sm:gap-2"
               title="My Profile"
             >
               {user?.profileImage ? (
@@ -452,108 +434,51 @@ export default function Dashboard() {
                   {initials}
                 </div>
               )}
-              <span className="hidden max-w-[90px] truncate text-xs font-semibold text-white sm:inline">
+              <span className="hidden max-w-[80px] truncate text-xs font-semibold text-white sm:inline">
                 {user?.name?.split(' ')[0]}
               </span>
             </motion.button>
           </div>
         </header>
-        
 
-        {/* ── SCROLLABLE CONTENT — only rendered on desktop ── */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 mt-16">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={tab}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.22 }}
-              className="mx-auto w-full max-w-7xl"
-            >
-              {isDesktop && tab === 'overview'         && <Overview user={user} setTab={switchTab} />}
-              {isDesktop && tab === 'browse-courses'   && !isAdmin && <BrowseCourses user={user} />}
-              {isDesktop && tab === 'my-course-apps'   && !isAdmin && <MyCourseApplications />}
-              {isDesktop && tab === 'add-review'       && !isAdmin && <AddReview />}
-              {isDesktop && tab === 'announcements'    && <Announcements />}
-              {isDesktop && tab === 'profile'          && <Profile />}
-              {isDesktop && tab === 'review'           && isAdmin && <ReviewApplications />}
-              {isDesktop && tab === 'course-apps'      && isAdmin && <ManageCourseApplications />}
-              {isDesktop && tab === 'manage-ann'       && isAdmin && <ManageAnnouncements />}
-              {isDesktop && tab === 'manage-courses'   && isAdmin && <ManageCourses />}
-              {isDesktop && tab === 'manage-services'  && isAdmin && <ManageServices />}
-              {isDesktop && tab === 'student-pride'    && isAdmin && <ManageStudentPride />}
-              {isDesktop && tab === 'manage-reviews'   && isAdmin && <ManageReviews />}
-              {isDesktop && tab === 'manage-students'  && isAdmin && <ManageStudents />}
-              {isDesktop && tab === 'site-settings'    && isAdmin && <ManageSiteSettings />}
-              {isDesktop && tab === 'contact-messages' && isAdmin && <ContactMessages />}
-            </motion.div>
-          </AnimatePresence>
-        </main>
-      </motion.div>
-
-      {/* ══ MOBILE CONTENT (no sidebar margin) ══ */}
-      <div className="flex lg:hidden min-w-0 flex-1 flex-col overflow-hidden">
-        {/* Mobile top navbar */}
-        <header
-          className="fixed top-0 left-0 right-0 z-30 flex h-16 shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4"
-          style={{ background: 'var(--theme-grad-topbar)' }}
+        {/* ── SCROLLABLE CONTENT ── */}
+        {/* Desktop: offset left for sidebar width; Mobile: no offset */}
+        <motion.main
+          animate={{ paddingLeft: isDesktop ? (sidebarExpanded ? 240 : 56) : 0 }}
+          transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+          className="flex-1 overflow-y-auto mt-16"
+          style={{ minHeight: 'calc(100vh - 64px)' }}
         >
-          <div className="flex items-center gap-3 min-w-0">
-            <button onClick={() => setMenuOpen(true)}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/20 text-white">
-              <Icon d="M4 6h16M4 12h16M4 18h16" />
-            </button>
-            <h1 className="truncate text-sm font-bold text-white">{PAGE_TITLES[tab]}</h1>
+          <div className="p-3 sm:p-4 lg:p-6">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={tab}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.22 }}
+                className="mx-auto w-full max-w-7xl"
+              >
+                {tab === 'overview'         && <Overview user={user} setTab={switchTab} />}
+                {tab === 'browse-courses'   && !isAdmin && <BrowseCourses user={user} />}
+                {tab === 'my-course-apps'   && !isAdmin && <MyCourseApplications />}
+                {tab === 'add-review'       && !isAdmin && <AddReview />}
+                {tab === 'announcements'    && <Announcements />}
+                {tab === 'profile'          && <Profile />}
+                {tab === 'review'           && isAdmin && <ReviewApplications />}
+                {tab === 'course-apps'      && isAdmin && <ManageCourseApplications />}
+                {tab === 'manage-ann'       && isAdmin && <ManageAnnouncements />}
+                {tab === 'manage-courses'   && isAdmin && <ManageCourses />}
+                {tab === 'manage-services'  && isAdmin && <ManageServices />}
+                {tab === 'student-pride'    && isAdmin && <ManageStudentPride />}
+                {tab === 'manage-reviews'   && isAdmin && <ManageReviews />}
+                {tab === 'manage-students'  && isAdmin && <ManageStudents />}
+                {tab === 'site-settings'    && isAdmin && <ManageSiteSettings />}
+                {tab === 'contact-messages' && isAdmin && <ContactMessages />}
+              </motion.div>
+            </AnimatePresence>
           </div>
-          <div className="flex items-center gap-2">
-            <NotificationDropdown unread={unread} setUnread={setUnread} />
-            <motion.button
-              whileTap={{ scale: 0.93 }}
-              onClick={() => switchTab('profile')}
-              className="flex items-center gap-2 rounded-xl bg-white/10 pl-1.5 pr-2 py-1 ring-1 ring-white/20"
-              title="My Profile"
-            >
-              {user?.profileImage ? (
-                <img src={fileUrl(user.profileImage)} alt="" className="h-7 w-7 rounded-lg object-cover" />
-              ) : (
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg text-[11px] font-extrabold" style={{ background: 'var(--theme-accent)', color: 'var(--theme-primary)' }}>
-                  {initials}
-                </div>
-              )}
-            </motion.button>
-          </div>
-        </header>
-        {/* Mobile content — only rendered on mobile screens */}
-        <main className="flex-1 overflow-y-auto p-4 mt-16">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={tab}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.22 }}
-              className="mx-auto w-full max-w-7xl"
-            >
-              {!isDesktop && tab === 'overview'         && <Overview user={user} setTab={switchTab} />}
-              {!isDesktop && tab === 'browse-courses'   && !isAdmin && <BrowseCourses user={user} />}
-              {!isDesktop && tab === 'my-course-apps'   && !isAdmin && <MyCourseApplications />}
-              {!isDesktop && tab === 'add-review'       && !isAdmin && <AddReview />}
-              {!isDesktop && tab === 'announcements'    && <Announcements />}
-              {!isDesktop && tab === 'profile'          && <Profile />}
-              {!isDesktop && tab === 'review'           && isAdmin && <ReviewApplications />}
-              {!isDesktop && tab === 'course-apps'      && isAdmin && <ManageCourseApplications />}
-              {!isDesktop && tab === 'manage-ann'       && isAdmin && <ManageAnnouncements />}
-              {!isDesktop && tab === 'manage-courses'   && isAdmin && <ManageCourses />}
-              {!isDesktop && tab === 'manage-services'  && isAdmin && <ManageServices />}
-              {!isDesktop && tab === 'student-pride'    && isAdmin && <ManageStudentPride />}
-              {!isDesktop && tab === 'manage-reviews'   && isAdmin && <ManageReviews />}
-              {!isDesktop && tab === 'manage-students'  && isAdmin && <ManageStudents />}
-              {!isDesktop && tab === 'site-settings'    && isAdmin && <ManageSiteSettings />}
-              {!isDesktop && tab === 'contact-messages' && isAdmin && <ContactMessages />}
-            </motion.div>
-          </AnimatePresence>
-        </main>
+        </motion.main>
       </div>
 
     </div>

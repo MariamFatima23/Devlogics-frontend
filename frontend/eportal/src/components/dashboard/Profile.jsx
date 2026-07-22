@@ -90,7 +90,7 @@ export default function Profile() {
   if (!user) return null
 
   return (
-    <div className="mx-auto max-w-2xl pb-10">
+    <div className="mx-auto max-w-2xl pb-10 px-2 sm:px-0">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
