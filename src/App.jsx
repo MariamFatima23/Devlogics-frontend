@@ -14,13 +14,16 @@ import { ThemeProvider } from './context/ThemeContext'
 import { InitialLoader, RouteLoader } from './components/PageLoader'
 
 function AppInner() {
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
   const { pathname } = useLocation()
   const [initialDone, setInitialDone] = useState(false)
 
   const handleInitialDone = useCallback(() => setInitialDone(true), [])
 
   const showNavbar = pathname !== '/dashboard' && pathname !== '/login' && pathname !== '/register' && !pathname.startsWith('/forgot-password') && !pathname.startsWith('/reset-password')
+
+  // Don't render routes until localStorage auth check is complete
+  if (loading) return null
 
   return (
     <>
