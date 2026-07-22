@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
-import { useState, useCallback } from 'react'
 import { Toaster } from 'react-hot-toast'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
@@ -11,14 +10,11 @@ import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import { useAuth } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
-import { InitialLoader, RouteLoader } from './components/PageLoader'
+import { RouteLoader } from './components/PageLoader'
 
 function AppInner() {
   const { user, loading } = useAuth()
   const { pathname } = useLocation()
-  const [initialDone, setInitialDone] = useState(false)
-
-  const handleInitialDone = useCallback(() => setInitialDone(true), [])
 
   const showNavbar = pathname !== '/dashboard' && pathname !== '/login' && pathname !== '/register' && !pathname.startsWith('/forgot-password') && !pathname.startsWith('/reset-password')
 
@@ -28,7 +24,6 @@ function AppInner() {
   return (
     <>
       <RouteLoader />
-      {!initialDone && <InitialLoader onDone={handleInitialDone} />}
       <div className="app">
         <Toaster
           position="top-right"
