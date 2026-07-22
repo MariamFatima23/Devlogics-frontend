@@ -386,7 +386,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/80" />
           </div>
         ))}
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-24 text-center text-white sm:px-6 sm:pb-28">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 text-center text-white sm:px-6" style={{ paddingBottom: '80px' }}>
           <AnimatePresence mode="wait">
             <motion.div key={slide} initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:-20 }} transition={{ duration:0.7 }}>
               {/* Portal name badge */}

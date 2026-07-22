@@ -70,18 +70,18 @@ export default function Navbar() {
       style={{ background: 'var(--theme-primary)' }}>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6" style={{ minHeight: '64px' }}>
 
-        {/* Brand — white logo */}
-        <button onClick={() => scrollTo('#home')} className="flex items-center gap-2.5">
+        {/* Brand — white logo always */}
+        <button onClick={() => scrollTo('#home')} className="flex items-center gap-2.5 shrink-0">
           <img
             src={settings.logoUrl ? `${BASE}/uploads/${settings.logoUrl}` : '/gallery/logo1.png'}
             alt="logo"
-            className="h-8 sm:h-10 md:h-11"
+            className="h-8 sm:h-10"
             style={{ width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
           />
         </button>
 
-        {/* Desktop nav links */}
-        <div className="hidden items-center gap-0.5 md:flex">
+        {/* Desktop nav links — only on large screens */}
+        <div className="hidden items-center gap-0.5 lg:flex">
           {!isDashboard && !user && NAV_LINKS.map(link => (
             <button key={link.href} onClick={() => scrollTo(link.href)}
               className="rounded-lg px-3 py-1.5 text-sm font-medium text-white transition hover:text-primary-cyan">
@@ -184,9 +184,9 @@ export default function Navbar() {
             </>
           )}
 
-          {/* Mobile hamburger */}
+          {/* Mobile hamburger — show below lg */}
           <button onClick={() => setMobileOpen(v => !v)}
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/20 text-white md:hidden">
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/20 text-white lg:hidden">
             {mobileOpen ? (
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -200,9 +200,9 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu — show below lg */}
       {mobileOpen && (
-        <div className="border-t border-white/10 px-4 py-3 md:hidden" style={{ background: 'var(--theme-primary)' }}>
+        <div className="border-t border-white/10 px-4 py-3 lg:hidden" style={{ background: 'var(--theme-primary)' }}>
           <div className="flex flex-col gap-1">
             {!isDashboard && !user && NAV_LINKS.map(link => (
               <button key={link.href} onClick={() => { scrollTo(link.href); setMobileOpen(false) }}
