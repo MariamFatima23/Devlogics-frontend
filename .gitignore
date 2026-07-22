@@ -11,3 +11,5 @@ build/
 Thumbs.db
 *.log
 coverage/
+.vercel
+.env*

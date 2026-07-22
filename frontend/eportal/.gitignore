@@ -1,3 +1,20 @@
-node_modules
-dist
+node_modules/
 .env
+.env*
+.vscode/
+*.zip
+*.rar
+*.tar
+*.tar.gz
+dist/
+build/
+.DS_Store
+Thumbs.db
+*.log
+coverage/
+.vercel
+
+# Accidentally nested copies — ignore them
+backend/
+dev/
+frontend/
