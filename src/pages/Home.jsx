@@ -377,7 +377,7 @@ export default function Home() {
     <div className="overflow-x-hidden">
 
       {/* -- HERO -- */}
-      <section id="home" className="relative h-screen w-full overflow-hidden">
+      <section id="home" className="relative min-h-screen w-full overflow-hidden" style={{ minHeight: '100svh' }}>
         {slides.map((s, i) => (
           <div key={i} className="absolute inset-0 transition-opacity duration-1000"
             style={{ opacity: slide===i?1:0, zIndex: slide===i?1:0 }}>
@@ -386,39 +386,37 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/80" />
           </div>
         ))}
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center text-white">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 pb-24 text-center text-white sm:px-6 sm:pb-28">
           <AnimatePresence mode="wait">
             <motion.div key={slide} initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:-20 }} transition={{ duration:0.7 }}>
               {/* Portal name badge */}
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-1.5 backdrop-blur-sm">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 backdrop-blur-sm sm:px-5">
                 {settings.logoUrl
-                  ? <img src={`${BASE}/uploads/${settings.logoUrl}`} alt="logo" className="h-5 w-auto object-contain" style={{ maxWidth: '60px', background: 'transparent' }} />
-                  : <img src="/gallery/logo5.png" alt="logo" className="h-5 w-auto object-contain" style={{ maxWidth: '60px', background: 'transparent' }} />
+                  ? <img src={`${BASE}/uploads/${settings.logoUrl}`} alt="logo" className="h-4 w-auto object-contain sm:h-5" style={{ maxWidth: '60px', background: 'transparent' }} />
+                  : <img src="/gallery/logo5.png" alt="logo" className="h-4 w-auto object-contain sm:h-5" style={{ maxWidth: '60px', background: 'transparent' }} />
                 }
                 <span className="text-xs font-semibold">{settings.portalName}</span>
               </div>
-              <h1 className="text-5xl font-extrabold leading-tight drop-shadow-2xl sm:text-6xl lg:text-7xl">
+              <h1 className="text-3xl font-extrabold leading-tight drop-shadow-2xl sm:text-5xl lg:text-7xl">
                 {slides[slide]?.text || settings.tagline}
               </h1>
-              <p className="mx-auto mt-4 max-w-xl text-lg text-white/80">{settings.heroSubtext}</p>
-              <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <p className="mx-auto mt-3 max-w-xl text-sm text-white/80 sm:mt-4 sm:text-lg">{settings.heroSubtext}</p>
+              <div className="mt-6 flex flex-wrap justify-center gap-3 sm:mt-8 sm:gap-4">
                 {user ? (
                   <Link to="/dashboard"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3 text-sm font-bold transition hover:-translate-y-0.5"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition hover:-translate-y-0.5 sm:px-7 sm:py-3"
                     style={{ background:'var(--theme-white)', color:'var(--theme-primary)' }}>
                     Go to Dashboard →
                   </Link>
                 ) : (
                   <>
-                    {/* blue bg → white text */}
                     <Link to="/register"
-                      className="inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3 text-sm font-bold transition hover:-translate-y-0.5 hover:opacity-90"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition hover:-translate-y-0.5 hover:opacity-90 sm:px-7 sm:py-3"
                       style={{ background:'var(--theme-secondary)', color:'var(--theme-white)' }}>
                       Join for Free
                     </Link>
-                    {/* white bg → blue text */}
                     <Link to="/login"
-                      className="inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3 text-sm font-bold transition hover:-translate-y-0.5 hover:opacity-90"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition hover:-translate-y-0.5 hover:opacity-90 sm:px-7 sm:py-3"
                       style={{ background:'var(--theme-white)', color:'var(--theme-primary)' }}>
                       Sign In
                     </Link>
@@ -429,34 +427,42 @@ export default function Home() {
           </AnimatePresence>
         </div>
         {/* Dots */}
-        <div className="absolute bottom-20 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+        <div className="absolute bottom-20 left-1/2 z-10 flex -translate-x-1/2 gap-2 sm:bottom-24">
           {slides.map((_, i) => (
             <button key={i} onClick={() => setSlide(i)}
-              className={`rounded-full transition-all duration-300 ${i===slide?'h-3 w-8 bg-white':'h-3 w-3 bg-white/50'}`} />
+              className={`rounded-full transition-all duration-300 ${i===slide?'h-2.5 w-7 bg-white sm:h-3 sm:w-8':'h-2.5 w-2.5 bg-white/50 sm:h-3 sm:w-3'}`} />
           ))}
         </div>
         {/* Arrows */}
         <button onClick={() => setSlide(p => (p-1+slides.length)%slides.length)}
-          className="absolute left-4 top-1/2 z-10 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/30 text-2xl text-white backdrop-blur-sm transition hover:bg-black/60">‹</button>
+          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/60 sm:left-4 sm:h-12 sm:w-12">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
         <button onClick={() => setSlide(p => (p+1)%slides.length)}
-          className="absolute right-4 top-1/2 z-10 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-black/30 text-2xl text-white backdrop-blur-sm transition hover:bg-black/60">›</button>
+          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/60 sm:right-4 sm:h-12 sm:w-12">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
         {/* Stats bar */}
         <div className="absolute bottom-0 left-0 right-0 z-10 border-t border-white/10"
           style={{ background: 'var(--theme-grad-topbar)' }}>
-          <div className="mx-auto grid max-w-4xl grid-cols-3 gap-4 px-6 py-3">
+          <div className="mx-auto grid max-w-4xl grid-cols-3 gap-1 px-3 py-2 sm:gap-4 sm:px-6 sm:py-3">
             {[
               { value: settings.statStudents,     label: 'Students',     icon: FaGraduationCap, color: 'var(--theme-accent)' },
               { value: settings.statPrograms,     label: 'Programs',     icon: FaClipboardList, color: 'var(--theme-accent)' },
               { value: settings.statSatisfaction, label: 'Satisfaction', icon: FaChartBar,       color: '#4ade80' },
             ].map((s,i) => (
-              <div key={i} className="flex items-center justify-center gap-3 py-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+              <div key={i} className="flex items-center justify-center gap-1.5 py-2 sm:gap-3 sm:py-3">
+                <div className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-xl sm:flex sm:h-10 sm:w-10"
                   style={{ background:'rgba(255,255,255,0.12)' }}>
                   <s.icon style={{ fontSize:'1.25rem', color: s.color }} />
                 </div>
-                <div className="text-left">
-                  <p className="text-base font-extrabold leading-none text-white">{s.value}</p>
-                  <p className="mt-0.5 text-[11px] text-primary-light">{s.label}</p>
+                <div className="text-center sm:text-left">
+                  <p className="text-sm font-extrabold leading-none text-white sm:text-base">{s.value}</p>
+                  <p className="mt-0.5 text-[10px] text-primary-light sm:text-[11px]">{s.label}</p>
                 </div>
               </div>
             ))}
@@ -491,14 +497,14 @@ export default function Home() {
       {/* -- SERVICES (removed) -- */}
 
       {/* -- HOW IT WORKS -- */}
-      <section id="howitworks" className="bg-white px-6 py-20">
+      <section id="howitworks" className="bg-white px-4 py-14 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-14 text-center">
+          <div className="mb-10 text-center sm:mb-14">
             <span className="rounded-full bg-primary px-4 py-1 text-xs font-bold text-white">CERTIFICATIONS</span>
-            <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">Certifications</h2>
-            <p className="mt-2 text-gray-500">Earn recognised certificates in 4 simple steps</p>
+            <h2 className="mt-3 text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl">Certifications</h2>
+            <p className="mt-2 text-sm text-gray-500 sm:text-base">Earn recognised certificates in 4 simple steps</p>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 sm:gap-5">
             {(settings.howItWorks||[]).map((s,i) => {
               const STEP_ICONS  = [FaUserPlus, FaBook, FaLaptopCode, FaMedal]
               const STEP_COLORS = ['var(--theme-accent)', '#4ade80', '#f59e0b', '#f472b6']
@@ -525,14 +531,14 @@ export default function Home() {
       </section>
 
       {/* -- FEATURES -- */}
-      <section id="features" className="bg-primary-ice px-6 py-20">
+      <section id="features" className="bg-primary-ice px-4 py-14 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-12 text-center">
+          <div className="mb-10 text-center sm:mb-12">
             <span className="rounded-full bg-primary px-4 py-1 text-xs font-bold text-white">WHY CHOOSE US</span>
-            <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">Everything in One Portal</h2>
-            <p className="mt-2 text-gray-500">Built for students, managed by administration</p>
+            <h2 className="mt-3 text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl">Everything in One Portal</h2>
+            <p className="mt-2 text-sm text-gray-500 sm:text-base">Built for students, managed by administration</p>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-5">
             {(settings.features||[]).map((f,i) => (
               <motion.div key={i} initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:i*0.1 }}
                 whileHover={{ y:-4 }}
@@ -551,7 +557,7 @@ export default function Home() {
       </section>
 
       {/* -- OUR STUDENTS OUR PRIDE -- */}
-      <section id="pride" className="relative bg-white py-16 px-6">
+      <section id="pride" className="relative bg-white py-12 px-4 sm:py-16 sm:px-6">
         <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-primary-pale/60 blur-3xl" />
         <div className="pointer-events-none absolute -right-24 bottom-10 h-72 w-72 rounded-full bg-primary-light/40 blur-3xl" />
 
@@ -559,8 +565,8 @@ export default function Home() {
           {/* Heading */}
           <div className="mb-8 text-center">
             <span className="rounded-full bg-primary px-4 py-1 text-xs font-bold text-white">OUR STUDENTS</span>
-            <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">Our Students, Our Pride</h2>
-            <p className="mt-2 text-gray-500">Click on any student to read their story</p>
+            <h2 className="mt-3 text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl">Our Students, Our Pride</h2>
+            <p className="mt-2 text-sm text-gray-500 sm:text-base">Click on any student to read their story</p>
           </div>
 
           {/* Row ? centered when no selection, split when selected */}
@@ -599,12 +605,8 @@ export default function Home() {
                 </div>
               </motion.div>
 
-              {/* No students hint */}
-              {count === 0 && (
-                <p className="absolute bottom-4 left-0 right-0 text-center text-xs text-gray-400">
-                  Admin will add student stories here
-                </p>
-              )}
+              {/* No students hint — hidden, admin will add */}
+              {count === 0 && null}
 
               {/* Student circles */}
               {visibleStudents.map((student, index) => {
@@ -731,30 +733,30 @@ export default function Home() {
       </section>
 
       {/* -- REVIEWS (dynamic, approved only) -- */}
-      <section id="reviews" className="bg-white px-6 py-20">
+      <section id="reviews" className="bg-white px-4 py-14 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-12 text-center">
+          <div className="mb-10 text-center sm:mb-12">
             <span className="rounded-full bg-primary-pale px-4 py-1 text-xs font-bold text-primary">STUDENT REVIEWS</span>
-            <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">What Students Say</h2>
+            <h2 className="mt-3 text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl">What Students Say</h2>
           </div>
           {Array.isArray(reviews) && reviews.length > 0 && (
             <>
               <motion.div key={activeReview} initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }}
                 className="mb-6 overflow-hidden rounded-3xl shadow-2xl"
                 style={{ background: 'var(--theme-grad-primary)' }}>
-                <div className="flex flex-col gap-6 p-8 sm:flex-row sm:items-center sm:p-10">
-                  <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl ring-4 ring-primary-cyan/30">
+                <div className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:gap-6 sm:p-10">
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl ring-4 ring-primary-cyan/30 sm:h-20 sm:w-20">
                     {reviews[activeReview]?.studentImage ? (
                       <img src={`${BASE}/uploads/${reviews[activeReview].studentImage}`} alt="" className="h-full w-full object-cover" />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-white/20 text-2xl font-extrabold text-white">
+                      <div className="flex h-full w-full items-center justify-center bg-white/20 text-xl font-extrabold text-white sm:text-2xl">
                         {reviews[activeReview]?.studentName?.[0] || '?'}
                       </div>
                     )}
                   </div>
                   <div className="flex-1">
                     <Stars n={reviews[activeReview]?.rating || 5} />
-                    <p className="mt-3 text-lg font-medium leading-relaxed text-primary-pale">"{reviews[activeReview]?.description}"</p>
+                    <p className="mt-3 text-base font-medium leading-relaxed text-primary-pale sm:text-lg">"{reviews[activeReview]?.description}"</p>
                     <p className="mt-4 font-bold text-white">{reviews[activeReview]?.studentName}</p>
                     <p className="text-sm text-primary-light">{reviews[activeReview]?.courseType} {reviews[activeReview]?.courseName ? `— ${reviews[activeReview].courseName}` : ''}</p>
                   </div>
@@ -765,12 +767,12 @@ export default function Home() {
                   ))}
                 </div>
               </motion.div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-3 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
                 {reviews.map((r,i) => (
                   <motion.button key={r._id} onClick={()=>setActiveReview(i)} whileHover={{ y:-4 }}
-                    className={`rounded-2xl border-2 p-4 text-left transition-all ${i===activeReview?'border-primary-blue bg-primary-ice shadow-md':'border-gray-200 bg-white hover:border-primary-sky/40'}`}>
+                    className={`rounded-2xl border-2 p-3 text-left transition-all sm:p-4 ${i===activeReview?'border-primary-blue bg-primary-ice shadow-md':'border-gray-200 bg-white hover:border-primary-sky/40'}`}>
                     <div className="mb-2 flex items-center gap-2">
-                      <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-primary-pale text-xs font-bold text-primary">
+                      <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-primary-pale text-xs font-bold text-primary sm:h-8 sm:w-8">
                         {r.studentImage ? (
                           <img src={`${BASE}/uploads/${r.studentImage}`} alt="" className="h-full w-full object-cover" />
                         ) : r.studentName?.[0]}
@@ -789,41 +791,39 @@ export default function Home() {
       </section>
 
       {/* -- ABOUT -- */}
-      <section id="about" className="bg-white px-6 py-20">
+      <section id="about" className="bg-white px-4 py-14 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
-          <div className="flex flex-col items-center gap-12 lg:flex-row">
+          <div className="flex flex-col items-center gap-8 lg:flex-row lg:gap-12">
             <motion.div initial={{ opacity:0, x:-30 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} className="w-full lg:w-2/5">
               <div className="relative overflow-hidden rounded-3xl shadow-2xl">
-                <img src="/gallery/Ai.png" alt="Portal" className="h-72 w-full object-cover" onError={e=>{e.target.src='/gallery/2.png'}} />
+                <img src="/gallery/Ai.png" alt="Portal" className="h-56 w-full object-cover sm:h-72" onError={e=>{e.target.src='/gallery/2.png'}} />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent" />
-                <div className="absolute bottom-5 left-5 flex items-center gap-3 rounded-2xl bg-white/90 px-4 py-3 shadow-lg">
-                  <img src="/gallery/logo5.png" alt="logo" style={{ height: '36px', width: 'auto', objectFit: 'contain', background: 'transparent' }} />
+                <div className="absolute bottom-4 left-4 flex items-center gap-3 rounded-2xl bg-white/90 px-3 py-2.5 shadow-lg sm:bottom-5 sm:left-5 sm:px-4 sm:py-3">
+                  <img src="/gallery/logo5.png" alt="logo" style={{ height: '32px', width: 'auto', objectFit: 'contain', background: 'transparent' }} />
                   <div><p className="text-xs font-extrabold text-primary">{settings.portalName}</p><p className="text-[10px] text-gray-500">4.8 ⭐ {settings.statStudents} Students</p></div>
                 </div>
               </div>
             </motion.div>
             <motion.div initial={{ opacity:0, x:30 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} className="w-full lg:w-3/5">
               <span className="rounded-full bg-primary-pale px-4 py-1 text-xs font-bold text-primary">ABOUT THE PORTAL</span>
-              <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl"
+              <h2 className="mt-3 text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl"
                 dangerouslySetInnerHTML={{ __html: (settings.aboutTitle||'A Smarter Way to Learn & Apply').replace('&','&amp;') }} />
-              <p className="mt-4 text-base leading-relaxed text-gray-600">{settings.aboutSubtitle}</p>
-              <ul className="mt-6 space-y-2">
+              <p className="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">{settings.aboutSubtitle}</p>
+              <ul className="mt-6 grid gap-2 sm:grid-cols-2">
                 {(settings.aboutPoints||[]).map((item,i) => (
                   <li key={i} className="flex items-center gap-3 text-sm text-gray-700">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-pale text-[10px] font-bold text-primary-blue">✓</span>{item}
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary-pale text-[10px] font-bold text-primary-blue">✓</span>{item}
                   </li>
                 ))}
               </ul>
-              <div className="mt-8 flex gap-3">
-                {/* Get Started — cyan bg, white text, no border */}
+              <div className="mt-8 flex flex-wrap gap-3">
                 <Link to="/register"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold text-white transition hover:opacity-90 hover:-translate-y-0.5"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold text-white transition hover:opacity-90 hover:-translate-y-0.5 sm:px-6 sm:py-3"
                   style={{ background:'var(--theme-secondary)' }}>
                   Get Started Free →
                 </Link>
-                {/* Sign In — white bg, dark blue text, no border */}
                 <Link to="/login"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold transition hover:opacity-90 hover:-translate-y-0.5"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition hover:opacity-90 hover:-translate-y-0.5 sm:px-6 sm:py-3"
                   style={{ background:'var(--theme-bg-light)', color:'var(--theme-primary)' }}>
                   Sign In
                 </Link>
@@ -834,29 +834,29 @@ export default function Home() {
       </section>
 
       {/* -- CONTACT -- */}
-   <section id="contact" className="bg-white px-6 py-20">
+   <section id="contact" className="bg-white px-4 py-14 sm:px-6 sm:py-20">
   <div className="mx-auto max-w-6xl">
 
     {/* Heading */}
-    <div className="mb-12 text-center">
+    <div className="mb-10 text-center sm:mb-12">
       <span className="rounded-full bg-primary-pale px-4 py-1 text-xs font-bold text-primary">
         GET IN TOUCH
       </span>
 
-      <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">
+      <h2 className="mt-3 text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl">
         Contact Us
       </h2>
 
-      <p className="mt-2 text-gray-500">
+      <p className="mt-2 text-sm text-gray-500 sm:text-base">
         Have questions? Our team is ready to help 
       </p>
     </div>
 
 
-    <div className="grid gap-8 lg:grid-cols-2">
+    <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
 
       {/* LEFT CONTACT CARDS */}
-      <div className="space-y-5">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 sm:gap-4">
       
 
         {[
@@ -870,17 +870,16 @@ export default function Home() {
           <motion.div
             key={i}
             whileHover={{x:6}}
-            className="flex items-start gap-4 rounded-2xl p-6 shadow-lg transition"
+            className="flex items-start gap-3 rounded-2xl p-4 shadow-lg transition sm:gap-4 sm:p-6"
             style={{ background: 'var(--theme-grad-primary)', border:'1px solid rgba(72,202,228,0.2)' }}
           >
 
             {/* Icon */}
             <div className="
-              flex h-12 w-12 shrink-0
+              flex h-10 w-10 shrink-0 sm:h-12 sm:w-12
               items-center justify-center
               rounded-xl
               bg-white/20
-              text-2xl
               border border-white/30
             ">
               {item.icon}
@@ -905,6 +904,8 @@ export default function Home() {
                 text-sm
                 font-semibold
                 text-white
+                break-all
+                sm:break-normal
               ">
                 {item.v}
               </p>
@@ -940,16 +941,16 @@ export default function Home() {
         </div>
 
         {/* Main footer content */}
-        <div className="mx-auto max-w-6xl px-6 pb-10 pt-6">
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto max-w-6xl px-4 pb-8 pt-6 sm:px-6 sm:pb-10">
+          <div className="grid gap-8 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
 
             {/* Col 1 — Brand */}
-            <div>
-              <div className="mb-4 flex  h-14 items-center gap-2">
+            <div className="col-span-2 sm:col-span-2 lg:col-span-1">
+              <div className="mb-4 flex h-14 items-center gap-2">
                 <img
                   src="/gallery/logo1.png"
                   alt="logo"
-                  style={{ height: '80px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
+                  style={{ height: '70px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
                 />
               </div>
               <p className="text-sm leading-relaxed text-white">
@@ -1020,13 +1021,13 @@ export default function Home() {
           </div>
 
           {/* Bottom bar */}
-          <div className="mt-10 flex flex-col items-center justify-between gap-3 pt-6 sm:flex-row">
-            <p className="text-xs text-white">&copy; {new Date().getFullYear()} {settings.portalName}. All rights reserved.</p>
-            <div className="flex gap-4 text-xs text-white">
+          <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 sm:flex-row sm:mt-10">
+            <p className="text-xs text-white text-center sm:text-left">&copy; {new Date().getFullYear()} {settings.portalName}. All rights reserved.</p>
+            <div className="flex flex-wrap justify-center gap-3 text-xs text-white sm:gap-4">
               <a href="#" className="hover:text-primary-cyan transition">Privacy Policy</a>
-              <span>|</span>
+              <span className="hidden sm:inline">|</span>
               <a href="#" className="hover:text-primary-cyan transition">Terms of Service</a>
-              <span>|</span>
+              <span className="hidden sm:inline">|</span>
               <a href="#" className="hover:text-primary-cyan transition">Support</a>
             </div>
           </div>

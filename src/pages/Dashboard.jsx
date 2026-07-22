@@ -92,6 +92,7 @@ export default function Dashboard() {
   const isAdmin  = user?.role === 'admin'
   const menu     = isAdmin ? adminMenu : studentMenu
   const BASE     = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
+  const fileUrl  = (path) => (path && path.startsWith('http')) ? path : (path ? `${BASE}/uploads/${path}` : null)
   const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
 
   // Track screen size to conditionally render content once
@@ -137,8 +138,8 @@ export default function Dashboard() {
       <motion.aside
         animate={{ width: sidebarExpanded ? 240 : 56 }}
         transition={{ type: 'spring', stiffness: 320, damping: 32 }}
-        className="hidden lg:flex fixed top-16 bottom-0 left-0 z-40 flex-col overflow-hidden"
-        style={{ background: 'var(--theme-grad-sidebar)' }}
+        className="hidden lg:flex fixed top-[64px] bottom-0 left-0 z-40 flex-col"
+        style={{ background: 'var(--theme-grad-sidebar)', overflowX: 'hidden', overflowY: 'hidden' }}
       >
         {/* ── Top toggle button ── */}
         <div className="shrink-0 flex items-center border-b border-white/10 px-2 py-2"
@@ -160,7 +161,7 @@ export default function Dashboard() {
           </motion.button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-2 py-4 space-y-2">
+        <nav className="flex-1 px-2 py-4 space-y-2" style={{ overflowY: 'auto', overflowX: 'hidden' }}>
           <motion.p
             animate={{ opacity: sidebarExpanded ? 1 : 0 }}
             transition={{ duration: 0.15 }}
@@ -443,7 +444,7 @@ export default function Dashboard() {
               title="My Profile"
             >
               {user?.profileImage ? (
-                <img src={`${BASE}/uploads/${user.profileImage}`} alt=""
+                <img src={fileUrl(user.profileImage)} alt=""
                   className="h-7 w-7 rounded-lg object-cover" />
               ) : (
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg text-[11px] font-extrabold"
@@ -514,7 +515,7 @@ export default function Dashboard() {
               title="My Profile"
             >
               {user?.profileImage ? (
-                <img src={`${BASE}/uploads/${user.profileImage}`} alt="" className="h-7 w-7 rounded-lg object-cover" />
+                <img src={fileUrl(user.profileImage)} alt="" className="h-7 w-7 rounded-lg object-cover" />
               ) : (
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg text-[11px] font-extrabold" style={{ background: 'var(--theme-accent)', color: 'var(--theme-primary)' }}>
                   {initials}

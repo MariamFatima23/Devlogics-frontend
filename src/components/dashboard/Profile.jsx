@@ -5,11 +5,18 @@ import api from '../../utils/api'
 import toast from 'react-hot-toast'
 
 const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
+
+// Helper: build file URL — Cloudinary URLs start with https://, local filenames don't
+const fileUrl = (path) => {
+  if (!path) return null
+  if (path.startsWith('http')) return path          // already a full Cloudinary URL
+  return `${BASE}/uploads/${path}`                   // local dev fallback
+}
 const QUALIFICATIONS = ['Matric', 'Intermediate', 'Bachelor', 'Master', 'PhD', 'Other']
 
 const inp = 'w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition focus:ring-2 focus:ring-blue-200'
 const lbl = 'mb-1 block text-[11px] font-bold uppercase tracking-wider text-white/60'
-const sel = 'w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 outline-none transition focus:ring-2 focus:ring-blue-200'
+const sel = 'w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 pr-8 text-sm text-gray-800 outline-none transition focus:ring-2 focus:ring-blue-200 appearance-none'
 
 function Divider({ title }) {
   return (
@@ -79,7 +86,7 @@ export default function Profile() {
   }
 
   const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
-  const avatar   = imgPreview || (user?.profileImage ? `${BASE}/uploads/${user.profileImage}` : null)
+  const avatar   = imgPreview || fileUrl(user?.profileImage)
   if (!user) return null
 
   return (
@@ -153,14 +160,17 @@ export default function Profile() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className={lbl}>Gender</label>
-              <select value={form.gender} onChange={e => set('gender', e.target.value)} className={sel}>
-                <option value="">Select gender</option>
-                <option>Male</option><option>Female</option><option>Other</option>
-              </select>
+              <div className="relative">
+                <select value={form.gender} onChange={e => set('gender', e.target.value)} className={sel}>
+                  <option value="">Select gender</option>
+                  <option>Male</option><option>Female</option><option>Other</option>
+                </select>
+                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">▼</span>
+              </div>
             </div>
             <div>
               <label className={lbl}>Date of Birth</label>
-              <input type="date" value={form.dob} onChange={e => set('dob', e.target.value)} className={inp}/>
+              <input type="date" value={form.dob} onChange={e => set('dob', e.target.value)} className={`${inp} [&::-webkit-calendar-picker-indicator]:opacity-60 [&::-webkit-calendar-picker-indicator]:cursor-pointer`}/>
             </div>
             <div>
               <label className={lbl}>Country</label>
@@ -176,13 +186,16 @@ export default function Profile() {
             <>
               <Divider title="Professional Info" />
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="sm:col-span-2">
-                  <label className={lbl}>Highest Qualification</label>
+              <div>
+                <label className={lbl}>Highest Qualification</label>
+                <div className="relative">
                   <select value={form.qualification} onChange={e => set('qualification', e.target.value)} className={sel}>
                     <option value="">Select qualification</option>
                     {QUALIFICATIONS.map(q => <option key={q}>{q}</option>)}
                   </select>
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">▼</span>
                 </div>
+              </div>
               </div>
 
               <div>
@@ -199,7 +212,7 @@ export default function Profile() {
                     <p className="text-xs text-white/30">PDF, DOC, DOCX · max 5MB</p>
                   </div>
                   {user.cv && !cvFile && (
-                    <a href={`${BASE}/uploads/${user.cv}`} target="_blank" rel="noreferrer"
+                    <a href={fileUrl(user.cv)} target="_blank" rel="noreferrer"
                       onClick={e => e.stopPropagation()}
                       className="shrink-0 rounded-lg bg-white/10 px-3 py-1 text-xs font-bold hover:bg-white/20"
                       style={{ color: 'var(--theme-accent)' }}>

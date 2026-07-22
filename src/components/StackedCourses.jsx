@@ -22,8 +22,9 @@ export default function StackedCourses() {
       .finally(() => setLoading(false))
   }, [])
 
-  const scrollLeft  = () => scrollRef.current?.scrollBy({ left: -620, behavior: 'smooth' })
-  const scrollRight = () => scrollRef.current?.scrollBy({ left:  620, behavior: 'smooth' })
+  const cardWidth   = () => (scrollRef.current?.children[0]?.offsetWidth || 300) + 20
+  const scrollLeft  = () => scrollRef.current?.scrollBy({ left: -cardWidth(), behavior: 'smooth' })
+  const scrollRight = () => scrollRef.current?.scrollBy({ left:  cardWidth(), behavior: 'smooth' })
 
   const handleApply = (course) => {
     if (!user) { navigate('/login'); return }
@@ -141,7 +142,7 @@ export default function StackedCourses() {
                 transition={{ delay: i * 0.08 }}
                 style={{
                   flexShrink: 0,
-                  width: 'clamp(300px, 45vw, 560px)',
+                  width: 'clamp(280px, 85vw, 560px)',
                   minHeight: 360,
                   background: bg,
                   scrollSnapAlign: 'start',
@@ -151,7 +152,7 @@ export default function StackedCourses() {
                   position: 'relative',
                 }}
               >
-                <div className="flex h-full flex-col justify-between p-8 sm:p-10">
+                <div className="flex h-full flex-col justify-between p-5 sm:p-8 md:p-10">
                   {/* Top */}
                   <div>
                     <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -166,7 +167,7 @@ export default function StackedCourses() {
                       <span className="text-3xl">{course.icon}</span>
                     </div>
 
-                    <h3 className="text-2xl font-extrabold text-white sm:text-3xl">{course.title}</h3>
+                    <h3 className="text-xl font-extrabold text-white sm:text-2xl md:text-3xl">{course.title}</h3>
                     <p className="mt-1 text-sm font-semibold" style={{ color: accent }}>
                       {course.subtitle || `${course.duration} · ${course.level}`}
                     </p>
@@ -184,39 +185,38 @@ export default function StackedCourses() {
                     )}
                   </div>
 
-                  {/* Bottom */}
-                  <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
-                    <div className="flex items-center gap-0">
-                      <div className="flex flex-col items-center px-4">
+                  {/* Bottom stats + button */}
+                  <div className="mt-6 flex flex-col gap-4">
+                    <div className="flex flex-wrap items-center gap-x-0 gap-y-3">
+                      <div className="flex flex-col items-center px-3">
                         <p className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: accent }}>Duration</p>
-                        <p className="text-2xl font-extrabold text-white leading-tight">{course.duration}</p>
+                        <p className="text-xl font-extrabold text-white leading-tight">{course.duration}</p>
                       </div>
                       <span className="text-2xl font-thin text-white/30 select-none">|</span>
-                      <div className="flex flex-col items-center px-4">
+                      <div className="flex flex-col items-center px-3">
                         <p className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: accent }}>Seats</p>
-                        <p className="text-2xl font-extrabold text-white leading-tight">{course.seats}</p>
+                        <p className="text-xl font-extrabold text-white leading-tight">{course.seats}</p>
                       </div>
                       <span className="text-2xl font-thin text-white/30 select-none">|</span>
-                      <div className="flex flex-col items-center px-4">
+                      <div className="flex flex-col items-center px-3">
                         <p className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: accent }}>Fee</p>
-                        <p className="text-2xl font-extrabold text-white leading-tight">
+                        <p className="text-xl font-extrabold text-white leading-tight">
                           {course.isPaid ? `PKR ${course.price?.toLocaleString()}` : 'Free'}
                         </p>
                       </div>
                       {course.type === 'internship' && course.stipend && (
                         <>
                           <span className="text-2xl font-thin text-white/30 select-none">|</span>
-                          <div className="flex flex-col items-center px-4">
+                          <div className="flex flex-col items-center px-3">
                             <p className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: accent }}>Stipend</p>
-                            <p className="text-2xl font-extrabold text-white leading-tight">{course.stipend}</p>
+                            <p className="text-xl font-extrabold text-white leading-tight">{course.stipend}</p>
                           </div>
                         </>
                       )}
                     </div>
-
                     <button
                       onClick={() => handleApply(course)}
-                      className="rounded-xl px-6 py-3 text-sm font-bold transition hover:-translate-y-0.5 hover:opacity-90"
+                      className="w-full rounded-xl px-6 py-3 text-sm font-bold transition hover:-translate-y-0.5 hover:opacity-90 sm:w-auto sm:self-start"
                       style={{ background: theme.cardBg, color: theme.primary }}>
                       Apply Now →
                     </button>

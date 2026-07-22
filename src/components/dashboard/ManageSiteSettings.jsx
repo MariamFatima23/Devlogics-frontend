@@ -189,10 +189,10 @@ export default function ManageSiteSettings() {
       )}
 
       {/* Tab navigation */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 overflow-x-auto pb-1">
         {TABS.map(t => (
           <button key={t.id} type="button" onClick={() => setTab(t.id)}
-            className={`rounded-xl px-3 py-1.5 text-xs font-bold transition ${
+            className={`shrink-0 rounded-xl px-3 py-1.5 text-xs font-bold transition ${
               tab===t.id ? 'text-white' : 'bg-white border border-primary-pale text-gray-600 hover:border-primary-blue'
             }`}
             style={tab===t.id ? { background:'linear-gradient(135deg,#0077b6,#04065c)' } : {}}>

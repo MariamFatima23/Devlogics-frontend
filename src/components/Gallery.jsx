@@ -69,24 +69,24 @@ export default function Gallery({ images = galleryImages }) {
     : images.filter(img => img.category === active)
 
   return (
-    <section id="gallery" className="bg-white px-6 py-20">
+    <section id="gallery" className="bg-white px-4 py-14 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-6xl">
 
         {/* Header */}
-        <div className="mb-10 text-center">
+        <div className="mb-8 text-center sm:mb-10">
           <span className="rounded-full bg-primary-pale px-4 py-1 text-xs font-bold text-primary">
             CAMPUS GALLERY
           </span>
-          <h2 className="mt-3 text-3xl font-extrabold text-gray-900 sm:text-4xl">
+          <h2 className="mt-3 text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl">
             Our services
           </h2>
-          <p className="mt-2 text-gray-500">
+          <p className="mt-2 text-sm text-gray-500 sm:text-base">
             Environment, classrooms, events and student life photos.
           </p>
         </div>
 
         {/* Filter Tabs */}
-        <div className="mb-7 flex flex-wrap justify-center gap-2">
+        <div className="mb-7 flex flex-wrap justify-center gap-2 overflow-x-auto px-1 pb-1">
           {categories.map(cat => (
             <button
               key={cat}
@@ -107,17 +107,17 @@ export default function Gallery({ images = galleryImages }) {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 sm:gap-3">
           {filtered.map((img, i) => (
             <div
               key={i}
               onClick={() => setLightbox(img)}
-              className="group relative cursor-pointer overflow-hidden rounded-2xl shadow-sm ring-1 ring-gray-100"
+              className="group relative cursor-pointer overflow-hidden rounded-xl shadow-sm ring-1 ring-gray-100 sm:rounded-2xl"
             >
               <img
                 src={img.src}
                 alt={img.title}
-                className="h-44 w-full object-cover transition-transform duration-500 group-hover:scale-110 sm:h-52"
+                className="h-36 w-full object-cover transition-transform duration-500 group-hover:scale-110 sm:h-44 lg:h-52"
                 onError={(e) => {
                   e.target.src = `https://placehold.co/600x440/04065c/48cae4?text=${encodeURIComponent(img.title)}`
                 }}
