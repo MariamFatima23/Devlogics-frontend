@@ -3,22 +3,18 @@ const path = require('path');
 const crypto = require('crypto');
 const fs = require('fs');
 
-// Use memory storage on Vercel (serverless), disk storage locally
-const isVercel = process.env.VERCEL || process.env.NODE_ENV === 'production'
-
-const storage = isVercel
-  ? multer.memoryStorage()
-  : multer.diskStorage({
-      destination: (req, file, cb) => {
-        const uploadDir = 'uploads/'
-        if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true })
-        cb(null, uploadDir);
-      },
-      filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        cb(null, `${crypto.randomUUID()}${ext}`);
-      },
-    });
+// Always use disk storage (uploads/ folder)
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = path.join(__dirname, '..', 'uploads');
+    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${crypto.randomUUID()}${ext}`);
+  },
+});
 
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
