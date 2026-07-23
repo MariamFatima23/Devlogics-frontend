@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
-import api from '../../utils/api'
+import api, { fileUrl } from '../../utils/api'
 import toast from 'react-hot-toast'
-
-const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
 const CARD_BG = 'var(--theme-grad-primary)'
 
 const STATUS_META = {
@@ -252,19 +250,19 @@ export default function MyCourseApplications() {
 
                 <div className="flex flex-wrap gap-3">
                   {app.cvFile && (
-                    <a href={`${BASE}/uploads/${app.cvFile}`} target="_blank" rel="noreferrer"
+                    <a href={fileUrl(app.cvFile)} target="_blank" rel="noreferrer"
                       className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold text-cyan-300 hover:bg-white/20 transition">
                       📄 View CV
                     </a>
                   )}
                   {app.paymentProof && (
-                    <a href={`${BASE}/uploads/${app.paymentProof}`} target="_blank" rel="noreferrer"
+                    <a href={fileUrl(app.paymentProof)} target="_blank" rel="noreferrer"
                       className="inline-flex items-center gap-2 rounded-xl bg-amber-400/15 px-4 py-2 text-sm font-semibold text-amber-300 hover:bg-amber-400/25 transition">
                       🧾 Payment Proof
                     </a>
                   )}
                   {app.signatureFile && (
-                    <a href={`${BASE}/uploads/${app.signatureFile}`} target="_blank" rel="noreferrer"
+                    <a href={fileUrl(app.signatureFile)} target="_blank" rel="noreferrer"
                       className="inline-flex items-center gap-2 rounded-xl bg-purple-400/15 px-4 py-2 text-sm font-semibold text-purple-300 hover:bg-purple-400/25 transition">
                       ✍️ Signature
                     </a>

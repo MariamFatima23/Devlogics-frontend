@@ -101,7 +101,7 @@ export default function ManageAnnouncements() {
             </div>
             <button type="submit" disabled={loading}
               className="rounded-lg bg-primary-blue px-6 py-2.5 text-sm font-batchibold text-white hover:opacity-80 disabled:opacity-60 transition">
-              {loading ? 'Posting...' : '?? Post Announcement'}
+              {loading ? 'Posting...' : ' Post Announcement'}
             </button>
           </form>
         </div>
@@ -132,7 +132,7 @@ export default function ManageAnnouncements() {
                 </div>
                 <button onClick={() => handleDelete(a._id)}
                   className="shrink-0 rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-batchibold text-rose-600 hover:bg-rose-50 transition">
-                  ??? Delete
+                   Delete
                 </button>
               </div>
             </div>

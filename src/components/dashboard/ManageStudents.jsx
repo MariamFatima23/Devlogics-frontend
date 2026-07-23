@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import api from '../../utils/api'
+import api, { fileUrl } from '../../utils/api'
 import toast from 'react-hot-toast'
 
 const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
@@ -124,7 +124,7 @@ export default function ManageStudents() {
                 {/* Avatar + basic info */}
                 <div className="flex items-center gap-4">
                   {selected.profileImage ? (
-                    <img src={`${BASE}/uploads/${selected.profileImage}`} alt=""
+                    <img src={fileUrl(selected.profileImage)} alt=""
                       className="h-16 w-16 rounded-2xl object-cover ring-2 ring-primary-blue/20" />
                   ) : (
                     <div className="flex h-16 w-16 items-center justify-center rounded-2xl text-xl font-extrabold text-white"
@@ -234,7 +234,7 @@ export default function ManageStudents() {
             >
               <div className="flex items-center gap-3">
                 {student.profileImage ? (
-                  <img src={`${BASE}/uploads/${student.profileImage}`} alt=""
+                  <img src={fileUrl(student.profileImage)} alt=""
                     className="h-10 w-10 shrink-0 rounded-xl object-cover" />
                 ) : (
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-extrabold text-white"

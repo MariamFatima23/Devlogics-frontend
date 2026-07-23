@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import api from '../../utils/api'
+import api, { fileUrl } from '../../utils/api'
 
 const EMPTY = {
   name: '', role: '', courseType: 'Course', courseName: '',
@@ -189,7 +189,7 @@ export default function ManageStudentPride() {
           {students.map(s => (
             <div key={s._id} className="flex items-start gap-3 rounded-2xl border border-primary-pale bg-white p-4 shadow-sm">
               {s.image ? (
-                <img src={`http://localhost:5000/uploads/${s.image}`} alt={s.name}
+                <img src={fileUrl(s.image)} alt={s.name}
                   className="h-12 w-12 shrink-0 rounded-xl object-cover" />
               ) : (
                 <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${s.color} text-base font-extrabold text-white`}>

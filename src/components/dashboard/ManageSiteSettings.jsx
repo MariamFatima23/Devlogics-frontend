@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import api from '../../utils/api'
+import api, { fileUrl } from '../../utils/api'
 import { useTheme } from '../../context/ThemeContext'
 
 /* ── Default fallbacks ─────────────────────────────────────────── */
@@ -349,7 +349,7 @@ export default function ManageSiteSettings() {
                 <label className={lbl}>Logo</label>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center justify-center border border-primary-pale bg-primary-ice rounded-xl p-1">
-                    <img src={form.logoUrl ? `${BASE}/uploads/${form.logoUrl}` : '/gallery/logo1.png'}
+                    <img src={form.logoUrl ? fileUrl(form.logoUrl) : '/gallery/logo1.png'}
                       alt="logo" style={{ height:'40px', width:'auto', objectFit:'contain' }} />
                   </div>
                   <label className="cursor-pointer rounded-xl border border-primary-pale bg-primary-ice px-4 py-2 text-xs font-bold text-primary-blue hover:bg-primary-pale transition">

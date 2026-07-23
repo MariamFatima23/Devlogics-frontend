@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
-import api from '../../utils/api'
-
-const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
+import api, { fileUrl } from '../../utils/api'
 
 const STATUS_COLORS = {
   Pending:      'bg-amber-100 text-amber-700',
@@ -130,13 +128,13 @@ export default function ManageCourseApplications() {
             {/* File links */}
             <div className="mb-4 flex flex-wrap gap-3">
               {selected.cvFile && (
-                <a href={`${BASE}/uploads/${selected.cvFile}`} target="_blank" rel="noreferrer"
+                <a href={fileUrl(selected.cvFile)} target="_blank" rel="noreferrer"
                   className="flex items-center gap-2 rounded-xl bg-primary-pale px-4 py-2 text-sm font-semibold text-primary-blue hover:bg-primary-pale">
                   📄 Download CV ({selected.cvOriginalName || 'cv'})
                 </a>
               )}
               {selected.paymentProof && (
-                <a href={`${BASE}/uploads/${selected.paymentProof}`} target="_blank" rel="noreferrer"
+                <a href={fileUrl(selected.paymentProof)} target="_blank" rel="noreferrer"
                   className="flex items-center gap-2 rounded-xl bg-amber-100 px-4 py-2 text-sm font-semibold text-amber-700 hover:bg-amber-200">
                   🧾 View Payment Proof
                 </a>
@@ -148,7 +146,7 @@ export default function ManageCourseApplications() {
               <div className="mb-4 rounded-2xl border border-blue-100 bg-blue-50 p-4">
                 <p className="mb-2 text-xs font-bold uppercase tracking-wide text-blue-600">✅ Agreement Signed — Student Signature</p>
                 <img
-                  src={`http://localhost:5000/uploads/${selected.signatureFile}`}
+                  src={fileUrl(selected.signatureFile)}
                   alt="Student Signature"
                   className="max-h-28 rounded-xl border border-blue-200 bg-white p-2"
                   style={{ maxWidth: '100%' }}

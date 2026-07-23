@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
-import api from '../utils/api'
+import api, { fileUrl } from '../utils/api'
 import { FaShieldAlt } from 'react-icons/fa'
 
 const NAV_LINKS = [
@@ -65,7 +65,7 @@ export default function Navbar() {
     } catch {}
   }
 
-  const logoSrc = settings.logoUrl ? `${BASE}/uploads/${settings.logoUrl}` : '/gallery/logo1.png'
+  const logoSrc = settings.logoUrl ? fileUrl(settings.logoUrl) : '/gallery/logo1.png'
 
   return (
     <nav className="sticky top-0 z-50 shadow-lg border-b border-white/10" style={{ background: 'var(--theme-primary)' }}>
@@ -176,7 +176,7 @@ export default function Navbar() {
               {/* User avatar pill */}
               <div className="flex items-center gap-1.5 rounded-xl bg-white/10 px-1.5 py-1 ring-1 ring-white/10">
                 {user?.profileImage ? (
-                  <img src={`${BASE}/uploads/${user.profileImage}`} alt=""
+                  <img src={fileUrl(user.profileImage)} alt=""
                     className="h-6 w-6 rounded-lg object-cover shrink-0" />
                 ) : (
                   <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/20 text-[11px] font-bold text-white">

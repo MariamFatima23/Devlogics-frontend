@@ -25,3 +25,13 @@ api.interceptors.response.use(
 )
 
 export default api
+
+// ── Shared file URL helper ────────────────────────────────────────
+// If value is already a full URL (Cloudinary), return as-is.
+// Otherwise prefix with backend /uploads/ for local dev.
+const BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '')
+export const fileUrl = (path) => {
+  if (!path) return null
+  if (path.startsWith('http')) return path
+  return `${BASE}/uploads/${path}`
+}
