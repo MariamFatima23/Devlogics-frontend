@@ -389,49 +389,47 @@ export default function Home() {
           </div>
         ))}
 
-        {/* Content — centered, pb accounts for stats bar height */}
-        <div className="absolute inset-x-0 top-0 bottom-[64px] z-10 flex flex-col items-center justify-center px-4 text-center text-white sm:bottom-[72px] sm:px-8 md:bottom-[80px]">
+        {/* Content — centered inside image area, above stats bar */}
+        <div className="absolute inset-x-0 top-0 bottom-[60px] z-10 flex flex-col items-center justify-center px-8 text-center text-white sm:bottom-[68px] sm:px-12 md:bottom-[76px]">
           <AnimatePresence mode="wait">
             <motion.div key={slide}
               initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:-20 }}
               transition={{ duration:0.65 }}
-              className="w-full max-w-2xl md:max-w-3xl">
+              className="w-full max-w-xl md:max-w-2xl">
 
-              {/* Badge */}
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 backdrop-blur-sm sm:px-4 sm:mb-5">
-                <img
-                  src={settings.logoUrl ? `${BASE}/uploads/${settings.logoUrl}` : '/gallery/logo5.png'}
-                  alt="logo" className="h-4 w-auto object-contain sm:h-5" style={{ maxWidth:'52px' }} />
-                <span className="text-xs font-semibold tracking-wide sm:text-sm">{settings.portalName}</span>
+              {/* Badge — small, just text + dot, no big logo */}
+              <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-black/30 px-3 py-1 backdrop-blur-sm">
+                <span className="text-base">🎓</span>
+                <span className="text-xs font-semibold tracking-wide text-white/90">{settings.portalName}</span>
               </div>
 
               {/* Heading */}
-              <h1 className="text-3xl font-extrabold leading-tight drop-shadow-2xl sm:text-5xl md:text-6xl lg:text-7xl">
+              <h1 className="text-2xl font-extrabold leading-tight drop-shadow-2xl sm:text-4xl md:text-5xl lg:text-6xl">
                 {slides[slide]?.text || settings.tagline}
               </h1>
 
               {/* Sub */}
-              <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-white/80 sm:mt-4 sm:max-w-xl sm:text-base md:text-lg">
+              <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-white/80 sm:max-w-lg sm:text-base">
                 {settings.heroSubtext}
               </p>
 
               {/* CTA buttons */}
-              <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:mt-8 sm:gap-4">
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-3 sm:mt-7">
                 {user ? (
                   <Link to="/dashboard"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold shadow-lg transition hover:-translate-y-0.5 sm:px-8 sm:py-3 sm:text-base"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold shadow-lg transition hover:-translate-y-0.5 sm:px-8 sm:py-3"
                     style={{ background:'var(--theme-white)', color:'var(--theme-primary)' }}>
                     Go to Dashboard →
                   </Link>
                 ) : (
                   <>
                     <Link to="/register"
-                      className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold shadow-lg transition hover:-translate-y-0.5 sm:px-8 sm:py-3 sm:text-base"
+                      className="inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-bold shadow-lg transition hover:-translate-y-0.5 sm:px-7"
                       style={{ background:'var(--theme-secondary)', color:'#fff' }}>
                       Join for Free
                     </Link>
                     <Link to="/login"
-                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/40 px-6 py-2.5 text-sm font-bold shadow-lg transition hover:-translate-y-0.5 hover:bg-white/10 sm:px-8 sm:py-3 sm:text-base">
+                      className="inline-flex items-center justify-center rounded-xl border border-white/50 bg-white/10 px-5 py-2.5 text-sm font-bold shadow-lg backdrop-blur-sm transition hover:-translate-y-0.5 sm:px-7">
                       Sign In
                     </Link>
                   </>
@@ -441,27 +439,27 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
-        {/* Slide dots */}
-        <div className="absolute bottom-[72px] left-1/2 z-10 flex -translate-x-1/2 gap-2 sm:bottom-[80px] md:bottom-[88px]">
+        {/* Slide dots — above stats bar */}
+        <div className="absolute bottom-[68px] left-1/2 z-10 flex -translate-x-1/2 gap-2 sm:bottom-[76px]">
           {slides.map((_, i) => (
             <button key={i} onClick={() => setSlide(i)}
               className={`rounded-full transition-all duration-300 ${
-                i === slide ? 'h-2.5 w-8 bg-white' : 'h-2.5 w-2.5 bg-white/50 hover:bg-white/80'
+                i === slide ? 'h-2 w-7 bg-white' : 'h-2 w-2 bg-white/50 hover:bg-white/80'
               }`} />
           ))}
         </div>
 
-        {/* Prev */}
+        {/* Prev — positioned at bottom third, not center, so doesn't overlap text */}
         <button onClick={() => setSlide(p => (p-1+slides.length)%slides.length)}
-          className="absolute left-3 top-1/2 z-10 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/60 sm:left-5 sm:h-11 sm:w-11">
-          <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          className="absolute bottom-[100px] left-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/70 sm:bottom-[110px] sm:left-5 sm:h-10 sm:w-10">
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
         {/* Next */}
         <button onClick={() => setSlide(p => (p+1)%slides.length)}
-          className="absolute right-3 top-1/2 z-10 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/60 sm:right-5 sm:h-11 sm:w-11">
-          <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          className="absolute bottom-[100px] right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/70 sm:bottom-[110px] sm:right-5 sm:h-10 sm:w-10">
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </button>
