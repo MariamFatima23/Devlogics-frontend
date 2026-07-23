@@ -73,10 +73,9 @@ function FeatureIcon({ k }) {
 }
 
 const FALLBACK_SLIDES = [
-  { imageUrl: '/gallery/Ai.png',  text: 'Learn. Apply. Grow.' },
+  { imageUrl: '/gallery/Ai1.png', text: 'Learn. Apply. Grow.' },
   { imageUrl: '/gallery/Ai2.png', text: 'Track Your Progress.' },
   { imageUrl: '/gallery/Ai3.png', text: 'Achieve Your Goals.' },
-  { imageUrl: '/gallery/Ai4.png', text: 'Join Thousands of Students.' },
 ]
 
 const FALLBACK_SERVICES = [
@@ -386,7 +385,7 @@ export default function Home() {
             <img src={s.imageUrl||s.src} alt=""
               className="h-full w-full"
               style={{ objectFit: 'cover', objectPosition: 'center top' }}
-              onError={e => { e.target.src = '/gallery/2.png' }} />
+              onError={e => { e.target.style.display = 'none' }} />
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/85" />
           </div>
         ))}

@@ -112,7 +112,7 @@ export default function NotificationDropdown({ unread, setUnread }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-12 z-50 w-80 overflow-hidden rounded-2xl shadow-2xl sm:w-96"
+            className="fixed left-2 right-2 top-[56px] z-50 overflow-hidden rounded-2xl shadow-2xl sm:absolute sm:left-auto sm:right-0 sm:top-12 sm:w-96"
             style={{ background: 'linear-gradient(135deg,#04065c,#023e8a)', border: '1px solid rgba(255,255,255,0.1)' }}
           >
             {/* Header */}
@@ -135,7 +135,7 @@ export default function NotificationDropdown({ unread, setUnread }) {
             </div>
 
             {/* Body */}
-            <div className="max-h-[420px] overflow-y-auto">
+            <div className="max-h-[55vh] overflow-y-auto sm:max-h-[420px]">
               {loading ? (
                 <div className="space-y-2 p-3">
                   {[1,2,3].map(i => (
