@@ -517,9 +517,9 @@ export default function Home() {
       {/* -- SERVICES (removed) -- */}
 
       {/* -- HOW IT WORKS -- */}
-      <section id="howitworks" className="bg-white px-4 py-14 sm:px-6 sm:py-20">
+      <section id="howitworks" className="bg-white px-4 py-8 sm:px-6 sm:py-12">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-10 text-center sm:mb-14">
+          <div className="mb-6 text-center sm:mb-8">
             <span className="rounded-full bg-primary px-4 py-1 text-xs font-bold text-white">CERTIFICATIONS</span>
             <h2 className="mt-3 text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl">Certifications</h2>
             <p className="mt-2 text-sm text-gray-500 sm:text-base">Earn recognised certificates in 4 simple steps</p>
@@ -551,7 +551,7 @@ export default function Home() {
       </section>
 
       {/* -- FEATURES -- */}
-      <section id="features" className="bg-primary-ice px-4 py-14 sm:px-6 sm:py-20">
+      <section id="features" className="bg-primary-ice px-4 py-8 sm:px-6 sm:py-12">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10 text-center sm:mb-12">
             <span className="rounded-full bg-primary px-4 py-1 text-xs font-bold text-white">WHY CHOOSE US</span>
@@ -577,7 +577,7 @@ export default function Home() {
       </section>
 
       {/* ── OUR STUDENTS OUR PRIDE ── */}
-      <section id="pride" className="relative overflow-hidden bg-white py-12 px-4 sm:py-16 sm:px-6">
+      <section id="pride" className="relative overflow-hidden bg-white py-8 px-4 sm:py-12 sm:px-6">
         {/* BG blobs */}
         <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-primary-pale/60 blur-3xl" />
         <div className="pointer-events-none absolute -right-24 bottom-10 h-72 w-72 rounded-full bg-primary-light/40 blur-3xl" />
@@ -794,7 +794,7 @@ export default function Home() {
       </section>
 
       {/* -- REVIEWS (dynamic, approved only) -- */}
-      <section id="reviews" className="bg-white px-4 py-14 sm:px-6 sm:py-20">
+      <section id="reviews" className="bg-white px-4 py-8 sm:px-6 sm:py-12">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10 text-center sm:mb-12">
             <span className="rounded-full bg-primary-pale px-4 py-1 text-xs font-bold text-primary">STUDENT REVIEWS</span>
@@ -852,7 +852,7 @@ export default function Home() {
       </section>
 
       {/* -- ABOUT -- */}
-      <section id="about" className="bg-white px-4 py-14 sm:px-6 sm:py-20">
+      <section id="about" className="bg-white px-4 py-8 sm:px-6 sm:py-12">
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-col items-center gap-8 lg:flex-row lg:gap-12">
             <motion.div initial={{ opacity:0, x:-30 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} className="w-full lg:w-2/5">

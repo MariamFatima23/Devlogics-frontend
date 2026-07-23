@@ -114,7 +114,7 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: 'var(--theme-bg-light)' }}>
 
-      {/* Mobile overlay */}
+      {/* Mobile overlay — for bottom "More" drawer */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -190,24 +190,24 @@ export default function Dashboard() {
         </div>
       </motion.aside>
 
-      {/* ══ MOBILE SIDEBAR ══ */}
-      <motion.aside initial={false} animate={{ x: menuOpen ? 0 : -288 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col lg:hidden"
-        style={{ background: 'var(--theme-grad-sidebar)' }}>
-        <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-5 py-4">
-          <img src="/gallery/logo1.png" alt="logo"
-            style={{ height: '32px', width: 'auto', maxWidth: '120px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+      {/* ══ MOBILE BOTTOM "MORE" DRAWER ══ */}
+      {/* Shows only overflow items (beyond first 4) + logout */}
+      <motion.aside initial={false} animate={{ y: menuOpen ? 0 : '100%' }}
+        transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+        className="fixed bottom-0 left-0 right-0 z-50 flex flex-col rounded-t-2xl lg:hidden"
+        style={{ background: 'var(--theme-grad-sidebar)', maxHeight: '70vh' }}>
+        {/* Handle bar */}
+        <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-5 py-3">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-white/40">
+            {isAdmin ? 'Admin Panel' : 'Student Portal'}
+          </p>
           <button onClick={() => setMenuOpen(false)}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-white/50 hover:bg-white/10 hover:text-white">
             <Icon d="M6 18L18 6M6 6l12 12" size={16} />
           </button>
         </div>
-        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
-          <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-widest text-white/30">
-            {isAdmin ? 'Admin Panel' : 'Student Portal'}
-          </p>
-          {menu.map((item) => {
+        <nav className="overflow-y-auto px-3 py-3 space-y-1">
+          {menu.slice(4).map((item) => {
             const active = tab === item.id
             return (
               <motion.button key={item.id} onClick={() => switchTab(item.id)}
@@ -241,10 +241,8 @@ export default function Dashboard() {
         <header className="fixed top-0 left-0 right-0 z-30 flex h-14 shrink-0 items-center justify-between gap-2 border-b border-white/10 px-3 sm:px-6"
           style={{ background: 'var(--theme-grad-topbar)' }}>
           <div className="flex items-center gap-2 min-w-0">
-            <button onClick={() => setMenuOpen(true)}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/20 text-white lg:hidden">
-              <Icon d="M4 6h16M4 12h16M4 18h16" />
-            </button>
+            <img src="/gallery/logo1.png" alt="logo" className="lg:hidden shrink-0"
+              style={{ height: '26px', width: 'auto', maxWidth: '90px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <img src="/gallery/logo1.png" alt="logo" className="hidden lg:block shrink-0"
               style={{ height: '28px', width: 'auto', maxWidth: '100px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             <div className="hidden lg:block h-4 w-px bg-white/20" />
@@ -290,12 +288,11 @@ export default function Dashboard() {
         </main>
 
       </div>
-
-      {/* ══ MOBILE BOTTOM NAV ══ */}
+  {/* ══ MOBILE BOTTOM NAV ══ */}
       <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden border-t border-white/10"
         style={{ background: 'var(--theme-grad-sidebar)' }}>
         <div className="flex items-center justify-around px-1 py-1">
-          {menu.slice(0, 5).map((item) => {
+          {menu.slice(0, 4).map((item) => {
             const active = tab === item.id
             return (
               <button key={item.id} onClick={() => switchTab(item.id)}
@@ -313,15 +310,23 @@ export default function Dashboard() {
               </button>
             )
           })}
-          {/* More button — opens sidebar */}
-          <button onClick={() => setMenuOpen(true)}
-            className="flex flex-1 flex-col items-center gap-0.5 rounded-xl px-1 py-2 transition"
-            style={{ color: 'rgba(255,255,255,0.6)' }}>
-            <Icon d="M4 6h16M4 12h16M4 18h16" size={18} />
-            <span className="text-[9px] font-semibold">More</span>
-          </button>
+          {/* More button — opens bottom sheet with remaining items */}
+          {menu.length > 4 && (
+            <button onClick={() => setMenuOpen(true)}
+              className="flex flex-1 flex-col items-center gap-0.5 rounded-xl px-1 py-2 transition"
+              style={{ color: menu.slice(4).some(i => i.id === tab) ? '#48cae4' : 'rgba(255,255,255,0.6)' }}>
+              <span className="relative">
+                <Icon d="M5 12h.01M12 12h.01M19 12h.01" size={18} />
+                {menu.slice(4).some(i => i.id === tab) && (
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-cyan-400" />
+                )}
+              </span>
+              <span className="text-[9px] font-semibold">More</span>
+            </button>
+          )}
         </div>
       </div>
+    
     </div>
   )
 }
