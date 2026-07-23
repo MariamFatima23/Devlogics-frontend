@@ -81,8 +81,9 @@ export default function Login() {
               <FaLock className="shrink-0" style={{ color: 'var(--theme-primary)' }} size={15}/>
               <input type={showPass ? 'text' : 'password'} name="password" placeholder="Password"
                 value={formData.password} onChange={handleChange} required
-                className="flex-1 text-sm text-gray-800 outline-none placeholder:text-gray-400 bg-transparent" />
-              <button type="button" onClick={() => setShowPass(v=>!v)} className="text-gray-400 hover:text-gray-600">
+                className="min-w-0 flex-1 text-sm text-gray-800 outline-none placeholder:text-gray-400 bg-transparent" />
+              <button type="button" onClick={() => setShowPass(v=>!v)}
+                className="shrink-0 flex items-center justify-center text-gray-400 hover:text-gray-600 transition">
                 {showPass ? <FaEyeSlash size={15}/> : <FaEye size={15}/>}
               </button>
             </div>

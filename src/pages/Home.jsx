@@ -377,15 +377,17 @@ export default function Home() {
     <div className="overflow-x-hidden">
 
       {/* ── HERO ── */}
-      <section id="home" className="relative w-full overflow-hidden h-screen min-h-[540px] max-h-[900px]">
+      <section id="home" className="relative w-full overflow-hidden" style={{ height: 'min(100vh, 700px)', minHeight: '500px' }}>
 
         {/* Slide backgrounds */}
         {slides.map((s, i) => (
           <div key={i} className="absolute inset-0 transition-opacity duration-1000"
-            style={{ opacity: slide===i ? 1 : 0, zIndex: slide===i ? 1 : 0 }}>
-            <img src={s.imageUrl||s.src} alt="" className="h-full w-full object-cover"
+            style={{ opacity: slide===i ? 1 : 0, zIndex: slide===i ? 1 : 0, background: '#000' }}>
+            <img src={s.imageUrl||s.src} alt=""
+              className="h-full w-full"
+              style={{ objectFit: 'cover', objectPosition: 'center top' }}
               onError={e => { e.target.src = '/gallery/2.png' }} />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/85" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/85" />
           </div>
         ))}
 
