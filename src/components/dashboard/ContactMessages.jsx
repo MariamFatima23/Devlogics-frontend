@@ -98,7 +98,7 @@ export default function ContactMessages() {
           <p className="text-sm text-gray-300">Messages from the Contact Us form will appear here.</p>
         </div>
       ) : (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2 min-w-0">
 
           {/* Message List */}
           <div className="space-y-2">
@@ -162,10 +162,10 @@ export default function ContactMessages() {
             {selected ? (
               <motion.div
                 key={selected._id}
-                initial={{ opacity:0, x:30 }}
-                animate={{ opacity:1, x:0 }}
-                exit={{   opacity:0, x:30 }}
-                className="h-fit rounded-2xl shadow-lg overflow-hidden"
+                initial={{ opacity:0, y:20 }}
+                animate={{ opacity:1, y:0 }}
+                exit={{   opacity:0, y:20 }}
+                className="w-full h-fit rounded-2xl shadow-lg overflow-hidden"
                 style={{ background:'linear-gradient(135deg,#04065c 0%,#023e8a 60%,#0077b6 100%)' }}
               >
                 {/* Accent bar */}
@@ -185,7 +185,7 @@ export default function ContactMessages() {
                   </div>
 
                   {/* Meta */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {selected.course && (
                       <div className="flex items-center gap-2 rounded-xl bg-white/10 px-3 py-2">
                         <FaBook className="text-primary-cyan text-xs" />
@@ -201,7 +201,7 @@ export default function ContactMessages() {
                   {/* Message */}
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-primary-cyan">Message</p>
-                    <p className="text-sm leading-relaxed text-white/85 whitespace-pre-wrap">{selected.message}</p>
+                    <p className="text-sm leading-relaxed text-white/85 break-words whitespace-pre-wrap">{selected.message}</p>
                   </div>
 
                   {/* Actions */}

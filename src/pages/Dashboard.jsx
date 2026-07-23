@@ -70,6 +70,14 @@ export default function Dashboard() {
   const [unread, setUnread] = useState(0)
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
 
+  const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 1024)
+
+  useEffect(() => {
+    const onResize = () => setIsDesktop(window.innerWidth >= 1024)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
   const isAdmin = user?.role === 'admin'
   const menu = isAdmin ? adminMenu : studentMenu
   const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
@@ -273,8 +281,11 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* SCROLLABLE CONTENT — desktop sidebar offset, mobile no offset */}
-        <main className="flex-1 overflow-y-auto mt-14 lg:pl-14 pb-20 lg:pb-0">
+        {/* SCROLLABLE CONTENT — desktop: padding animates with sidebar, mobile: no padding */}
+        <main
+          className="flex-1 overflow-y-auto mt-14 pb-20 lg:pb-0 transition-[padding-left] duration-300 ease-in-out"
+          style={{ paddingLeft: isDesktop ? (sidebarExpanded ? '240px' : '56px') : '0px' }}
+        >
           <div className="p-3 sm:p-4 lg:p-6">
             <AnimatePresence mode="wait">
               <motion.div key={tab}
