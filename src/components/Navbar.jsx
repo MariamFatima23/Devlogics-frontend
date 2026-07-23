@@ -71,18 +71,18 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 shadow-lg border-b border-white/10" style={{ background: 'var(--theme-primary)' }}>
 
       {/* ── Main bar ── */}
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4 sm:h-16 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 overflow-hidden px-4 sm:h-16 sm:px-6">
 
-        {/* Logo — stays inside navbar, never overflows */}
+        {/* Logo — strictly contained within navbar height */}
         <button
           onClick={() => scrollTo('#home')}
-          className="shrink-0 flex items-center"
+          className="shrink-0 flex items-center overflow-hidden"
           aria-label="Home">
           <img
             src={logoSrc}
             alt="logo"
-            className="h-7 w-auto max-w-[110px] object-contain sm:h-9 lg:h-10"
-            style={{ filter: 'brightness(0) invert(1)' }}
+            className="block h-8 w-auto max-h-8 max-w-[120px] object-contain sm:h-9 sm:max-h-9 lg:h-10 lg:max-h-10"
+            style={{ filter: 'brightness(0) invert(1)', display: 'block' }}
           />
         </button>
 
