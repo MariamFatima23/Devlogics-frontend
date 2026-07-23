@@ -855,13 +855,17 @@ export default function Home() {
           <div className="flex flex-col items-center gap-8 lg:flex-row lg:gap-12">
             <motion.div initial={{ opacity:0, x:-30 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} className="w-full lg:w-2/5">
               <div className="relative overflow-hidden rounded-3xl shadow-2xl">
-                <img
-                  src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80"
-                  alt="DevLogics Office"
-                  className="h-56 w-full object-cover sm:h-72"
-                  onError={e => { e.target.src = '/gallery/Ai.png' }}
+                {/* Google Maps embed */}
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3509.187032429623!2d70.31745267408449!3d28.413612793991!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39375b3721022e03%3A0xa7b882ba164fab7a!2sDevicon%20Software%20House!5e0!3m2!1sen!2s!4v1784783941578!5m2!1sen!2s"
+                  className="h-56 w-full sm:h-72"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  title="Devicon Software House"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent" />
+                {/* Info badge */}
                 <div className="absolute bottom-4 left-4 flex items-center gap-3 rounded-2xl bg-white/90 px-3 py-2.5 shadow-lg backdrop-blur-sm sm:bottom-5 sm:left-5 sm:px-4 sm:py-3">
                   <img src="/gallery/logo5.png" alt="logo" style={{ height: '28px', width: 'auto', objectFit: 'contain' }} />
                   <div>
