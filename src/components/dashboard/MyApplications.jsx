@@ -311,15 +311,20 @@ function MyApplications() {
             <div className="mb-5">
               <p className="mb-2 text-xs font-batchibold uppercase text-slate-400">Attached Documents</p>
               <div className="space-y-2">
-                {selected.attachments.map((att, i) => (
-                    <a key={i} href={`${BASE}/uploads/${att.fileName}`} target="_blank" rel="noreferrer"
+                {selected.attachments.map((att, i) => {
+                  const url = att.filePath?.startsWith('http')
+                    ? att.filePath
+                    : `${BASE}/uploads/${att.fileName}`
+                  return (
+                    <a key={i} href={url} target="_blank" rel="noreferrer"
                     className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm transition hover:border-indigo-300 hover:bg-primary-pale">
                     <span className="text-lg">??</span>
                     <span className="flex-1 font-medium text-primary-mid">{att.originalName}</span>
                     <span className="text-xs text-slate-400">{(att.fileSize / 1024).toFixed(0)} KB</span>
                     <span className="text-xs text-indigo-500">Open ?</span>
                   </a>
-                ))}
+                  )
+                })}
               </div>
             </div>
           )}

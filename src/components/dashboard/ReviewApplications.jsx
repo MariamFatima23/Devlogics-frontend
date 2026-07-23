@@ -181,7 +181,7 @@ function ReviewApplications() {
               {a.attachments?.length > 0 && (
                 <div className="mb-3 flex flex-wrap gap-2">
                   {a.attachments.map((f, i) => (
-                    <a key={i} href={fileUrl(f.fileName)} target="_blank" rel="noreferrer"
+                    <a key={i} href={fileUrl(f.filePath || f.fileName)} target="_blank" rel="noreferrer"
                       className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 transition">
                       📎 {f.originalName}
                       <span className="text-slate-400">({(f.fileSize / 1024).toFixed(0)}KB)</span>

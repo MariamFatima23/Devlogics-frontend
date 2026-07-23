@@ -470,7 +470,7 @@ export default function CourseApplyModal({ course, onClose, onGoToProfile }) {
           {user.department && <span>🏫 {user.department}</span>}
         </div>
         {user.cv && (
-          <a href={`${BASE}/uploads/${user.cv}`} target="_blank" rel="noreferrer"
+          <a href={user.cv.startsWith('http') ? user.cv : `${BASE}/uploads/${user.cv}`} target="_blank" rel="noreferrer"
             className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline">
             📄 View saved CV
           </a>
