@@ -574,178 +574,219 @@ export default function Home() {
         </div>
       </section>
 
-      {/* -- OUR STUDENTS OUR PRIDE -- */}
-      <section id="pride" className="relative bg-white py-12 px-4 sm:py-16 sm:px-6">
+      {/* ── OUR STUDENTS OUR PRIDE ── */}
+      <section id="pride" className="relative overflow-hidden bg-white py-12 px-4 sm:py-16 sm:px-6">
+        {/* BG blobs */}
         <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-primary-pale/60 blur-3xl" />
         <div className="pointer-events-none absolute -right-24 bottom-10 h-72 w-72 rounded-full bg-primary-light/40 blur-3xl" />
 
-        <div className="relative mx-auto max-w-6xl">
+        <div className="relative mx-auto max-w-5xl">
           {/* Heading */}
-          <div className="mb-8 text-center">
+          <div className="mb-10 text-center sm:mb-14">
             <span className="rounded-full bg-primary px-4 py-1 text-xs font-bold text-white">OUR STUDENTS</span>
             <h2 className="mt-3 text-2xl font-extrabold text-gray-900 sm:text-3xl lg:text-4xl">Our Students, Our Pride</h2>
             <p className="mt-2 text-sm text-gray-500 sm:text-base">Click on any student to read their story</p>
           </div>
 
-          {/* Row ? centered when no selection, split when selected */}
-          <div className="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center">
+          <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-start lg:justify-center">
 
-            {/* -- Circles panel ? size shrinks when few students -- */}
-            {(() => {
-              const count = visibleStudents.length
-              // Scale panel height based on number of students
-              const panelH = count === 0 ? 200 : count <= 2 ? 260 : count <= 4 ? 340 : 480
-              const panelW = activeStudent !== null ? 460 : (count === 0 ? 260 : count <= 2 ? 300 : count <= 4 ? 380 : 540)
-              return (
-            <motion.div
-              layout
-              transition={{ type:'spring', stiffness:260, damping:30 }}
-              className="relative shrink-0"
-              style={{ height: panelH, width: panelW }}
-            >
-              {/* Centre badge ? always perfectly centered */}
-              <motion.div
-                animate={{ scale:[1, 1.07, 1] }}
-                transition={{ repeat:Infinity, duration:3.2, ease:'easeInOut' }}
-                className="absolute z-30 flex h-[130px] w-[130px] items-center justify-center rounded-full shadow-2xl"
-                style={{
-                  top:'50%', left:'50%',
-                  transform:'translate(-50%,-50%)',
-                  background: 'var(--theme-grad-primary)',
-                  border: '3px solid var(--theme-accent)',
-                  boxShadow: '0 0 40px rgba(0,119,182,0.5)',
-                }}>
-                <div className="px-3 text-center">
-                  <p className="text-[10px] font-extrabold uppercase leading-tight tracking-widest text-primary-pale">Our<br/>Students<br/>Our Pride</p>
-                  <div className="mt-2 flex justify-center gap-0.5">
-                    {[1,2,3].map(s => <span key={s} className="text-[10px] text-primary-cyan">★</span>)}
-                  </div>
+            {/* ── ORBIT LAYOUT ── */}
+            {visibleStudents.length === 0 ? (
+              <div className="flex flex-col items-center gap-3 py-10 text-center">
+                <div className="flex h-24 w-24 items-center justify-center rounded-full shadow-xl"
+                  style={{ background:'var(--theme-grad-primary)', border:'3px solid var(--theme-accent)' }}>
+                  <p className="text-[10px] font-extrabold uppercase leading-tight tracking-widest text-white">Our<br/>Students<br/>Our Pride</p>
                 </div>
-              </motion.div>
+                <p className="text-sm text-gray-400">No students added yet</p>
+              </div>
+            ) : (
+              <div className="shrink-0">
+                {/* Grid layout: 3 cols × 3 rows with center badge in middle cell */}
+                <div className="grid grid-cols-3 gap-3 sm:gap-5">
+                  {/* Row 1: [student0] [student1] [student2] */}
+                  {/* Row 2: [student3] [CENTER]   [student4] */}
+                  {/* Row 3: [student5] [student6] [student7] */}
 
-              {/* No students hint — hidden, admin will add */}
-              {count === 0 && null}
+                  {/* Row 1 */}
+                  {[0, 1, 2].map(idx => {
+                    const student = visibleStudents[idx]
+                    if (!student) return <div key={idx} className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24" />
+                    const isSel = activeStudent === idx
+                    const imgUrl = student.image ? `${BASE}/uploads/${student.image}` : ''
+                    return (
+                      <motion.button key={student._id}
+                        onClick={() => setActiveStudent(isSel ? null : idx)}
+                        animate={{ y: [0, idx % 2 === 0 ? -6 : 6, 0] }}
+                        transition={{ repeat: Infinity, duration: 3 + idx * 0.4, ease: 'easeInOut' }}
+                        whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.92 }}
+                        className="h-16 w-16 overflow-hidden rounded-full sm:h-20 sm:w-20 md:h-24 md:w-24"
+                        style={{
+                          border: isSel ? '3px solid var(--theme-secondary)' : '2.5px solid var(--theme-accent)',
+                          boxShadow: isSel ? '0 0 0 4px rgba(0,119,182,0.25), 0 6px 20px rgba(0,119,182,0.4)' : '0 4px 14px rgba(3,4,94,0.18)',
+                        }}>
+                        {imgUrl
+                          ? <img src={imgUrl} alt={student.name} className="h-full w-full object-cover" onError={e => { e.currentTarget.style.display='none' }} />
+                          : null}
+                        <div className={`${imgUrl ? 'hidden ' : ''}flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-blue-900 text-sm font-extrabold text-white sm:text-base`}>
+                          {student.name?.split(' ').map(n => n[0]).join('').slice(0,2)}
+                        </div>
+                      </motion.button>
+                    )
+                  })}
 
-              {/* Student circles */}
-              {visibleStudents.map((student, index) => {
-                const pos   = CPOS[index % CPOS.length]
-                const isSel = activeStudent === index
-                const imgUrl = student.image
-                  ? `${BASE}/uploads/${student.image}`
-                  : student.img || ''
+                  {/* Row 2 — col 0 */}
+                  {(() => {
+                    const idx = 3; const student = visibleStudents[idx]
+                    if (!student) return <div key="r2c0" className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24" />
+                    const isSel = activeStudent === idx
+                    const imgUrl = student.image ? `${BASE}/uploads/${student.image}` : ''
+                    return (
+                      <motion.button key={student._id}
+                        onClick={() => setActiveStudent(isSel ? null : idx)}
+                        animate={{ y: [0, -6, 0] }}
+                        transition={{ repeat: Infinity, duration: 3.4, ease: 'easeInOut' }}
+                        whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.92 }}
+                        className="h-16 w-16 overflow-hidden rounded-full sm:h-20 sm:w-20 md:h-24 md:w-24"
+                        style={{
+                          border: isSel ? '3px solid var(--theme-secondary)' : '2.5px solid var(--theme-accent)',
+                          boxShadow: isSel ? '0 0 0 4px rgba(0,119,182,0.25)' : '0 4px 14px rgba(3,4,94,0.18)',
+                        }}>
+                        {imgUrl ? <img src={imgUrl} alt={student.name} className="h-full w-full object-cover" onError={e => { e.currentTarget.style.display='none' }} /> : null}
+                        <div className={`${imgUrl?'hidden ':''}flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-blue-900 text-sm font-extrabold text-white sm:text-base`}>
+                          {student.name?.split(' ').map(n=>n[0]).join('').slice(0,2)}
+                        </div>
+                      </motion.button>
+                    )
+                  })()}
 
-                return (
-                  <motion.button
-                    key={student._id}
-                    onClick={() => setActiveStudent(isSel ? null : index)}
-                    animate={{ y:[0, 8, 0] }}
-                    transition={{ repeat:Infinity, duration:3 + index*0.38, ease:'easeInOut' }}
-                    whileHover={{ scale:1.13 }}
-                    whileTap={{ scale:0.9 }}
-                    className="absolute overflow-hidden rounded-full"
+                  {/* Center badge */}
+                  <motion.div
+                    animate={{ scale: [1, 1.06, 1] }}
+                    transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+                    className="flex h-16 w-16 items-center justify-center rounded-full shadow-2xl sm:h-20 sm:w-20 md:h-24 md:w-24"
                     style={{
-                      top:pos.top, left:pos.left, width:pos.w, height:pos.h,
-                      border: isSel ? `3px solid var(--theme-secondary)` : `2.5px solid var(--theme-accent)`,
-                      boxShadow: isSel
-                        ? '0 0 0 5px rgba(0,119,182,0.2), 0 8px 28px rgba(0,119,182,0.45)'
-                        : '0 4px 16px rgba(3,4,94,0.18)',
-                      zIndex: isSel ? 25 : 10,
-                    }}
-                  >
-                    {imgUrl && (
-                      <img src={imgUrl} alt={student.name} className="h-full w-full object-cover"
-                        onError={e => { e.currentTarget.style.display='none' }} />
-                    )}
-                    <div className={`${imgUrl?'hidden ':''}flex h-full w-full items-center justify-center bg-gradient-to-br ${student.color||'from-blue-600 to-blue-900'} text-base font-extrabold text-white`}>
-                      {student.name?.split(' ').map(n=>n[0]).join('')}
+                      background: 'var(--theme-grad-primary)',
+                      border: '3px solid var(--theme-accent)',
+                      boxShadow: '0 0 32px rgba(72,202,228,0.4)',
+                    }}>
+                    <div className="text-center px-1">
+                      <p className="text-[7px] font-extrabold uppercase leading-tight tracking-wider text-white sm:text-[9px]">
+                        Our<br/>Students<br/>Our Pride
+                      </p>
+                      <div className="mt-1 flex justify-center gap-0.5">
+                        {[1,2,3].map(s => <span key={s} className="text-[8px] text-cyan-300">★</span>)}
+                      </div>
                     </div>
-                    {isSel && (
-                      <motion.div className="absolute inset-0 rounded-full border-2 border-primary-blue"
-                        animate={{ scale:[1,1.5], opacity:[0.7,0] }}
-                        transition={{ repeat:Infinity, duration:1 }} />
-                    )}
-                  </motion.button>
-                )
-              })}
-            </motion.div>
-              )
-            })()}
+                  </motion.div>
 
-            {/* -- Detail card ? slides in from right, only when a student selected -- */}
+                  {/* Row 2 — col 2 */}
+                  {(() => {
+                    const idx = 4; const student = visibleStudents[idx]
+                    if (!student) return <div key="r2c2" className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24" />
+                    const isSel = activeStudent === idx
+                    const imgUrl = student.image ? `${BASE}/uploads/${student.image}` : ''
+                    return (
+                      <motion.button key={student._id}
+                        onClick={() => setActiveStudent(isSel ? null : idx)}
+                        animate={{ y: [0, 6, 0] }}
+                        transition={{ repeat: Infinity, duration: 3.2, ease: 'easeInOut' }}
+                        whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.92 }}
+                        className="h-16 w-16 overflow-hidden rounded-full sm:h-20 sm:w-20 md:h-24 md:w-24"
+                        style={{
+                          border: isSel ? '3px solid var(--theme-secondary)' : '2.5px solid var(--theme-accent)',
+                          boxShadow: isSel ? '0 0 0 4px rgba(0,119,182,0.25)' : '0 4px 14px rgba(3,4,94,0.18)',
+                        }}>
+                        {imgUrl ? <img src={imgUrl} alt={student.name} className="h-full w-full object-cover" onError={e => { e.currentTarget.style.display='none' }} /> : null}
+                        <div className={`${imgUrl?'hidden ':''}flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-blue-900 text-sm font-extrabold text-white sm:text-base`}>
+                          {student.name?.split(' ').map(n=>n[0]).join('').slice(0,2)}
+                        </div>
+                      </motion.button>
+                    )
+                  })()}
+
+                  {/* Row 3 */}
+                  {[5, 6, 7].map(idx => {
+                    const student = visibleStudents[idx]
+                    if (!student) return <div key={`r3c${idx}`} className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24" />
+                    const isSel = activeStudent === idx
+                    const imgUrl = student.image ? `${BASE}/uploads/${student.image}` : ''
+                    return (
+                      <motion.button key={student._id}
+                        onClick={() => setActiveStudent(isSel ? null : idx)}
+                        animate={{ y: [0, idx % 2 === 0 ? 6 : -6, 0] }}
+                        transition={{ repeat: Infinity, duration: 3.1 + idx * 0.3, ease: 'easeInOut' }}
+                        whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.92 }}
+                        className="h-16 w-16 overflow-hidden rounded-full sm:h-20 sm:w-20 md:h-24 md:w-24"
+                        style={{
+                          border: isSel ? '3px solid var(--theme-secondary)' : '2.5px solid var(--theme-accent)',
+                          boxShadow: isSel ? '0 0 0 4px rgba(0,119,182,0.25)' : '0 4px 14px rgba(3,4,94,0.18)',
+                        }}>
+                        {imgUrl ? <img src={imgUrl} alt={student.name} className="h-full w-full object-cover" onError={e => { e.currentTarget.style.display='none' }} /> : null}
+                        <div className={`${imgUrl?'hidden ':''}flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-blue-900 text-sm font-extrabold text-white sm:text-base`}>
+                          {student.name?.split(' ').map(n=>n[0]).join('').slice(0,2)}
+                        </div>
+                      </motion.button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Detail card */}
             <AnimatePresence mode="wait">
               {sel && (
                 <motion.div
                   key={activeStudent}
-                  initial={{ opacity:0, x:80 }}
-                  animate={{ opacity:1, x:0 }}
-                  exit={{   opacity:0, x:80 }}
+                  initial={{ opacity:0, x:60, scale:0.95 }}
+                  animate={{ opacity:1, x:0, scale:1 }}
+                  exit={{ opacity:0, x:60, scale:0.95 }}
                   transition={{ type:'spring', stiffness:280, damping:26 }}
                   className="w-full max-w-sm shrink-0 overflow-hidden rounded-3xl shadow-2xl"
-                  style={{ background: 'var(--theme-grad-primary)' }}
-                >
-                  {/* Top accent bar */}
-                  <div className="h-1 w-full" style={{ background: 'var(--theme-grad-primary)' }} />
-
-                  <div className="p-7">
-                    {/* Close + photo + name */}
+                  style={{ background: 'var(--theme-grad-primary)' }}>
+                  <div className="h-1 w-full" style={{ background: 'var(--theme-accent)' }} />
+                  <div className="p-6">
                     <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="h-16 w-16 overflow-hidden rounded-2xl"
-                          style={{ border: '2px solid var(--theme-accent)', boxShadow: '0 0 18px rgba(72,202,228,0.5)' }}>
-                          {sel.image ? (
-                            <img src={`${BASE}/uploads/${sel.image}`} alt={sel.name} className="h-full w-full object-cover" />
-                          ) : (
-                            <div className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${sel.color||'from-blue-600 to-blue-900'} text-xl font-extrabold text-white`}>
-                              {sel.name?.split(' ').map(n => n[0]).join('')}
-                            </div>
-                          )}
+                      <div className="flex items-center gap-3">
+                        <div className="h-14 w-14 overflow-hidden rounded-2xl shrink-0"
+                          style={{ border:'2px solid var(--theme-accent)', boxShadow:'0 0 16px rgba(72,202,228,0.4)' }}>
+                          {sel.image
+                            ? <img src={`${BASE}/uploads/${sel.image}`} alt={sel.name} className="h-full w-full object-cover" />
+                            : <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-600 to-blue-900 text-lg font-extrabold text-white">
+                                {sel.name?.split(' ').map(n=>n[0]).join('')}
+                              </div>
+                          }
                         </div>
                         <div>
-                          <span className="rounded-full bg-primary-cyan/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary-cyan">
+                          <span className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold text-white">
                             {sel.courseType || 'Student'}
                           </span>
-                          <h3 className="mt-1 text-xl font-extrabold text-white">{sel.name}</h3>
-                          <p className="text-sm text-primary-light">
-                            {sel.role}{sel.courseName ? ` — ${sel.courseName}` : ''}
-                          </p>
+                          <h3 className="mt-1 text-lg font-extrabold text-white">{sel.name}</h3>
+                          <p className="text-xs text-white/70">{sel.role}{sel.courseName ? ` — ${sel.courseName}` : ''}</p>
                         </div>
                       </div>
-                      <button
-                        onClick={() => setActiveStudent(null)}
-                        className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs text-white/60 transition hover:bg-white/20">
-                        ✕
-                      </button>
+                      <button onClick={() => setActiveStudent(null)}
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs text-white/60 hover:bg-white/20 transition">✕</button>
                     </div>
-
-                    {/* Badge */}
                     {sel.badge && (
-                      <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-primary-cyan/30 bg-primary-blue/25 px-4 py-1.5">
-                        <motion.span
-                          animate={{ scale:[1,1.6,1] }}
-                          transition={{ repeat:Infinity, duration:1.4 }}
-                          className="h-1.5 w-1.5 rounded-full bg-primary-cyan" />
-                        <span className="text-xs font-bold text-primary-cyan">{sel.badge}</span>
+                      <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1">
+                        <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+                        <span className="text-xs font-bold text-cyan-300">{sel.badge}</span>
                       </div>
                     )}
-
-                    {/* Quote */}
-                    <div className="relative mt-5 rounded-2xl border border-primary-blue/30 bg-white/5 p-5">
-                      <span className="absolute left-4 top-0 text-5xl font-bold leading-none text-primary-cyan/12">"</span>
-                      <p className="pl-4 text-sm italic leading-relaxed text-primary-pale">{sel.quote}</p>
+                    <div className="relative mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
+                      <span className="absolute left-3 top-0 text-4xl font-bold leading-none text-white/10">"</span>
+                      <p className="pl-3 text-sm italic leading-relaxed text-white/80">{sel.quote}</p>
                     </div>
-
-                    {/* Dot nav */}
-                    <div className="mt-6 flex justify-center gap-1.5">
+                    <div className="mt-5 flex justify-center gap-1.5">
                       {visibleStudents.map((_, i) => (
                         <button key={i} onClick={() => setActiveStudent(i)}
-                          className={`rounded-full transition-all duration-300 ${i===activeStudent ? 'h-2 w-7 bg-primary-cyan' : 'h-2 w-2 bg-white/20 hover:bg-white/40'}`} />
+                          className={`rounded-full transition-all ${i===activeStudent ? 'h-2 w-6 bg-cyan-400' : 'h-2 w-2 bg-white/20 hover:bg-white/40'}`} />
                       ))}
                     </div>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
-
           </div>
         </div>
       </section>
@@ -814,11 +855,19 @@ export default function Home() {
           <div className="flex flex-col items-center gap-8 lg:flex-row lg:gap-12">
             <motion.div initial={{ opacity:0, x:-30 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} className="w-full lg:w-2/5">
               <div className="relative overflow-hidden rounded-3xl shadow-2xl">
-                <img src="/gallery/Ai.png" alt="Portal" className="h-56 w-full object-cover sm:h-72" onError={e=>{e.target.src='/gallery/2.png'}} />
+                <img
+                  src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80"
+                  alt="DevLogics Office"
+                  className="h-56 w-full object-cover sm:h-72"
+                  onError={e => { e.target.src = '/gallery/Ai.png' }}
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent" />
-                <div className="absolute bottom-4 left-4 flex items-center gap-3 rounded-2xl bg-white/90 px-3 py-2.5 shadow-lg sm:bottom-5 sm:left-5 sm:px-4 sm:py-3">
-                  <img src="/gallery/logo5.png" alt="logo" style={{ height: '32px', width: 'auto', objectFit: 'contain', background: 'transparent' }} />
-                  <div><p className="text-xs font-extrabold text-primary">{settings.portalName}</p><p className="text-[10px] text-gray-500">4.8 ⭐ {settings.statStudents} Students</p></div>
+                <div className="absolute bottom-4 left-4 flex items-center gap-3 rounded-2xl bg-white/90 px-3 py-2.5 shadow-lg backdrop-blur-sm sm:bottom-5 sm:left-5 sm:px-4 sm:py-3">
+                  <img src="/gallery/logo5.png" alt="logo" style={{ height: '28px', width: 'auto', objectFit: 'contain' }} />
+                  <div>
+                    <p className="text-xs font-extrabold text-primary">{settings.portalName}</p>
+                    <p className="text-[10px] text-gray-500">4.8 ⭐ {settings.statStudents} Students</p>
+                  </div>
                 </div>
               </div>
             </motion.div>
