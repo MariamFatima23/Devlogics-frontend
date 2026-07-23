@@ -166,7 +166,7 @@ export default function Gallery({ images = galleryImages }) {
             />
             <div className="mt-3 text-center">
               <p className="text-lg font-bold text-white">{lightbox.title}</p>
-              <span className="mt-1 inline-block rounded-full bg-white/20 px-3 py-0.5 text-xs font-batchibold text-white">
+              <span className="mt-1 inline-block rounded-full bg-white/20 px-3 py-0.5 text-xs font-bold text-white">
                 {lightbox.category}
               </span>
             </div>

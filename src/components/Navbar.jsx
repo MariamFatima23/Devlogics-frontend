@@ -20,9 +20,9 @@ function scrollTo(id) {
 }
 
 export default function Navbar() {
-  const { user, logout } = useAuth()
-  const navigate         = useNavigate()
-  const { pathname }     = useLocation()
+  const { user, logout }   = useAuth()
+  const navigate           = useNavigate()
+  const { pathname }       = useLocation()
   const [unreadCount, setUnreadCount]     = useState(0)
   const [showNotif, setShowNotif]         = useState(false)
   const [notifications, setNotifications] = useState([])
@@ -30,11 +30,12 @@ export default function Navbar() {
   const [settings, setSettings]           = useState({ portalName: 'DevLogics E-Portal', logoUrl: '' })
   const notifRef = useRef(null)
 
-  const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
+  const BASE        = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
+  const isDashboard = pathname === '/dashboard'
 
   const handleLogout = () => { logout(); navigate('/') }
-  const isDashboard  = pathname === '/dashboard'
 
+  /* close notif on outside click */
   useEffect(() => {
     const handler = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) setShowNotif(false)
@@ -43,10 +44,9 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
+  /* fetch settings + unread count */
   useEffect(() => {
-    if (user) {
-      api.get('/notifications/unread-count').then(r => setUnreadCount(r.data.count)).catch(() => {})
-    }
+    if (user) api.get('/notifications/unread-count').then(r => setUnreadCount(r.data.count)).catch(() => {})
     api.get('/site-settings').then(r => { if (r.data) setSettings(r.data) }).catch(() => {})
   }, [user])
 
@@ -65,86 +65,104 @@ export default function Navbar() {
     } catch {}
   }
 
-  return (
-    <nav className="sticky top-0 z-50 border-b border-white/10 transition-all duration-300 shadow-lg"
-      style={{ background: 'var(--theme-primary)' }}>
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6" style={{ minHeight: '64px' }}>
+  const logoSrc = settings.logoUrl ? `${BASE}/uploads/${settings.logoUrl}` : '/gallery/logo1.png'
 
-        {/* Brand — white logo always */}
-        <button onClick={() => scrollTo('#home')} className="flex items-center gap-2.5 shrink-0">
+  return (
+    <nav className="sticky top-0 z-50 shadow-lg border-b border-white/10" style={{ background: 'var(--theme-primary)' }}>
+
+      {/* ── Main bar ── */}
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4 sm:h-16 sm:px-6">
+
+        {/* Logo — stays inside navbar, never overflows */}
+        <button
+          onClick={() => scrollTo('#home')}
+          className="shrink-0 flex items-center"
+          aria-label="Home">
           <img
-            src={settings.logoUrl ? `${BASE}/uploads/${settings.logoUrl}` : '/gallery/logo1.png'}
+            src={logoSrc}
             alt="logo"
-            className="h-8 sm:h-10"
-            style={{ width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
+            className="h-7 w-auto max-w-[110px] object-contain sm:h-9 lg:h-10"
+            style={{ filter: 'brightness(0) invert(1)' }}
           />
         </button>
 
-        {/* Desktop nav links — only on large screens */}
-        <div className="hidden items-center gap-0.5 lg:flex">
+        {/* Desktop nav links — lg and above */}
+        <div className="hidden flex-1 items-center justify-center gap-0.5 lg:flex">
           {!isDashboard && !user && NAV_LINKS.map(link => (
-            <button key={link.href} onClick={() => scrollTo(link.href)}
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-white transition hover:text-primary-cyan">
+            <button
+              key={link.href}
+              onClick={() => scrollTo(link.href)}
+              className="rounded-lg px-2.5 py-1.5 text-sm font-medium text-white/90 transition hover:bg-white/10 hover:text-white xl:px-3">
               {link.label}
             </button>
           ))}
           {user && (
             <Link to="/dashboard"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-white transition hover:text-primary-cyan">
+              className="rounded-lg px-3 py-1.5 text-sm font-semibold text-white/90 transition hover:bg-white/10 hover:text-white">
               Dashboard
             </Link>
           )}
         </div>
 
-        {/* Right side */}
-        <div className="flex items-center gap-2">
+        {/* Right controls */}
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+
           {user ? (
             <>
+              {/* Admin badge — only lg+ */}
               {user.role === 'admin' && (
-                <span className="hidden items-center gap-1 rounded-full bg-primary-cyan/20 px-2.5 py-0.5 text-xs font-bold text-primary-cyan ring-1 ring-primary-cyan/30 sm:inline-flex">
-                  <FaShieldAlt size={10} /> Admin
+                <span className="hidden items-center gap-1 rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-bold text-white ring-1 ring-white/20 lg:inline-flex">
+                  <FaShieldAlt size={9} /> Admin
                 </span>
               )}
 
               {/* Notification bell */}
               <div className="relative" ref={notifRef}>
-                <button onClick={toggleNotif}
-                  className="relative flex h-9 w-9 items-center justify-center rounded-xl text-white/80 transition hover:bg-white/10 hover:text-white">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <button
+                  onClick={toggleNotif}
+                  className="relative flex h-8 w-8 items-center justify-center rounded-xl text-white/80 transition hover:bg-white/10 hover:text-white sm:h-9 sm:w-9">
+                  <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
                   {unreadCount > 0 && (
-                    <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white">
+                    <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white">
                       {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                   )}
                 </button>
 
+                {/* Notification dropdown — full width on mobile */}
                 {showNotif && (
-                  <div className="absolute right-0 top-11 w-80 max-w-[92vw] overflow-hidden rounded-2xl border border-primary-mid/50 shadow-2xl"
+                  <div className="fixed left-2 right-2 top-[60px] z-50 overflow-hidden rounded-2xl border border-white/10 shadow-2xl sm:absolute sm:left-auto sm:right-0 sm:top-11 sm:w-80 sm:fixed-none"
                     style={{ background: 'var(--theme-grad-primary)' }}>
-                    <div className="flex items-center justify-between border-b border-primary-mid px-4 py-3">
+                    <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
                       <span className="text-sm font-bold text-white">Notifications</span>
-                      {unreadCount > 0 && (
-                        <button onClick={markAllRead}
-                          className="rounded-lg bg-white/10 px-2 py-1 text-xs font-semibold text-white hover:bg-white/20">
-                          Mark all read
+                      <div className="flex items-center gap-2">
+                        {unreadCount > 0 && (
+                          <button onClick={markAllRead}
+                            className="rounded-lg bg-white/10 px-2.5 py-1 text-xs font-semibold text-white hover:bg-white/20 transition">
+                            Mark all read
+                          </button>
+                        )}
+                        <button onClick={() => setShowNotif(false)}
+                          className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition text-xs">
+                          ✕
                         </button>
-                      )}
+                      </div>
                     </div>
-                    <div className="max-h-72 overflow-y-auto">
+                    <div className="max-h-64 overflow-y-auto sm:max-h-72">
                       {notifications.length === 0 ? (
                         <div className="py-10 text-center text-sm text-white/50">No notifications</div>
                       ) : notifications.map(n => (
                         <div key={n._id}
-                          className={`border-b border-primary-mid/50 px-4 py-3 last:border-0 ${!n.read ? 'bg-primary-mid/30' : ''}`}>
-                          <div className="flex items-start gap-2">
-                            <div className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${!n.read ? 'bg-primary-cyan' : 'bg-transparent'}`} />
-                            <div>
-                              <p className="text-sm font-semibold text-white">{n.title}</p>
-                              <p className="mt-0.5 text-xs text-white/70">{n.message}</p>
-                              <p className="mt-1 text-[10px] text-primary-cyan">
-                                {new Date(n.createdAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                          className={`border-b border-white/10 px-4 py-3 last:border-0 ${!n.read ? 'bg-white/5' : ''}`}>
+                          <div className="flex items-start gap-2.5">
+                            <div className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${!n.read ? 'bg-cyan-400' : 'bg-transparent'}`} />
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold leading-snug text-white">{n.title}</p>
+                              <p className="mt-0.5 text-xs leading-relaxed text-white/70">{n.message}</p>
+                              <p className="mt-1 text-[10px] text-cyan-300">
+                                {new Date(n.createdAt).toLocaleString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })}
                               </p>
                             </div>
                           </div>
@@ -155,76 +173,90 @@ export default function Navbar() {
                 )}
               </div>
 
-              <div className="h-6 w-px bg-white/20" />
-
-              {/* User pill */}
-              <div className="flex items-center gap-2 rounded-xl bg-white/10 px-2 py-1.5 ring-1 ring-white/10 sm:px-3">
+              {/* User avatar pill */}
+              <div className="flex items-center gap-1.5 rounded-xl bg-white/10 px-1.5 py-1 ring-1 ring-white/10">
                 {user?.profileImage ? (
                   <img src={`${BASE}/uploads/${user.profileImage}`} alt=""
-                    className="h-6 w-6 rounded-full object-cover shrink-0" />
+                    className="h-6 w-6 rounded-lg object-cover shrink-0" />
                 ) : (
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-blue text-[10px] font-bold text-white">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/20 text-[11px] font-bold text-white">
                     {user.name?.[0]?.toUpperCase()}
                   </div>
                 )}
-                <span className="hidden max-w-[80px] truncate text-sm font-semibold text-white sm:inline">{user.name}</span>
+                <span className="hidden max-w-[72px] truncate text-xs font-semibold text-white sm:inline lg:max-w-[90px]">
+                  {user.name?.split(' ')[0]}
+                </span>
               </div>
 
-              <button onClick={handleLogout}
-                className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-bold text-white/70 transition hover:bg-rose-500/15 hover:text-rose-300">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              {/* Logout */}
+              <button
+                onClick={handleLogout}
+                className="flex h-8 w-8 items-center justify-center rounded-xl text-white/70 transition hover:bg-rose-500/20 hover:text-rose-300 sm:h-9 sm:w-9"
+                title="Logout">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
-                <span className="hidden sm:inline">Logout</span>
               </button>
             </>
           ) : (
-            <>
-              {/* No buttons for logged-out users — use hamburger menu */}
-            </>
+            /* Logged-out: Login button visible on sm+ */
+            <Link to="/login"
+              className="hidden rounded-xl px-4 py-1.5 text-sm font-bold transition hover:opacity-90 sm:inline-flex"
+              style={{ background: 'var(--theme-card-bg)', color: 'var(--theme-primary)' }}>
+              Login
+            </Link>
           )}
 
-          {/* Mobile hamburger — show below lg */}
-          <button onClick={() => setMobileOpen(v => !v)}
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/20 text-white lg:hidden">
-            {mobileOpen ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
+          {/* Hamburger — below lg */}
+          <button
+            onClick={() => setMobileOpen(v => !v)}
+            className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/20 text-white transition hover:bg-white/10 lg:hidden sm:h-9 sm:w-9"
+            aria-label="Menu">
+            {mobileOpen
+              ? <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              : <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+            }
           </button>
         </div>
       </div>
 
-      {/* Mobile menu — show below lg */}
+      {/* ── Mobile / tablet drawer ── */}
       {mobileOpen && (
-        <div className="border-t border-white/10 px-4 py-3 lg:hidden" style={{ background: 'var(--theme-primary)' }}>
-          <div className="flex flex-col gap-1">
-            {!isDashboard && !user && NAV_LINKS.map(link => (
-              <button key={link.href} onClick={() => { scrollTo(link.href); setMobileOpen(false) }}
-                className="rounded-lg px-3 py-2.5 text-left text-sm font-medium text-white hover:text-primary-cyan">
-                {link.label}
-              </button>
-            ))}
+        <div className="border-t border-white/10 lg:hidden" style={{ background: 'var(--theme-primary)' }}>
+          <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
+
+            {/* Nav links for non-dashboard non-logged-in */}
+            {!isDashboard && !user && (
+              <div className="mb-3 grid grid-cols-2 gap-1 sm:grid-cols-3">
+                {NAV_LINKS.map(link => (
+                  <button
+                    key={link.href}
+                    onClick={() => { scrollTo(link.href); setMobileOpen(false) }}
+                    className="rounded-xl px-3 py-2.5 text-left text-sm font-medium text-white/90 transition hover:bg-white/10 hover:text-white">
+                    {link.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Auth buttons */}
             {user ? (
-              <Link to="/dashboard" onClick={() => setMobileOpen(false)}
-                className="mt-1 w-full rounded-xl px-4 py-2.5 text-center text-sm font-bold text-primary transition hover:opacity-90"
-                style={{ background: 'var(--theme-accent)' }}>
-                Dashboard
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link to="/dashboard" onClick={() => setMobileOpen(false)}
+                  className="flex-1 rounded-xl px-4 py-2.5 text-center text-sm font-bold text-white transition hover:opacity-90"
+                  style={{ background: 'rgba(255,255,255,0.15)' }}>
+                  Dashboard
+                </Link>
+              </div>
             ) : (
-              <div className="mt-2 flex flex-col gap-2">
+              <div className="flex gap-2">
                 <Link to="/login" onClick={() => setMobileOpen(false)}
-                  className="w-full rounded-xl px-4 py-3 text-center text-sm font-bold transition-all duration-200"
+                  className="flex-1 rounded-xl px-4 py-2.5 text-center text-sm font-bold transition"
                   style={{ background: 'var(--theme-card-bg)', color: 'var(--theme-primary)' }}>
                   Login
                 </Link>
                 <Link to="/register" onClick={() => setMobileOpen(false)}
-                  className="w-full rounded-xl px-4 py-3 text-center text-sm font-bold transition-all duration-200"
+                  className="flex-1 rounded-xl px-4 py-2.5 text-center text-sm font-bold transition"
                   style={{ background: 'var(--theme-accent)', color: 'var(--theme-primary)' }}>
                   Register
                 </Link>

@@ -376,48 +376,62 @@ export default function Home() {
   return (
     <div className="overflow-x-hidden">
 
-      {/* -- HERO -- */}
-      <section id="home" className="relative w-full overflow-hidden" style={{ height: '100svh', minHeight: '500px' }}>
+      {/* ── HERO ── */}
+      <section id="home" className="relative w-full overflow-hidden h-screen min-h-[540px] max-h-[900px]">
+
+        {/* Slide backgrounds */}
         {slides.map((s, i) => (
           <div key={i} className="absolute inset-0 transition-opacity duration-1000"
-            style={{ opacity: slide===i?1:0, zIndex: slide===i?1:0 }}>
+            style={{ opacity: slide===i ? 1 : 0, zIndex: slide===i ? 1 : 0 }}>
             <img src={s.imageUrl||s.src} alt="" className="h-full w-full object-cover"
               onError={e => { e.target.src = '/gallery/2.png' }} />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/80" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/85" />
           </div>
         ))}
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 text-center text-white sm:px-6" style={{ paddingBottom: '80px' }}>
+
+        {/* Content — centered, pb accounts for stats bar height */}
+        <div className="absolute inset-x-0 top-0 bottom-[64px] z-10 flex flex-col items-center justify-center px-4 text-center text-white sm:bottom-[72px] sm:px-8 md:bottom-[80px]">
           <AnimatePresence mode="wait">
-            <motion.div key={slide} initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:-20 }} transition={{ duration:0.7 }}>
-              {/* Portal name badge */}
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 backdrop-blur-sm sm:px-5">
-                {settings.logoUrl
-                  ? <img src={`${BASE}/uploads/${settings.logoUrl}`} alt="logo" className="h-4 w-auto object-contain sm:h-5" style={{ maxWidth: '60px', background: 'transparent' }} />
-                  : <img src="/gallery/logo5.png" alt="logo" className="h-4 w-auto object-contain sm:h-5" style={{ maxWidth: '60px', background: 'transparent' }} />
-                }
-                <span className="text-xs font-semibold">{settings.portalName}</span>
+            <motion.div key={slide}
+              initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:-20 }}
+              transition={{ duration:0.65 }}
+              className="w-full max-w-2xl md:max-w-3xl">
+
+              {/* Badge */}
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 backdrop-blur-sm sm:px-4 sm:mb-5">
+                <img
+                  src={settings.logoUrl ? `${BASE}/uploads/${settings.logoUrl}` : '/gallery/logo5.png'}
+                  alt="logo" className="h-4 w-auto object-contain sm:h-5" style={{ maxWidth:'52px' }} />
+                <span className="text-xs font-semibold tracking-wide sm:text-sm">{settings.portalName}</span>
               </div>
-              <h1 className="text-3xl font-extrabold leading-tight drop-shadow-2xl sm:text-5xl lg:text-7xl">
+
+              {/* Heading */}
+              <h1 className="text-3xl font-extrabold leading-tight drop-shadow-2xl sm:text-5xl md:text-6xl lg:text-7xl">
                 {slides[slide]?.text || settings.tagline}
               </h1>
-              <p className="mx-auto mt-3 max-w-xl text-sm text-white/80 sm:mt-4 sm:text-lg">{settings.heroSubtext}</p>
-              <div className="mt-6 flex flex-wrap justify-center gap-3 sm:mt-8 sm:gap-4">
+
+              {/* Sub */}
+              <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-white/80 sm:mt-4 sm:max-w-xl sm:text-base md:text-lg">
+                {settings.heroSubtext}
+              </p>
+
+              {/* CTA buttons */}
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:mt-8 sm:gap-4">
                 {user ? (
                   <Link to="/dashboard"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition hover:-translate-y-0.5 sm:px-7 sm:py-3"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold shadow-lg transition hover:-translate-y-0.5 sm:px-8 sm:py-3 sm:text-base"
                     style={{ background:'var(--theme-white)', color:'var(--theme-primary)' }}>
                     Go to Dashboard →
                   </Link>
                 ) : (
                   <>
                     <Link to="/register"
-                      className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition hover:-translate-y-0.5 hover:opacity-90 sm:px-7 sm:py-3"
-                      style={{ background:'var(--theme-secondary)', color:'var(--theme-white)' }}>
+                      className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold shadow-lg transition hover:-translate-y-0.5 sm:px-8 sm:py-3 sm:text-base"
+                      style={{ background:'var(--theme-secondary)', color:'#fff' }}>
                       Join for Free
                     </Link>
                     <Link to="/login"
-                      className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition hover:-translate-y-0.5 hover:opacity-90 sm:px-7 sm:py-3"
-                      style={{ background:'var(--theme-white)', color:'var(--theme-primary)' }}>
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/40 px-6 py-2.5 text-sm font-bold shadow-lg transition hover:-translate-y-0.5 hover:bg-white/10 sm:px-8 sm:py-3 sm:text-base">
                       Sign In
                     </Link>
                   </>
@@ -426,43 +440,49 @@ export default function Home() {
             </motion.div>
           </AnimatePresence>
         </div>
-        {/* Dots */}
-        <div className="absolute bottom-20 left-1/2 z-10 flex -translate-x-1/2 gap-2 sm:bottom-24">
+
+        {/* Slide dots */}
+        <div className="absolute bottom-[72px] left-1/2 z-10 flex -translate-x-1/2 gap-2 sm:bottom-[80px] md:bottom-[88px]">
           {slides.map((_, i) => (
             <button key={i} onClick={() => setSlide(i)}
-              className={`rounded-full transition-all duration-300 ${i===slide?'h-2.5 w-7 bg-white sm:h-3 sm:w-8':'h-2.5 w-2.5 bg-white/50 sm:h-3 sm:w-3'}`} />
+              className={`rounded-full transition-all duration-300 ${
+                i === slide ? 'h-2.5 w-8 bg-white' : 'h-2.5 w-2.5 bg-white/50 hover:bg-white/80'
+              }`} />
           ))}
         </div>
-        {/* Arrows */}
+
+        {/* Prev */}
         <button onClick={() => setSlide(p => (p-1+slides.length)%slides.length)}
-          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/60 sm:left-4 sm:h-12 sm:w-12">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          className="absolute left-3 top-1/2 z-10 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/60 sm:left-5 sm:h-11 sm:w-11">
+          <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
+        {/* Next */}
         <button onClick={() => setSlide(p => (p+1)%slides.length)}
-          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/60 sm:right-4 sm:h-12 sm:w-12">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          className="absolute right-3 top-1/2 z-10 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition hover:bg-black/60 sm:right-5 sm:h-11 sm:w-11">
+          <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </button>
-        {/* Stats bar */}
+
+        {/* Stats bar — pinned to bottom */}
         <div className="absolute bottom-0 left-0 right-0 z-10 border-t border-white/10"
           style={{ background: 'var(--theme-grad-topbar)' }}>
-          <div className="mx-auto grid max-w-4xl grid-cols-3 gap-1 px-3 py-2 sm:gap-4 sm:px-6 sm:py-3">
+          <div className="mx-auto grid max-w-4xl grid-cols-3 divide-x divide-white/10">
             {[
               { value: settings.statStudents,     label: 'Students',     icon: FaGraduationCap, color: 'var(--theme-accent)' },
               { value: settings.statPrograms,     label: 'Programs',     icon: FaClipboardList, color: 'var(--theme-accent)' },
               { value: settings.statSatisfaction, label: 'Satisfaction', icon: FaChartBar,       color: '#4ade80' },
-            ].map((s,i) => (
-              <div key={i} className="flex items-center justify-center gap-1.5 py-2 sm:gap-3 sm:py-3">
-                <div className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-xl sm:flex sm:h-10 sm:w-10"
+            ].map((s, i) => (
+              <div key={i} className="flex items-center justify-center gap-1.5 px-2 py-3 sm:gap-3 sm:py-4">
+                <div className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-lg sm:flex"
                   style={{ background:'rgba(255,255,255,0.12)' }}>
-                  <s.icon style={{ fontSize:'1.25rem', color: s.color }} />
+                  <s.icon style={{ fontSize:'0.9rem', color: s.color }} />
                 </div>
                 <div className="text-center sm:text-left">
                   <p className="text-sm font-extrabold leading-none text-white sm:text-base">{s.value}</p>
-                  <p className="mt-0.5 text-[10px] text-primary-light sm:text-[11px]">{s.label}</p>
+                  <p className="mt-0.5 text-[10px] text-white/60 sm:text-xs">{s.label}</p>
                 </div>
               </div>
             ))}
