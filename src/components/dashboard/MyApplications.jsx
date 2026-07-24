@@ -312,9 +312,9 @@ function MyApplications() {
               <p className="mb-2 text-xs font-batchibold uppercase text-slate-400">Attached Documents</p>
               <div className="space-y-2">
                 {selected.attachments.map((att, i) => {
-                  const url = att.filePath?.startsWith('http')
+                  const url = (att.filePath?.startsWith('http://') || att.filePath?.startsWith('https://'))
                     ? att.filePath
-                    : `${BASE}/uploads/${att.fileName}`
+                    : (att.filePath || att.fileName ? `${BASE}/uploads/${att.fileName}` : '#')
                   return (
                     <a key={i} href={url} target="_blank" rel="noreferrer"
                     className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm transition hover:border-indigo-300 hover:bg-primary-pale">

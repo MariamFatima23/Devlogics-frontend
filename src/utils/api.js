@@ -32,6 +32,8 @@ export default api
 const BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '')
 export const fileUrl = (path) => {
   if (!path) return null
-  if (path.startsWith('http')) return path
+  // Already a full URL (Cloudinary or any https link) — return as-is
+  if (path.startsWith('http://') || path.startsWith('https://')) return path
+  // Local dev fallback — prepend backend base + /uploads/
   return `${BASE}/uploads/${path}`
 }

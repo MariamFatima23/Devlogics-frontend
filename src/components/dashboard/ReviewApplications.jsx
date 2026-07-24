@@ -109,7 +109,7 @@ function ReviewApplications() {
     }
   }
 
-  const fileUrl = (path) => path?.startsWith('http') ? path : `${BASE}/uploads/${path}`
+  const fileUrl = (path) => (path && (path.startsWith('http://') || path.startsWith('https://'))) ? path : (path ? `${BASE}/uploads/${path}` : null)
 
   return (
     <div>

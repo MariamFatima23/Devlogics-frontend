@@ -9,7 +9,7 @@ const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localh
 // Helper: build file URL — Cloudinary URLs start with https://, local filenames don't
 const fileUrl = (path) => {
   if (!path) return null
-  if (path.startsWith('http')) return path          // already a full Cloudinary URL
+  if (path.startsWith('http://') || path.startsWith('https://')) return path  // already a full URL
   return `${BASE}/uploads/${path}`                   // local dev fallback
 }
 const QUALIFICATIONS = ['Matric', 'Intermediate', 'Bachelor', 'Master', 'PhD', 'Other']

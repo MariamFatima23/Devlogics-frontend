@@ -81,7 +81,7 @@ export default function Dashboard() {
   const isAdmin = user?.role === 'admin'
   const menu = isAdmin ? adminMenu : studentMenu
   const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
-  const fileUrl = (path) => (path && path.startsWith('http')) ? path : (path ? `${BASE}/uploads/${path}` : null)
+  const fileUrl = (path) => (path && (path.startsWith('http://') || path.startsWith('https://'))) ? path : (path ? `${BASE}/uploads/${path}` : null)
   const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
 
   useEffect(() => {
