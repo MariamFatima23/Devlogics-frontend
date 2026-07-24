@@ -32,23 +32,52 @@ export default api
 const BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '')
 export const fileUrl = (path) => {
   if (!path) return null
+
+  // Fix broken double-URL pattern produced by old code:
+  // "https://backend.vercel.app/uploads/https://res.cloudinary.com/..."
+  // OR "https://backend.vercel.app/uploads/https:/res.cloudinary.com/..."
+  const doubleUrlMatch = path.match(/\/uploads\/(https?:\/?\/.+)$/)
+  if (doubleUrlMatch) {
+    // Reconstruct with exactly double slash
+    return doubleUrlMatch[1].replace(/^(https?):\/+/, '$1://')
+  }
+
   // Already a full URL (Cloudinary or any https link) — return as-is
   if (path.startsWith('http://') || path.startsWith('https://')) return path
+
   // Local dev fallback — prepend backend base + /uploads/
   return `${BASE}/uploads/${path}`
 }
 
 // ── CV / document view URL helper ────────────────────────────────
 // Cloudinary stores PDFs/DOCs as resource_type=raw.
-// Browsers can't preview raw Cloudinary URLs directly — they force-download.
-// Route through Google Docs Viewer so PDFs open inline in the browser.
-// For non-Cloudinary or image URLs, returns the URL as-is.
+// For PDFs: route through Google Docs Viewer for in-browser preview.
+// For DOC/DOCX: direct Cloudinary URL (browser will download).
+// Also handles the case where a broken /uploads/https:/ URL was stored.
 export const cvViewUrl = (path) => {
-  const url = fileUrl(path)
+  if (!path) return null
+
+  // Fix broken double-URL: "/uploads/https://..." or "/uploads/https:/..."
+  // This can happen if old data has prefix baked in
+  const cleaned = path.replace(/^.*\/uploads\/(https?:\/?\/)/, (_, p) =>
+    p.startsWith('https') ? 'https://' : 'http://'
+  )
+
+  const url = fileUrl(cleaned)
   if (!url) return null
-  // Cloudinary raw (PDF/DOC)
+
+  // Cloudinary raw resource (PDF / DOC / DOCX)
   if (url.includes('res.cloudinary.com') && url.includes('/raw/upload/')) {
-    return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`
+    // Detect PDF by URL (public_id ends with .pdf or no extension → assume PDF)
+    const lowerUrl = url.toLowerCase()
+    const isPdf = lowerUrl.includes('.pdf') || (!lowerUrl.includes('.doc'))
+    if (isPdf) {
+      // Google Docs viewer for inline PDF preview
+      return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`
+    }
+    // DOC/DOCX — direct download is fine
+    return url
   }
+
   return url
 }
