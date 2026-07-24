@@ -1,10 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import api from '../utils/api'
+import api, { fileUrl, cvViewUrl } from '../utils/api'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
-
-const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
 
 // Check if profile has required fields filled
 function getProfileIssues(user) {
@@ -470,7 +468,7 @@ export default function CourseApplyModal({ course, onClose, onGoToProfile }) {
           {user.department && <span>🏫 {user.department}</span>}
         </div>
         {user.cv && (
-          <a href={user.cv.startsWith('http') ? user.cv : `${BASE}/uploads/${user.cv}`} target="_blank" rel="noreferrer"
+          <a href={cvViewUrl(user.cv)} target="_blank" rel="noreferrer"
             className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline">
             📄 View saved CV
           </a>

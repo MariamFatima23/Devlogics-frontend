@@ -1,17 +1,9 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useAuth } from '../../context/AuthContext'
-import api from '../../utils/api'
+import api, { fileUrl, cvViewUrl } from '../../utils/api'
 import toast from 'react-hot-toast'
 
-const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
-
-// Helper: build file URL — Cloudinary URLs start with https://, local filenames don't
-const fileUrl = (path) => {
-  if (!path) return null
-  if (path.startsWith('http://') || path.startsWith('https://')) return path  // already a full URL
-  return `${BASE}/uploads/${path}`                   // local dev fallback
-}
 const QUALIFICATIONS = ['Matric', 'Intermediate', 'Bachelor', 'Master', 'PhD', 'Other']
 
 const inp = 'w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition focus:ring-2 focus:ring-blue-200'
@@ -212,7 +204,7 @@ export default function Profile() {
                     <p className="text-xs text-white/30">PDF, DOC, DOCX · max 5MB</p>
                   </div>
                   {user.cv && !cvFile && (
-                    <a href={fileUrl(user.cv)} target="_blank" rel="noreferrer"
+                    <a href={cvViewUrl(user.cv)} target="_blank" rel="noreferrer"
                       onClick={e => e.stopPropagation()}
                       className="shrink-0 rounded-lg bg-white/10 px-3 py-1 text-xs font-bold hover:bg-white/20"
                       style={{ color: 'var(--theme-accent)' }}>

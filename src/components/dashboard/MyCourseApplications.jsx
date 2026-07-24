@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import api, { fileUrl } from '../../utils/api'
+import api, { fileUrl, cvViewUrl } from '../../utils/api'
 import toast from 'react-hot-toast'
 const CARD_BG = 'var(--theme-grad-primary)'
 
@@ -250,7 +250,7 @@ export default function MyCourseApplications() {
 
                 <div className="flex flex-wrap gap-3">
                   {app.cvFile && (
-                    <a href={fileUrl(app.cvFile)} target="_blank" rel="noreferrer"
+                    <a href={cvViewUrl(app.cvFile)} target="_blank" rel="noreferrer"
                       className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold text-cyan-300 hover:bg-white/20 transition">
                       📄 View CV
                     </a>

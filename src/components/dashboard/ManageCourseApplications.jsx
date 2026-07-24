@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import api, { fileUrl } from '../../utils/api'
+import api, { fileUrl, cvViewUrl } from '../../utils/api'
 
 const STATUS_COLORS = {
   Pending:      'bg-amber-100 text-amber-700',
@@ -128,7 +128,7 @@ export default function ManageCourseApplications() {
             {/* File links */}
             <div className="mb-4 flex flex-wrap gap-3">
               {selected.cvFile && (
-                <a href={fileUrl(selected.cvFile)} target="_blank" rel="noreferrer"
+                <a href={cvViewUrl(selected.cvFile)} target="_blank" rel="noreferrer"
                   className="flex items-center gap-2 rounded-xl bg-primary-pale px-4 py-2 text-sm font-semibold text-primary-blue hover:bg-primary-pale">
                   📄 Download CV ({selected.cvOriginalName || 'cv'})
                 </a>

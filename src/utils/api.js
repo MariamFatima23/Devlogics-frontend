@@ -37,3 +37,18 @@ export const fileUrl = (path) => {
   // Local dev fallback — prepend backend base + /uploads/
   return `${BASE}/uploads/${path}`
 }
+
+// ── CV / document view URL helper ────────────────────────────────
+// Cloudinary stores PDFs/DOCs as resource_type=raw.
+// Browsers can't preview raw Cloudinary URLs directly — they force-download.
+// Route through Google Docs Viewer so PDFs open inline in the browser.
+// For non-Cloudinary or image URLs, returns the URL as-is.
+export const cvViewUrl = (path) => {
+  const url = fileUrl(path)
+  if (!url) return null
+  // Cloudinary raw (PDF/DOC)
+  if (url.includes('res.cloudinary.com') && url.includes('/raw/upload/')) {
+    return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`
+  }
+  return url
+}

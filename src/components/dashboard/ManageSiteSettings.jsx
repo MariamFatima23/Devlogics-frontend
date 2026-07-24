@@ -472,7 +472,7 @@ export default function ManageSiteSettings() {
           <button type="submit" disabled={loading}
             className="mt-4 w-full rounded-xl py-3 text-sm font-bold text-white disabled:opacity-60 transition hover:opacity-90"
             style={{ background:'linear-gradient(135deg,#0077b6,#04065c)' }}>
-            {loading ? 'Saving…' : '💾 Save Changes — Landing Page Updates Instantly'}
+            {loading ? 'Saving…' : ' Save Changes '}
           </button>
         </form>
       )}

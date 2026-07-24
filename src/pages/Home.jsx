@@ -98,7 +98,7 @@ const FALLBACK_REVIEWS = [
 const FALLBACK_SETTINGS = {
   portalName: 'DevLogics E-Portal',
   tagline: 'Learn. Apply. Grow.',
-  heroSubtext: 'Apply for courses, internships and services — all online, 24/7.',
+  heroSubtext: 'Apply for courses, internships and services ï¿½ all online, 24/7.',
   logoUrl: '',
   statStudents: '1000+',
   statPrograms: '50+',
@@ -126,7 +126,7 @@ const FALLBACK_SETTINGS = {
   aboutTitle:    'A Smarter Way to Learn & Apply',
   aboutSubtitle: 'DevLogics E-Portal is a complete digital solution for course and service management. Students apply online, track status in real-time, and get decisions with full feedback.',
   aboutPoints: [
-    'Apply online — no office visits',
+    'Apply online ï¿½ no office visits',
     'Upload CV and documents securely',
     'Track every application with timeline',
     'Real-time notifications on changes',
@@ -390,7 +390,7 @@ export default function Home() {
           </div>
         ))}
 
-        {/* Content — centered inside image area, above stats bar */}
+        {/* Content ï¿½ centered inside image area, above stats bar */}
         <div className="absolute inset-x-0 top-0 bottom-[60px] z-10 flex flex-col items-center justify-center px-8 text-center text-white sm:bottom-[68px] sm:px-12 md:bottom-[76px]">
           <AnimatePresence mode="wait">
             <motion.div key={slide}
@@ -398,7 +398,7 @@ export default function Home() {
               transition={{ duration:0.65 }}
               className="w-full max-w-xl md:max-w-2xl">
 
-              {/* Badge — small, just text + dot, no big logo */}
+              {/* Badge ï¿½ small, just text + dot, no big logo */}
               <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-black/30 px-3 py-1 backdrop-blur-sm">
                 <span className="text-base">??</span>
                 <span className="text-xs font-semibold tracking-wide text-white/90">{settings.portalName}</span>
@@ -440,7 +440,7 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
-        {/* Slide dots — above stats bar */}
+        {/* Slide dots ï¿½ above stats bar */}
         <div className="absolute bottom-[68px] left-1/2 z-10 flex -translate-x-1/2 gap-2 sm:bottom-[76px]">
           {slides.map((_, i) => (
             <button key={i} onClick={() => setSlide(i)}
@@ -450,7 +450,7 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Prev — positioned at bottom third, not center, so doesn't overlap text */}
+        {/* Prev ï¿½ positioned at bottom third, not center, so doesn't overlap text */}
         <button onClick={() => setSlide(p => (p-1+slides.length)%slides.length)}
           className="absolute bottom-[100px] left-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/70 sm:bottom-[110px] sm:left-5 sm:h-10 sm:w-10">
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -465,7 +465,7 @@ export default function Home() {
           </svg>
         </button>
 
-        {/* Stats bar — pinned to bottom */}
+        {/* Stats bar ï¿½ pinned to bottom */}
         <div className="absolute bottom-0 left-0 right-0 z-10 border-t border-white/10"
           style={{ background: 'var(--theme-grad-topbar)' }}>
           <div className="mx-auto grid max-w-4xl grid-cols-3 divide-x divide-white/10">
@@ -602,7 +602,7 @@ export default function Home() {
               </div>
             ) : (
               <div className="shrink-0">
-                {/* Grid layout: 3 cols × 3 rows with center badge in middle cell */}
+                {/* Grid layout: 3 cols ï¿½ 3 rows with center badge in middle cell */}
                 <div className="grid grid-cols-3 gap-3 sm:gap-5">
                   {/* Row 1: [student0] [student1] [student2] */}
                   {/* Row 2: [student3] [CENTER]   [student4] */}
@@ -613,7 +613,7 @@ export default function Home() {
                     const student = visibleStudents[idx]
                     if (!student) return <div key={idx} className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24" />
                     const isSel = activeStudent === idx
-                    const imgUrl = student.image ? `fileUrl(student.image)` : ''
+                    const imgUrl = student.image ? fileUrl(student.image) : ''
                     return (
                       <motion.button key={student._id}
                         onClick={() => setActiveStudent(isSel ? null : idx)}
@@ -635,12 +635,12 @@ export default function Home() {
                     )
                   })}
 
-                  {/* Row 2 — col 0 */}
+                  {/* Row 2 ï¿½ col 0 */}
                   {(() => {
                     const idx = 3; const student = visibleStudents[idx]
                     if (!student) return <div key="r2c0" className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24" />
                     const isSel = activeStudent === idx
-                    const imgUrl = student.image ? `fileUrl(student.image)` : ''
+                    const imgUrl = student.image ? fileUrl(student.image) : ''
                     return (
                       <motion.button key={student._id}
                         onClick={() => setActiveStudent(isSel ? null : idx)}
@@ -680,12 +680,12 @@ export default function Home() {
                     </div>
                   </motion.div>
 
-                  {/* Row 2 — col 2 */}
+                  {/* Row 2 ï¿½ col 2 */}
                   {(() => {
                     const idx = 4; const student = visibleStudents[idx]
                     if (!student) return <div key="r2c2" className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24" />
                     const isSel = activeStudent === idx
-                    const imgUrl = student.image ? `fileUrl(student.image)` : ''
+                    const imgUrl = student.image ? fileUrl(student.image) : ''
                     return (
                       <motion.button key={student._id}
                         onClick={() => setActiveStudent(isSel ? null : idx)}
@@ -710,7 +710,7 @@ export default function Home() {
                     const student = visibleStudents[idx]
                     if (!student) return <div key={`r3c${idx}`} className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24" />
                     const isSel = activeStudent === idx
-                    const imgUrl = student.image ? `fileUrl(student.image)` : ''
+                    const imgUrl = student.image ? fileUrl(student.image) : ''
                     return (
                       <motion.button key={student._id}
                         onClick={() => setActiveStudent(isSel ? null : idx)}
@@ -751,7 +751,7 @@ export default function Home() {
                         <div className="h-14 w-14 overflow-hidden rounded-2xl shrink-0"
                           style={{ border:'2px solid var(--theme-accent)', boxShadow:'0 0 16px rgba(72,202,228,0.4)' }}>
                           {sel.image
-                            ? <img src={`fileUrl(sel.image)`} alt={sel.name} className="h-full w-full object-cover" />
+                            ? <img src={fileUrl(sel.image)} alt={sel.name} className="h-full w-full object-cover" />
                             : <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-600 to-blue-900 text-lg font-extrabold text-white">
                                 {sel.name?.split(' ').map(n=>n[0]).join('')}
                               </div>
@@ -762,7 +762,7 @@ export default function Home() {
                             {sel.courseType || 'Student'}
                           </span>
                           <h3 className="mt-1 text-lg font-extrabold text-white">{sel.name}</h3>
-                          <p className="text-xs text-white/70">{sel.role}{sel.courseName ? ` — ${sel.courseName}` : ''}</p>
+                          <p className="text-xs text-white/70">{sel.role}{sel.courseName ? ` ï¿½ ${sel.courseName}` : ''}</p>
                         </div>
                       </div>
                       <button onClick={() => setActiveStudent(null)}
@@ -807,7 +807,7 @@ export default function Home() {
                 <div className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:gap-6 sm:p-10">
                   <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl ring-4 ring-primary-cyan/30 sm:h-20 sm:w-20">
                     {reviews[activeReview]?.studentImage ? (
-                      <img src={`fileUrl(reviews[activeReview].studentImage)`} alt="" className="h-full w-full object-cover" />
+                      <img src={fileUrl(reviews[activeReview].studentImage)} alt="" className="h-full w-full object-cover" />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-white/20 text-xl font-extrabold text-white sm:text-2xl">
                         {reviews[activeReview]?.studentName?.[0] || '?'}
@@ -818,7 +818,7 @@ export default function Home() {
                     <Stars n={reviews[activeReview]?.rating || 5} />
                     <p className="mt-3 text-base font-medium leading-relaxed text-primary-pale sm:text-lg">"{reviews[activeReview]?.description}"</p>
                     <p className="mt-4 font-bold text-white">{reviews[activeReview]?.studentName}</p>
-                    <p className="text-sm text-primary-light">{reviews[activeReview]?.courseType} {reviews[activeReview]?.courseName ? `— ${reviews[activeReview].courseName}` : ''}</p>
+                    <p className="text-sm text-primary-light">{reviews[activeReview]?.courseType} {reviews[activeReview]?.courseName ? `ï¿½ ${reviews[activeReview].courseName}` : ''}</p>
                   </div>
                 </div>
                 <div className="flex justify-center gap-2 pb-5">
@@ -834,7 +834,7 @@ export default function Home() {
                     <div className="mb-2 flex items-center gap-2">
                       <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-primary-pale text-xs font-bold text-primary sm:h-8 sm:w-8">
                         {r.studentImage ? (
-                          <img src={`fileUrl(r.studentImage)`} alt="" className="h-full w-full object-cover" />
+                          <img src={fileUrl(r.studentImage)} alt="" className="h-full w-full object-cover" />
                         ) : r.studentName?.[0]}
                       </div>
                       <Stars n={r.rating} />
@@ -1016,7 +1016,7 @@ export default function Home() {
         <div className="mx-auto max-w-6xl px-4 pb-8 pt-6 sm:px-6 sm:pb-10">
           <div className="grid gap-8 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
 
-            {/* Col 1 — Brand */}
+            {/* Col 1 ï¿½ Brand */}
             <div className="col-span-2 sm:col-span-2 lg:col-span-1">
               <div className="mb-4 flex h-14 items-center gap-2">
                 <img
@@ -1028,10 +1028,10 @@ export default function Home() {
               <p className="text-sm leading-relaxed text-white">
                 {settings.footerTagline || 'Course & Service Management'}
               </p>
-              <p className="mt-3 text-xs text-white">Apply online · No office visit required</p>
+              <p className="mt-3 text-xs text-white">Apply online ï¿½ No office visit required</p>
             </div>
 
-            {/* Col 2 — Quick Links */}
+            {/* Col 2 ï¿½ Quick Links */}
             <div>
               <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-white">Quick Links</h4>
               <ul className="space-y-2">
@@ -1048,7 +1048,7 @@ export default function Home() {
               </ul>
             </div>
 
-            {/* Col 3 — More */}
+            {/* Col 3 ï¿½ More */}
             <div>
               <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-white">More</h4>
               <ul className="space-y-2">
@@ -1065,7 +1065,7 @@ export default function Home() {
               </ul>
             </div>
 
-            {/* Col 4 — Account + Follow */}
+            {/* Col 4 ï¿½ Account + Follow */}
             <div>
               <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-white">Account</h4>
               <ul className="space-y-2 mb-6">
