@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import api from '../../utils/api'
+import api, { fileUrl } from '../../utils/api'
 import { useAuth } from '../../context/AuthContext'
 
 export default function AddReview() {
@@ -49,12 +49,19 @@ export default function AddReview() {
     setLoading(true)
     setMsg(null)
 
-    const courseIdVal  = selectedCourse.courseId?._id || selectedCourse.courseId
+    const courseIdVal   = selectedCourse.courseId?._id || selectedCourse.courseId
     const courseNameVal = selectedCourse.courseId?.title || selectedCourse.courseName || ''
     const courseTypeVal = selectedCourse.courseId?.type === 'internship' ? 'Internship' : 'Course'
 
     try {
-      await api.post('/reviews', { courseId: courseIdVal, courseName: courseNameVal, courseType: courseTypeVal, rating, description })
+      // Plain JSON — backend automatically pulls profileImage from the student's saved profile
+      await api.post('/reviews', {
+        courseId:   courseIdVal,
+        courseName: courseNameVal,
+        courseType: courseTypeVal,
+        rating,
+        description,
+      })
       setMsg({ type: 'success', text: 'Review submitted! Admin will approve it shortly.' })
       setSelectedCourse(null)
       setRating(5)
@@ -68,6 +75,10 @@ export default function AddReview() {
 
   const inputCls = 'w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2.5 text-sm text-white outline-none focus:border-white/50 focus:bg-white/15 transition placeholder-white/40'
 
+  // Avatar — use saved profile image or initials
+  const avatar   = user?.profileImage ? fileUrl(user.profileImage) : null
+  const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
+
   return (
     <div className="mx-auto max-w-xl">
       <div className="rounded-3xl border border-white/20 p-8 shadow-2xl"
@@ -75,6 +86,25 @@ export default function AddReview() {
 
         <h3 className="mb-2 text-2xl font-bold text-white">Share Your Experience</h3>
         <p className="mb-6 text-sm text-blue-100">Your review will appear after admin approval.</p>
+
+        {/* Profile image preview */}
+        <div className="mb-6 flex items-center gap-4 rounded-2xl border border-white/15 bg-white/8 px-4 py-3">
+          {avatar ? (
+            <img src={avatar} alt={user?.name}
+              className="h-12 w-12 rounded-xl object-cover ring-2 ring-white/30" />
+          ) : (
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl text-base font-extrabold text-white ring-2 ring-white/30"
+              style={{ background: 'rgba(255,255,255,0.15)' }}>
+              {initials}
+            </div>
+          )}
+          <div>
+            <p className="text-sm font-bold text-white">{user?.name}</p>
+            <p className="text-xs text-white/50">
+              {avatar ? 'Profile photo will appear with your review' : 'Add a profile photo in Profile settings to show your picture'}
+            </p>
+          </div>
+        </div>
 
         {msg && (
           <div className={`mb-5 rounded-2xl px-4 py-3 text-sm font-medium ${
