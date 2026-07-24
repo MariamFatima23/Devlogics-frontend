@@ -73,9 +73,9 @@ function FeatureIcon({ k }) {
 }
 
 const FALLBACK_SLIDES = [
-  { imageUrl: '/gallery/Ai1.png', text: 'Learn. Apply. Grow.' },
-  { imageUrl: '/gallery/Ai2.png', text: 'Track Your Progress.' },
-  { imageUrl: '/gallery/Ai3.png', text: 'Achieve Your Goals.' },
+  { imageUrl: '/gallery/1.png',   mobileUrl: '/gallery/Ai1.png', text: 'Learn. Apply. Grow.' },
+  { imageUrl: '/gallery/2.png',   mobileUrl: '/gallery/Ai2.png', text: 'Track Your Progress.' },
+  { imageUrl: '/gallery/3.png',   mobileUrl: '/gallery/Ai3.png', text: 'Achieve Your Goals.' },
 ]
 
 const FALLBACK_SERVICES = [
@@ -382,10 +382,15 @@ export default function Home() {
         {slides.map((s, i) => (
           <div key={i} className="absolute inset-0 transition-opacity duration-1000"
             style={{ opacity: slide===i ? 1 : 0, zIndex: slide===i ? 1 : 0, background: '#000' }}>
-            <img src={s.imageUrl||s.src} alt=""
-              className="h-full w-full"
-              style={{ objectFit: 'cover', objectPosition: 'center top' }}
-              onError={e => { e.target.style.display = 'none' }} />
+            <picture className="h-full w-full">
+              {/* Mobile / small screens → Ai images (portrait/square crop) */}
+              {s.mobileUrl && <source media="(max-width: 767px)" srcSet={s.mobileUrl} />}
+              {/* Tablet / desktop → numbered images (landscape) */}
+              <img src={s.imageUrl || s.src} alt=""
+                className="h-full w-full"
+                style={{ objectFit: 'cover', objectPosition: 'center top' }}
+                onError={e => { e.target.style.display = 'none' }} />
+            </picture>
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/85" />
           </div>
         ))}
