@@ -386,7 +386,8 @@ export default function Home() {
               {/* Mobile / small screens → Ai images (portrait/square crop) */}
               {s.mobileUrl && <source media="(max-width: 767px)" srcSet={s.mobileUrl} />}
               {/* Tablet / desktop → numbered images (landscape) */}
-              <img src={s.imageUrl || s.src} alt=""
+              {s.imageUrl && <source media="(min-width: 768px)" srcSet={s.imageUrl} />}
+              <img src={s.imageUrl || s.src || s.mobileUrl} alt=""
                 className="h-full w-full"
                 style={{ objectFit: 'cover', objectPosition: 'center top' }}
                 onError={e => { e.target.style.display = 'none' }} />
