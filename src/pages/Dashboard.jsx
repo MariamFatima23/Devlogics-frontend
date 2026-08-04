@@ -24,6 +24,8 @@ import CrmLeads    from '../components/dashboard/CrmLeads'
 import CrmTeam     from '../components/dashboard/CrmTeam'
 import CrmMeetings from '../components/dashboard/CrmMeetings'
 import CrmReports  from '../components/dashboard/CrmReports'
+import TeamMyLeads    from '../components/dashboard/TeamMyLeads'
+import TeamMyMeetings from '../components/dashboard/TeamMyMeetings'
 
 const Icon = ({ d, size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
@@ -39,6 +41,13 @@ const studentMenu = [
   { id: 'announcements',   label: 'Announcements',     icon: <Icon d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /> },
   { id: 'add-review',      label: 'Add Review',        icon: <Icon d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /> },
   { id: 'profile',         label: 'My Profile',        icon: <Icon d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /> },
+]
+
+const teamMenu = [
+  { id: 'tm-overview',  label: 'Overview',      icon: <Icon d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /> },
+  { id: 'tm-leads',     label: 'My Leads',      icon: <Icon d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /> },
+  { id: 'tm-meetings',  label: 'My Meetings',   icon: <Icon d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /> },
+  { id: 'profile',      label: 'My Profile',    icon: <Icon d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /> },
 ]
 
 const adminMenu = [
@@ -70,6 +79,7 @@ const PAGE_TITLES = {
   'manage-students': 'Manage Students', 'manage-reviews': 'Manage Reviews',
   'crm-leads': 'CRM Leads', 'crm-team': 'CRM Team',
   'crm-meetings': 'Meetings', 'crm-reports': 'CRM Reports',
+  'tm-overview': 'My Dashboard', 'tm-leads': 'My Leads', 'tm-meetings': 'My Meetings',
 }
 
 export default function Dashboard() {
@@ -88,8 +98,15 @@ export default function Dashboard() {
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
-  const isAdmin = user?.role === 'admin'
-  const menu = isAdmin ? adminMenu : studentMenu
+  const isAdmin      = user?.role === 'admin'
+  const isTeamMember = user?.role === 'team_member'
+  const menu = isAdmin ? adminMenu : isTeamMember ? teamMenu : studentMenu
+  const [prefillLead, setPrefillLead] = useState(null)
+
+  // Set correct default tab based on role
+  useEffect(() => {
+    if (isTeamMember && tab === 'overview') setTab('tm-overview')
+  }, [isTeamMember])
   const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
   const fileUrl = (path) => (path && (path.startsWith('http://') || path.startsWith('https://'))) ? path : (path ? `${BASE}/uploads/${path}` : null)
   const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
@@ -111,9 +128,9 @@ export default function Dashboard() {
   const TabContent = () => (
     <>
       {tab === 'overview'         && <Overview user={user} setTab={switchTab} />}
-      {tab === 'browse-courses'   && !isAdmin && <BrowseCourses user={user} />}
-      {tab === 'my-course-apps'   && !isAdmin && <MyCourseApplications />}
-      {tab === 'add-review'       && !isAdmin && <AddReview />}
+      {tab === 'browse-courses'   && !isAdmin && !isTeamMember && <BrowseCourses user={user} />}
+      {tab === 'my-course-apps'   && !isAdmin && !isTeamMember && <MyCourseApplications />}
+      {tab === 'add-review'       && !isAdmin && !isTeamMember && <AddReview />}
       {tab === 'announcements'    && <Announcements />}
       {tab === 'profile'          && <Profile />}
       {tab === 'review'           && isAdmin && <ReviewApplications />}
@@ -130,6 +147,14 @@ export default function Dashboard() {
       {tab === 'crm-team'         && isAdmin && <CrmTeam />}
       {tab === 'crm-meetings'     && isAdmin && <CrmMeetings />}
       {tab === 'crm-reports'      && isAdmin && <CrmReports />}
+      {/* ── Team Member tabs ── */}
+      {tab === 'tm-overview'  && isTeamMember && <Overview user={user} setTab={switchTab} />}
+      {tab === 'tm-leads'     && isTeamMember && (
+        <TeamMyLeads onScheduleMeeting={(lead) => { setPrefillLead(lead); switchTab('tm-meetings') }} />
+      )}
+      {tab === 'tm-meetings'  && isTeamMember && (
+        <TeamMyMeetings prefillLead={prefillLead} onClearPrefill={() => setPrefillLead(null)} />
+      )}
     </>
   )
 
@@ -170,7 +195,7 @@ export default function Dashboard() {
         <nav className="flex-1 px-2 py-4 space-y-1" style={{ overflowY: 'auto', overflowX: 'hidden' }}>
           <motion.p animate={{ opacity: sidebarExpanded ? 1 : 0 }} transition={{ duration: 0.15 }}
             className="mb-3 px-3 text-[10px] font-bold uppercase tracking-widest text-white/30 whitespace-nowrap">
-            {isAdmin ? 'Admin Panel' : 'Student Portal'}
+            {isAdmin ? 'Admin Panel' : isTeamMember ? 'Team Portal' : 'Student Portal'}
           </motion.p>
           {menu.map((item) => {
             const active = tab === item.id
@@ -221,7 +246,7 @@ export default function Dashboard() {
         {/* Handle bar */}
         <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-5 py-3">
           <p className="text-[11px] font-bold uppercase tracking-widest text-white/40">
-            {isAdmin ? 'Admin Panel' : 'Student Portal'}
+            {isAdmin ? 'Admin Panel' : isTeamMember ? 'Team Portal' : 'Student Portal'}
           </p>
           <button onClick={() => setMenuOpen(false)}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-white/50 hover:bg-white/10 hover:text-white">
@@ -278,6 +303,12 @@ export default function Dashboard() {
               <span className="hidden items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ring-1 sm:inline-flex"
                 style={{ background: 'rgba(72,202,228,0.2)', color: '#48cae4', borderColor: 'rgba(72,202,228,0.3)' }}>
                 🛡️ Admin
+              </span>
+            )}
+            {isTeamMember && (
+              <span className="hidden items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ring-1 sm:inline-flex"
+                style={{ background: 'rgba(52,211,153,0.2)', color: '#34d399', borderColor: 'rgba(52,211,153,0.3)' }}>
+                👤 Team
               </span>
             )}
             <NotificationDropdown unread={unread} setUnread={setUnread} />

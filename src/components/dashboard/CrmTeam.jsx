@@ -17,7 +17,7 @@ const ROLE_COLORS = {
 
 const ROLE_ICONS = { Sales:'💰', Marketing:'📣', Counselor:'🎓', Manager:'👑', Support:'🛠️', Other:'👤' }
 
-const EMPTY = { name:'', email:'', phone:'', role:'Sales', status:'Active' }
+const EMPTY = { name:'', email:'', phone:'', role:'Sales', status:'Active', password:'' }
 
 function Modal({ open, onClose, children }) {
   if (!open) return null
@@ -218,8 +218,14 @@ export default function CrmTeam() {
                 <Field label="Full Name" value={form.name} onChange={f('name')} required placeholder="e.g. Ali Hassan" />
                 <div className="grid grid-cols-2 gap-4">
                   <Field label="Phone" value={form.phone} onChange={f('phone')} placeholder="03xx-xxxxxxx" />
-                  <Field label="Email" value={form.email} onChange={f('email')} type="email" placeholder="Optional" />
+                  <Field label="Email" value={form.email} onChange={f('email')} type="email" placeholder="Login email" required={!editMember} />
                 </div>
+                {!editMember && (
+                  <Field label="Password" value={form.password} onChange={f('password')} type="password" required placeholder="Min 6 characters" />
+                )}
+                {editMember && (
+                  <Field label="New Password (leave blank to keep)" value={form.password} onChange={f('password')} type="password" placeholder="Leave blank to keep current" />
+                )}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1">
                     <label className="text-xs font-semibold text-white/50 uppercase tracking-wider">Role <span className="text-red-400">*</span></label>
