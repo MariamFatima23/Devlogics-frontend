@@ -23,7 +23,8 @@ function Divider({ title }) {
 
 export default function Profile() {
   const { user, login: authLogin } = useAuth()
-  const isAdmin = user?.role === 'admin'
+  const isAdmin      = user?.role === 'admin'
+  const isTeamMember = user?.role === 'team_member'
 
   const [saving,     setSaving]     = useState(false)
   const [imgFile,    setImgFile]    = useState(null)
@@ -119,10 +120,10 @@ export default function Profile() {
             <p className="text-xs text-white/50">{user.email}</p>
             <span className="mt-1.5 inline-block rounded-full px-3 py-0.5 text-xs font-bold text-white"
               style={{
-                background: isAdmin ? 'rgba(124,58,237,0.5)' : 'rgba(255,255,255,0.15)',
+                background: isAdmin ? 'rgba(124,58,237,0.5)' : isTeamMember ? 'rgba(5,150,105,0.5)' : 'rgba(255,255,255,0.15)',
                 border: '1px solid rgba(255,255,255,0.2)'
               }}>
-              {isAdmin ? '🛡️ Admin' : '🎓 Student'}
+              {isAdmin ? '🛡️ Admin' : isTeamMember ? '👤 Team Member' : '🎓 Student'}
             </span>
           </div>
         </div>
@@ -174,7 +175,7 @@ export default function Profile() {
             </div>
           </div>
 
-          {!isAdmin && (
+          {!isAdmin && !isTeamMember && (
             <>
               <Divider title="Professional Info" />
               <div className="grid gap-4 sm:grid-cols-2">

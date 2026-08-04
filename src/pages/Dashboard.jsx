@@ -44,7 +44,6 @@ const studentMenu = [
 ]
 
 const teamMenu = [
-  { id: 'tm-overview',  label: 'Overview',      icon: <Icon d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /> },
   { id: 'tm-leads',     label: 'My Leads',      icon: <Icon d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /> },
   { id: 'tm-meetings',  label: 'My Meetings',   icon: <Icon d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /> },
   { id: 'profile',      label: 'My Profile',    icon: <Icon d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /> },
@@ -105,7 +104,7 @@ export default function Dashboard() {
 
   // Set correct default tab based on role
   useEffect(() => {
-    if (isTeamMember && tab === 'overview') setTab('tm-overview')
+    if (isTeamMember && tab === 'overview') setTab('tm-leads')
   }, [isTeamMember])
   const BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000'
   const fileUrl = (path) => (path && (path.startsWith('http://') || path.startsWith('https://'))) ? path : (path ? `${BASE}/uploads/${path}` : null)
@@ -148,7 +147,6 @@ export default function Dashboard() {
       {tab === 'crm-meetings'     && isAdmin && <CrmMeetings />}
       {tab === 'crm-reports'      && isAdmin && <CrmReports />}
       {/* ── Team Member tabs ── */}
-      {tab === 'tm-overview'  && isTeamMember && <Overview user={user} setTab={switchTab} />}
       {tab === 'tm-leads'     && isTeamMember && (
         <TeamMyLeads onScheduleMeeting={(lead) => { setPrefillLead(lead); switchTab('tm-meetings') }} />
       )}
