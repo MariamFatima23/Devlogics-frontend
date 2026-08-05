@@ -22,6 +22,22 @@ const PLATFORM_ICONS = { 'Google Meet':'🟢','Zoom':'🔵','Phone Call':'📞',
 const OUTCOMES = ['Interested','Not Interested','Objection','Follow-up Required','Converted','No Show']
 const STATUSES = ['Pending','Completed','Rescheduled','Cancelled','Overdue']
 
+// Build WhatsApp wa.me link
+function buildWhatsAppLink(meeting) {
+  const lead = meeting.leadId
+  const phone = typeof lead === 'object' ? lead?.contact : ''
+  if (!phone) return null
+  const cleaned = phone.replace(/[\s\-()]/g, '').replace(/^0/, '92')
+  const date = meeting.scheduledAt
+    ? new Date(meeting.scheduledAt).toLocaleString('en-GB', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })
+    : ''
+  const name = typeof lead === 'object' ? lead?.clientName : 'Client'
+  let msg = `Hello ${name},\n\nYour meeting has been scheduled:\n📅 Date & Time: ${date}\n⏱ Duration: ${meeting.durationMins} min\n📋 Topic: ${meeting.topic}`
+  if (meeting.meetingLink) msg += `\n🔗 Meeting Link: ${meeting.meetingLink}`
+  msg += `\n\nPlease join on time. Thank you!`
+  return `https://wa.me/${cleaned}?text=${encodeURIComponent(msg)}`
+}
+
 function Modal({ open, onClose, children, maxW='max-w-md' }) {
   if (!open) return null
   return (
@@ -44,7 +60,7 @@ export default function TeamMyMeetings({ prefillLead, onClearPrefill }) {
   const [loading, setLoading]     = useState(true)
   const [filterStatus, setFS]     = useState('')
   const [showSchedule, setShowSched] = useState(false)
-  const [schedForm, setSF]        = useState({ leadId:'', topic:'', meetingType:'Online', platform:'Google Meet', scheduledAt:'', durationMins:'30' })
+  const [schedForm, setSF]        = useState({ leadId:'', topic:'', meetingType:'Online', platform:'Google Meet', meetingLink:'', scheduledAt:'', durationMins:'30' })
   const [saving, setSaving]       = useState(false)
   const [outcomeModal, setOM]     = useState(null)
   const [outcomeForm, setOF]      = useState({ status:'Completed', outcome:'', outcomeNotes:'', nextActionDate:'' })
@@ -79,7 +95,7 @@ export default function TeamMyMeetings({ prefillLead, onClearPrefill }) {
   const submitSchedule = async (e) => {
     e.preventDefault(); setSaving(true)
     try {
-      await api.post('/meetings', { leadId:schedForm.leadId, meetingType:schedForm.meetingType, platform:schedForm.platform, topic:schedForm.topic, scheduledAt:schedForm.scheduledAt, durationMins:Number(schedForm.durationMins)||30 })
+      await api.post('/meetings', { leadId:schedForm.leadId, meetingType:schedForm.meetingType, platform:schedForm.platform, topic:schedForm.topic, meetingLink:schedForm.meetingLink||'', scheduledAt:schedForm.scheduledAt, durationMins:Number(schedForm.durationMins)||30 })
       toast.success('Meeting scheduled!'); setShowSched(false); load()
     } catch(e) { toast.error(e.response?.data?.message||'Error') }
     finally { setSaving(false) }
@@ -114,7 +130,7 @@ export default function TeamMyMeetings({ prefillLead, onClearPrefill }) {
           <h2 className="text-xl font-extrabold text-gray-900">My Meetings</h2>
           <p className="text-sm text-gray-500">Track and manage your client meetings</p>
         </div>
-        <button onClick={()=>{ setSF({ leadId:'',topic:'',meetingType:'Online',platform:'Google Meet',scheduledAt:'',durationMins:'30' }); setShowSched(true) }}
+        <button onClick={()=>{ setSF({ leadId:'',topic:'',meetingType:'Online',platform:'Google Meet',meetingLink:'',scheduledAt:'',durationMins:'30' }); setShowSched(true) }}
           className="dp-btn dp-btn-primary gap-2">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}><path d="M12 5v14M5 12h14"/></svg>
           Schedule
@@ -171,15 +187,28 @@ export default function TeamMyMeetings({ prefillLead, onClearPrefill }) {
                       <span>📅 {fmtDT(m.scheduledAt)}</span>
                       <span>⏱ {m.durationMins} min</span>
                     </div>
+                    {m.meetingLink && (
+                      <a href={m.meetingLink} target="_blank" rel="noreferrer"
+                        className="mt-1 inline-flex items-center gap-1 text-xs text-primary-blue hover:underline font-semibold">
+                        🔗 Join Meeting Link ↗
+                      </a>
+                    )}
                     {m.outcomeNotes && <p className="mt-1 text-xs text-gray-400 italic line-clamp-1">"{m.outcomeNotes}"</p>}
                     {m.nextActionDate && <p className="mt-1 text-xs text-primary-blue font-semibold">🗓 Next: {fmtD(m.nextActionDate)}</p>}
                   </div>
                   <div className="flex flex-wrap gap-1.5 shrink-0">
+                    {/* WhatsApp button */}
+                    {(m.status==='Pending'||m.status==='Overdue') && buildWhatsAppLink(m) && (
+                      <a href={buildWhatsAppLink(m)} target="_blank" rel="noreferrer"
+                        className="dp-btn text-xs px-2.5 py-1.5 bg-green-500 text-white hover:bg-green-600 border-0 no-underline">
+                        📲 WhatsApp
+                      </a>
+                    )}
                     {(m.status==='Pending'||m.status==='Overdue') && <>
                       <button onClick={()=>{ setOF({ status:'Completed', outcome:'', outcomeNotes:'', nextActionDate:'' }); setOM(m) }}
-                        className="dp-btn text-xs px-2.5 py-1.5 bg-green-50 text-green-700 border border-green-200 hover:bg-green-100">✅ Done</button>
+                        className="dp-btn text-xs px-2.5 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">✅ Done</button>
                       <button onClick={()=>{ setRF({ scheduledAt:'', rescheduleReason:'' }); setRM(m) }}
-                        className="dp-btn text-xs px-2.5 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">🔄</button>
+                        className="dp-btn text-xs px-2.5 py-1.5 bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100">🔄</button>
                     </>}
                     {m.status==='Completed' && (
                       <button onClick={()=>{ setOF({ status:'Completed', outcome:m.outcome||'', outcomeNotes:m.outcomeNotes||'', nextActionDate:m.nextActionDate?m.nextActionDate.split('T')[0]:'' }); setOM(m) }}
@@ -234,6 +263,13 @@ export default function TeamMyMeetings({ prefillLead, onClearPrefill }) {
                     <label className="dp-label-text">Duration (min)</label>
                     <input type="number" value={schedForm.durationMins} onChange={sf('durationMins')} min={5} className="dp-input"/>
                   </div>
+                </div>
+                {/* Meeting Link */}
+                <div className="flex flex-col gap-1">
+                  <label className="dp-label-text">Meeting Link (Zoom / Google Meet)</label>
+                  <input value={schedForm.meetingLink} onChange={sf('meetingLink')}
+                    placeholder="Paste Zoom or Google Meet link here" className="dp-input"/>
+                  <p className="text-[11px] text-gray-400 mt-0.5">Create a meeting on Zoom/Google Meet, copy the invite link and paste here.</p>
                 </div>
                 <div className="flex gap-3 justify-end pt-2">
                   <button type="button" onClick={()=>setShowSched(false)} className="dp-btn dp-btn-outline">Cancel</button>

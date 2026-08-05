@@ -25,9 +25,26 @@ const OUTCOME_META = {
 }
 const PLATFORM_ICONS = { 'Google Meet':'🟢','Zoom':'🔵','Phone Call':'📞','In-Person':'🏢','Microsoft Teams':'🟣','Other':'🌐' }
 
-const EMPTY_FORM      = { leadId:'', teamMemberId:'', meetingType:'Online', platform:'Google Meet', topic:'', scheduledAt:'', durationMins:'30' }
-const EMPTY_OUTCOME   = { status:'Completed', outcome:'', outcomeNotes:'', nextActionDate:'' }
-const EMPTY_RESCHEDULE= { scheduledAt:'', rescheduleReason:'' }
+const EMPTY_FORM       = { leadId:'', teamMemberId:'', meetingType:'Online', platform:'Google Meet', topic:'', meetingLink:'', scheduledAt:'', durationMins:'30' }
+const EMPTY_OUTCOME    = { status:'Completed', outcome:'', outcomeNotes:'', nextActionDate:'' }
+const EMPTY_RESCHEDULE = { scheduledAt:'', rescheduleReason:'' }
+
+// Build WhatsApp wa.me link
+function buildWhatsAppLink(meeting) {
+  const lead = meeting.leadId
+  const phone = typeof lead === 'object' ? lead?.contact : ''
+  if (!phone) return null
+  // Clean phone — remove spaces, dashes; add country code if starts with 0
+  const cleaned = phone.replace(/[\s\-()]/g, '').replace(/^0/, '92')
+  const date = meeting.scheduledAt
+    ? new Date(meeting.scheduledAt).toLocaleString('en-GB', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })
+    : ''
+  const name = typeof lead === 'object' ? lead?.clientName : meeting.leadName || 'Client'
+  let msg = `Hello ${name},\n\nYour meeting has been scheduled:\n📅 Date & Time: ${date}\n⏱ Duration: ${meeting.durationMins} min\n📋 Topic: ${meeting.topic}`
+  if (meeting.meetingLink) msg += `\n🔗 Meeting Link: ${meeting.meetingLink}`
+  msg += `\n\nPlease join on time. Thank you!`
+  return `https://wa.me/${cleaned}?text=${encodeURIComponent(msg)}`
+}
 
 function Modal({ open, onClose, children, maxW='max-w-lg' }) {
   if (!open) return null
@@ -93,7 +110,10 @@ export default function CrmMeetings() {
   const submitOutcome = async (e) => {
     e.preventDefault(); setSaving(true)
     try {
-      await api.put(`/meetings/${outcomeModal._id}`, { status:outcomeForm.status, outcome:outcomeForm.outcome, outcomeNotes:outcomeForm.outcomeNotes, nextActionDate:outcomeForm.nextActionDate||null })
+      await api.put(`/meetings/${outcomeModal._id}`, {
+        status:outcomeForm.status, outcome:outcomeForm.outcome,
+        outcomeNotes:outcomeForm.outcomeNotes, nextActionDate:outcomeForm.nextActionDate||null
+      })
       toast.success('Outcome saved'); setOM(null); load()
     } catch(e) { toast.error(e.response?.data?.message||'Error') }
     finally { setSaving(false) }
@@ -102,7 +122,9 @@ export default function CrmMeetings() {
   const submitReschedule = async (e) => {
     e.preventDefault(); setSaving(true)
     try {
-      await api.put(`/meetings/${reschedModal._id}`, { status:'Rescheduled', scheduledAt:reschedForm.scheduledAt, rescheduleReason:reschedForm.rescheduleReason })
+      await api.put(`/meetings/${reschedModal._id}`, {
+        status:'Rescheduled', scheduledAt:reschedForm.scheduledAt, rescheduleReason:reschedForm.rescheduleReason
+      })
       toast.success('Rescheduled'); setRM(null); load()
     } catch(e) { toast.error(e.response?.data?.message||'Error') }
     finally { setSaving(false) }
@@ -159,10 +181,11 @@ export default function CrmMeetings() {
       ) : (
         <div className="space-y-3">
           {meetings.map((m,i) => {
-            const sm  = STATUS_META[m.status] || STATUS_META.Pending
-            const om  = m.outcome ? (OUTCOME_META[m.outcome]||{}) : null
+            const sm       = STATUS_META[m.status] || STATUS_META.Pending
+            const om       = m.outcome ? (OUTCOME_META[m.outcome]||{}) : null
             const upcoming = isUpcoming(m)
             const leadObj  = m.leadId
+            const waLink   = buildWhatsAppLink(m)
             return (
               <motion.div key={m._id} layout initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.03 }}
                 className={`dp-card overflow-hidden ${upcoming?'ring-2 ring-amber-300':''}`}>
@@ -185,16 +208,30 @@ export default function CrmMeetings() {
                       <span>⏱ {m.durationMins} min</span>
                       {m.teamMemberId && <span>🧑‍💼 {typeof m.teamMemberId==='object'?m.teamMemberId.name:m.teamMemberName}</span>}
                     </div>
+                    {/* Meeting link */}
+                    {m.meetingLink && (
+                      <a href={m.meetingLink} target="_blank" rel="noreferrer"
+                        className="mt-1 inline-flex items-center gap-1 text-xs text-primary-blue hover:underline font-semibold">
+                        🔗 Join Meeting Link ↗
+                      </a>
+                    )}
                     {m.outcomeNotes && <p className="mt-1 text-xs text-gray-400 line-clamp-1 italic">"{m.outcomeNotes}"</p>}
                     {m.nextActionDate && <p className="mt-1 text-xs text-primary-blue font-semibold">🗓 Next: {fmtD(m.nextActionDate)}</p>}
                   </div>
 
                   <div className="flex flex-wrap gap-1.5 shrink-0">
+                    {/* WhatsApp Send button */}
+                    {waLink && (m.status==='Pending'||m.status==='Overdue') && (
+                      <a href={waLink} target="_blank" rel="noreferrer"
+                        className="dp-btn text-xs px-2.5 py-1.5 bg-green-500 text-white hover:bg-green-600 border-0 no-underline">
+                        📲 WhatsApp
+                      </a>
+                    )}
                     {(m.status==='Pending'||m.status==='Overdue') && <>
                       <button onClick={()=>{ setOF({ status:'Completed', outcome:'', outcomeNotes:'', nextActionDate:'' }); setOM(m) }}
-                        className="dp-btn text-xs px-2.5 py-1.5 bg-green-50 text-green-700 border border-green-200 hover:bg-green-100">✅ Outcome</button>
+                        className="dp-btn text-xs px-2.5 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">✅ Outcome</button>
                       <button onClick={()=>{ setRF({ scheduledAt:'', rescheduleReason:'' }); setRM(m) }}
-                        className="dp-btn text-xs px-2.5 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">🔄 Reschedule</button>
+                        className="dp-btn text-xs px-2.5 py-1.5 bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100">🔄 Reschedule</button>
                     </>}
                     {m.status==='Completed' && (
                       <button onClick={()=>{ setOF({ status:'Completed', outcome:m.outcome||'', outcomeNotes:m.outcomeNotes||'', nextActionDate:m.nextActionDate?m.nextActionDate.split('T')[0]:'' }); setOM(m) }}
@@ -232,8 +269,7 @@ export default function CrmMeetings() {
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="dp-label-text">Topic <span className="text-red-500">*</span></label>
-                  <input value={form.topic} onChange={f('topic')} required placeholder="e.g. Course Enquiry, Demo"
-                    className="dp-input" />
+                  <input value={form.topic} onChange={f('topic')} required placeholder="e.g. Course Enquiry, Demo" className="dp-input" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1">
@@ -249,6 +285,12 @@ export default function CrmMeetings() {
                     </select>
                   </div>
                 </div>
+                {/* Meeting Link */}
+                <div className="flex flex-col gap-1">
+                  <label className="dp-label-text">Meeting Link (Zoom / Google Meet)</label>
+                  <input value={form.meetingLink} onChange={f('meetingLink')} placeholder="Paste your Zoom or Google Meet link here" className="dp-input" />
+                  <p className="text-[11px] text-gray-400 mt-0.5">Go to Zoom/Google Meet, create a meeting, copy the link and paste here.</p>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1">
                     <label className="dp-label-text">Date & Time <span className="text-red-500">*</span></label>
@@ -261,9 +303,7 @@ export default function CrmMeetings() {
                 </div>
                 <div className="flex gap-3 justify-end pt-2">
                   <button type="button" onClick={()=>setShowForm(false)} className="dp-btn dp-btn-outline">Cancel</button>
-                  <button type="submit" disabled={saving} className="dp-btn dp-btn-primary">
-                    {saving?'Saving…':'Schedule'}
-                  </button>
+                  <button type="submit" disabled={saving} className="dp-btn dp-btn-primary">{saving?'Saving…':'Schedule'}</button>
                 </div>
               </form>
             </div>
