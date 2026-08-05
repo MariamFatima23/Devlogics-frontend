@@ -28,14 +28,23 @@ const STATUSES  = ['Pending','Completed','Rescheduled','Cancelled','Overdue']
 const PLATFORMS = ['Google Meet','Zoom','Phone Call','In-Person','Microsoft Teams','Other']
 
 // ── WhatsApp link builder ─────────────────────────────────────────
-function buildWA(meeting) {
-  const contact = meeting.leadContact || (typeof meeting.leadId === 'object' ? meeting.leadId?.contact : '')
-  if (!contact) return null
-  const cleaned = contact.replace(/[\s\-\+()]/g, '').replace(/^0/, '92')
+function buildWA(meeting, manualPhone) {
+  // Priority: manually entered > saved leadContact > populated lead contact
+  const rawPhone = manualPhone
+    || meeting.leadContact
+    || (typeof meeting.leadId === 'object' ? meeting.leadId?.contact : '')
+  if (!rawPhone) return null
+  // Clean: remove spaces, dashes, parens, +; replace leading 0 with 92
+  const cleaned = rawPhone.replace(/[\s\-\+()]/g, '').replace(/^0/, '92')
+  if (cleaned.length < 7) return null
   const dt = meeting.scheduledAt
-    ? new Date(meeting.scheduledAt).toLocaleString('en-GB', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })
+    ? new Date(meeting.scheduledAt).toLocaleString('en-GB', {
+        day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'
+      })
     : ''
-  const name = meeting.leadName || (typeof meeting.leadId === 'object' ? meeting.leadId?.clientName : '') || 'Client'
+  const name = meeting.leadName
+    || (typeof meeting.leadId === 'object' ? meeting.leadId?.clientName : '')
+    || 'Client'
   let msg = `Hello ${name},\n\nYour meeting has been scheduled:\n📅 Date & Time: ${dt}\n⏱ Duration: ${meeting.durationMins || 30} min\n📋 Topic: ${meeting.topic}`
   if (meeting.meetingLink) msg += `\n🔗 Meeting Link: ${meeting.meetingLink}`
   msg += `\n\nPlease join on time. Thank you!`
@@ -105,6 +114,8 @@ export default function TeamMyMeetings({ prefillLead, onClearPrefill }) {
   // Reschedule modal
   const [rescModal,  setRescModal]  = useState(null)
   const [rescForm,   setRescForm]   = useState({ scheduledAt:'', reason:'' })
+  const [waModal,    setWaModal]    = useState(null)  // for WhatsApp phone confirm
+  const [waPhone,    setWaPhone]    = useState('')
 
   // Fetch my TeamMember _id once
   useEffect(() => {
@@ -340,12 +351,22 @@ export default function TeamMyMeetings({ prefillLead, onClearPrefill }) {
 
                   {/* Action buttons */}
                   <div className="flex flex-wrap gap-2 pt-1 border-t border-gray-100">
-                    {/* WhatsApp */}
-                    {waLink && (m.status === 'Pending' || overdue) && (
-                      <a href={waLink} target="_blank" rel="noreferrer"
-                        className="flex items-center gap-1.5 rounded-xl bg-green-500 text-white text-xs font-bold px-3 py-2 hover:bg-green-600 transition no-underline">
+                    {/* WhatsApp — always show for pending/overdue */}
+                    {(m.status === 'Pending' || overdue) && (
+                      <button
+                        onClick={() => {
+                          const link = buildWA(m)
+                          if (link) {
+                            window.open(link, '_blank')
+                          } else {
+                            // No phone saved — ask user to enter
+                            setWaPhone('')
+                            setWaModal(m)
+                          }
+                        }}
+                        className="flex items-center gap-1.5 rounded-xl bg-green-500 text-white text-xs font-bold px-3 py-2 hover:bg-green-600 transition">
                         📲 Send WhatsApp
-                      </a>
+                      </button>
                     )}
                     {/* Mark Done */}
                     {(m.status === 'Pending' || overdue) && (
@@ -482,6 +503,55 @@ export default function TeamMyMeetings({ prefillLead, onClearPrefill }) {
                 </button>
               </div>
             </form>
+          </Modal>
+        )}
+      </AnimatePresence>
+
+      {/* ══ WHATSAPP PHONE MODAL (when no contact saved) ══ */}
+      <AnimatePresence>
+        {waModal && (
+          <Modal open title="Send via WhatsApp" subtitle={`"${waModal.topic}"`} onClose={() => setWaModal(null)}>
+            <div className="space-y-4">
+              <div className="rounded-xl bg-green-50 border border-green-200 p-3 text-sm text-green-800">
+                📲 Message will open in WhatsApp with meeting details pre-filled.
+              </div>
+              <FRow label="Client Phone Number" required>
+                <input
+                  type="tel"
+                  value={waPhone}
+                  onChange={e => setWaPhone(e.target.value)}
+                  placeholder="e.g. 03001234567 or 923001234567"
+                  className="dp-input"
+                  autoFocus
+                />
+                <p className="text-[11px] text-gray-400 mt-0.5">
+                  Pakistan number: start with 03xx or 923xx. No spaces or dashes needed.
+                </p>
+              </FRow>
+              {/* Preview message */}
+              {waPhone.length > 6 && (
+                <div className="rounded-xl bg-gray-50 border border-gray-200 p-3">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Message Preview</p>
+                  <p className="text-xs text-gray-700 whitespace-pre-line leading-relaxed">
+                    {`Hello ${waModal.leadName || 'Client'},\n\nYour meeting has been scheduled:\n📅 Date & Time: ${new Date(waModal.scheduledAt).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}\n⏱ Duration: ${waModal.durationMins || 30} min\n📋 Topic: ${waModal.topic}${waModal.meetingLink ? `\n🔗 Meeting Link: ${waModal.meetingLink}` : ''}\n\nPlease join on time. Thank you!`}
+                  </p>
+                </div>
+              )}
+              <div className="flex gap-3 pt-2">
+                <button onClick={() => setWaModal(null)} className="flex-1 dp-btn dp-btn-outline">Cancel</button>
+                <button
+                  onClick={() => {
+                    const link = buildWA(waModal, waPhone)
+                    if (!link) { toast.error('Please enter a valid phone number'); return }
+                    window.open(link, '_blank')
+                    setWaModal(null)
+                  }}
+                  className="flex-1 dp-btn font-bold text-white rounded-xl py-2.5"
+                  style={{ background: '#25D366' }}>
+                  📲 Open WhatsApp
+                </button>
+              </div>
+            </div>
           </Modal>
         )}
       </AnimatePresence>
