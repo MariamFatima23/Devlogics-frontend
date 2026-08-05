@@ -110,9 +110,10 @@ export default function CrmMeetings() {
   const submitOutcome = async (e) => {
     e.preventDefault(); setSaving(true)
     try {
-      await api.put(`/meetings/${outcomeModal._id}`, {
-        status:outcomeForm.status, outcome:outcomeForm.outcome,
-        outcomeNotes:outcomeForm.outcomeNotes, nextActionDate:outcomeForm.nextActionDate||null
+      await api.put(`/meetings/${outcomeModal._id}/complete`, {
+        outcome: outcomeForm.outcome,
+        outcomeNotes: outcomeForm.outcomeNotes,
+        nextActionDate: outcomeForm.nextActionDate || null,
       })
       toast.success('Outcome saved'); setOM(null); load()
     } catch(e) { toast.error(e.response?.data?.message||'Error') }
@@ -122,8 +123,9 @@ export default function CrmMeetings() {
   const submitReschedule = async (e) => {
     e.preventDefault(); setSaving(true)
     try {
-      await api.put(`/meetings/${reschedModal._id}`, {
-        status:'Rescheduled', scheduledAt:reschedForm.scheduledAt, rescheduleReason:reschedForm.rescheduleReason
+      await api.put(`/meetings/${reschedModal._id}/reschedule`, {
+        newScheduledDate: reschedForm.scheduledAt,
+        rescheduleReason: reschedForm.rescheduleReason,
       })
       toast.success('Rescheduled'); setRM(null); load()
     } catch(e) { toast.error(e.response?.data?.message||'Error') }

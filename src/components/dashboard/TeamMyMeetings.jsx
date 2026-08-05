@@ -104,7 +104,11 @@ export default function TeamMyMeetings({ prefillLead, onClearPrefill }) {
   const submitOutcome = async (e) => {
     e.preventDefault(); setSaving(true)
     try {
-      await api.put(`/team-members/meetings/${outcomeModal._id}`, { status:outcomeForm.status, outcome:outcomeForm.outcome, outcomeNotes:outcomeForm.outcomeNotes, nextActionDate:outcomeForm.nextActionDate||null })
+      await api.put(`/team-members/meetings/${outcomeModal._id}/complete`, {
+        outcome: outcomeForm.outcome,
+        outcomeNotes: outcomeForm.outcomeNotes,
+        nextActionDate: outcomeForm.nextActionDate || null,
+      })
       toast.success('Saved'); setOM(null); load()
     } catch(e) { toast.error(e.response?.data?.message||'Error') }
     finally { setSaving(false) }
@@ -113,7 +117,10 @@ export default function TeamMyMeetings({ prefillLead, onClearPrefill }) {
   const submitReschedule = async (e) => {
     e.preventDefault(); setSaving(true)
     try {
-      await api.put(`/team-members/meetings/${reschedModal._id}`, { status:'Rescheduled', scheduledAt:reschedForm.scheduledAt, rescheduleReason:reschedForm.rescheduleReason })
+      await api.put(`/team-members/meetings/${reschedModal._id}/reschedule`, {
+        newScheduledDate: reschedForm.scheduledAt,
+        rescheduleReason: reschedForm.rescheduleReason,
+      })
       toast.success('Rescheduled'); setRM(null); load()
     } catch(e) { toast.error(e.response?.data?.message||'Error') }
     finally { setSaving(false) }
