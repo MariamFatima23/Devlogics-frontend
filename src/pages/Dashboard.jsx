@@ -20,7 +20,6 @@ import BrowseCourses from '../components/dashboard/BrowseCourses'
 import ContactMessages from '../components/dashboard/ContactMessages'
 import ManageStudents from '../components/dashboard/ManageStudents'
 import NotificationDropdown from '../components/dashboard/NotificationDropdown'
-import { useDarkMode } from '../context/DarkModeContext'
 import CrmLeads    from '../components/dashboard/CrmLeads'
 import CrmTeam     from '../components/dashboard/CrmTeam'
 import CrmMeetings from '../components/dashboard/CrmMeetings'
@@ -102,7 +101,14 @@ export default function Dashboard() {
   const isTeamMember = user?.role === 'team_member'
   const menu = isAdmin ? adminMenu : isTeamMember ? teamMenu : studentMenu
   const [prefillLead, setPrefillLead] = useState(null)
-  const { dark, toggle: toggleDark } = useDarkMode()
+  // Dark mode
+  const [dark, setDark] = useState(() => localStorage.getItem('darkMode') === 'true')
+  const toggleDark = () => {
+    const next = !dark
+    setDark(next)
+    localStorage.setItem('darkMode', next)
+    document.documentElement.setAttribute('data-dark', next ? 'true' : '')
+  }
 
   // Set correct default tab based on role
   useEffect(() => {

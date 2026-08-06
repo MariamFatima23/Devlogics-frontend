@@ -10,7 +10,6 @@ import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import { useAuth } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
-import { DarkModeProvider } from './context/DarkModeContext'
 import { RouteLoader } from './components/PageLoader'
 
 function AppInner() {
@@ -68,9 +67,7 @@ function AppInner() {
 export default function App() {
   return (
     <ThemeProvider>
-      <DarkModeProvider>
-        <AppInner />
-      </DarkModeProvider>
+      <AppInner />
     </ThemeProvider>
   )
 }
