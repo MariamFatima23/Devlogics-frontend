@@ -20,6 +20,7 @@ import BrowseCourses from '../components/dashboard/BrowseCourses'
 import ContactMessages from '../components/dashboard/ContactMessages'
 import ManageStudents from '../components/dashboard/ManageStudents'
 import NotificationDropdown from '../components/dashboard/NotificationDropdown'
+import { useDarkMode } from '../context/DarkModeContext'
 import CrmLeads    from '../components/dashboard/CrmLeads'
 import CrmTeam     from '../components/dashboard/CrmTeam'
 import CrmMeetings from '../components/dashboard/CrmMeetings'
@@ -101,6 +102,7 @@ export default function Dashboard() {
   const isTeamMember = user?.role === 'team_member'
   const menu = isAdmin ? adminMenu : isTeamMember ? teamMenu : studentMenu
   const [prefillLead, setPrefillLead] = useState(null)
+  const { dark, toggle: toggleDark } = useDarkMode()
 
   // Set correct default tab based on role
   useEffect(() => {
@@ -310,6 +312,12 @@ export default function Dashboard() {
               </span>
             )}
             <NotificationDropdown unread={unread} setUnread={setUnread} />
+            {/* Dark mode toggle */}
+            <motion.button whileTap={{ scale: 0.9 }} onClick={toggleDark}
+              className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 hover:bg-white/20 transition text-base"
+              title={dark ? 'Light Mode' : 'Dark Mode'}>
+              {dark ? '☀️' : '🌙'}
+            </motion.button>
             <motion.button whileTap={{ scale: 0.93 }} onClick={() => switchTab('profile')}
               className="flex items-center gap-1.5 rounded-xl bg-white/10 pl-1.5 pr-2 py-1 ring-1 ring-white/20 hover:bg-white/20 transition sm:pr-3 sm:gap-2"
               title="My Profile">
