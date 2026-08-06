@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
+import api from '../utils/api'
 import { motion } from 'framer-motion'
 import { FaLock, FaEye, FaEyeSlash } from 'react-icons/fa'
 import AuthParticles from '../components/AuthParticles'
@@ -22,7 +23,7 @@ export default function ResetPassword() {
 
     setLoading(true)
     try {
-      await axios.post(`/api/auth/reset-password/${token}`, { password })
+      await api.post(`/auth/reset-password/${token}`, { password })
       setDone(true)
       toast.success('Password reset successfully!')
       setTimeout(() => navigate('/login'), 2500)

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../utils/api'
 import { motion } from 'framer-motion'
 import { FaEnvelope } from 'react-icons/fa'
 import AuthParticles from '../components/AuthParticles'
@@ -15,7 +15,7 @@ export default function ForgotPassword() {
     e.preventDefault()
     setLoading(true)
     try {
-      await axios.post('/api/auth/forgot-password', { email })
+      await api.post('/auth/forgot-password', { email })
       setSent(true)
       toast.success('Reset link sent! Check your email.')
     } catch (err) {
